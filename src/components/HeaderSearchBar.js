@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { searchManga } from '../store/search/actions';
 import { getSearchTerm } from '../store/search/selectors';
 
-const HeaderSearchBar = (props) => {
-  const [term, setTerm] = useState(props.searchTerm);
+const HeaderSearchBar = ({ searchTerm, searchManga }) => {
+  const [term, setTerm] = useState(searchTerm);
 
   const handleSearch = () => {
-    props.searchManga(term);
+    searchManga(term);
   };
 
   return (

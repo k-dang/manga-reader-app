@@ -3,13 +3,12 @@ import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 // import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 // screens
 import LibraryScreen from './src/screens/LibraryScreen';
 import MangaViewerScreen from './src/screens/MangaViewerScreen';
-import AccountScreen from './src/screens/AccountScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import InfoScreen from './src/screens/InfoScreen';
 import ChaptersScreen from './src/screens/ChaptersScreen';
@@ -23,7 +22,6 @@ import store from './src/store';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const MangaDetailTab = createMaterialTopTabNavigator();
 
 function TabsScreen() {
   return (
@@ -39,8 +37,8 @@ function TabsScreen() {
             case 'Search':
               iconName = 'magnify';
               break;
-            case 'Account':
-              iconName = focused ? 'account' : 'account-outline';
+            case 'Settings':
+              iconName = focused ? 'settings' : 'settings-outline';
               break;
           }
 
@@ -53,7 +51,7 @@ function TabsScreen() {
     >
       <Tab.Screen name="Library" component={LibraryScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
@@ -63,23 +61,6 @@ const forFade = ({ current, closing }) => ({
     opacity: current.progress,
   },
 });
-
-function MangaDetailTabsScreen() {
-  return (
-    <MangaDetailTab.Navigator
-      tabBarOptions={{
-        indicatorStyle: {
-          backgroundColor: 'black',
-          // height: 3,
-          borderRadius: 2,
-        },
-      }}
-    >
-      <MangaDetailTab.Screen name="Info" component={InfoScreen} />
-      <MangaDetailTab.Screen name="Chapters" component={ChaptersScreen} />
-    </MangaDetailTab.Navigator>
-  );
-}
 
 export default function App() {
   return (
@@ -92,10 +73,21 @@ export default function App() {
             options={({ route }) => {
               const currentIndex = route?.state?.index;
               if (currentIndex == undefined) {
-                return null;
+                // hack for initial tab
+                return {
+                  title: 'Library'
+                };
               }
 
               switch (route.state.routeNames[currentIndex]) {
+                case 'Library':
+                  return {
+                    title: 'Library',
+                  };
+                case 'Settings':
+                  return {
+                    title: 'Settings',
+                  };
                 case 'Search':
                   return {
                     headerTitle: () => {

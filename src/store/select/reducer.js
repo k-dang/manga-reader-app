@@ -4,10 +4,14 @@ import {
   SELECT_MANGA_FAILURE,
   SELECT_MANGA,
   REVERSE_CHAPTERS,
+  MARK_CHAPTER_READ,
+  MARK_CHAPTERS_READ,
+  SELECT_MULTIPLE_MANGA_SUCCESS,
 } from './constants';
 
-// mangaDetailsByTitle is a dictionary of
-// mangaTitle : {
+// mangaDetailsById is a dictionary of
+// mangaId : {
+//   mangaTitle: ''
 //   infoImageUrl: ''
 //   status: ''
 //   lastUpdated: ''
@@ -22,28 +26,28 @@ import {
 const initialState = {
   isFetching: false,
   error: null,
-  selectedManga: '',
-  mangaDetailsByTitle: {},
+  selectedMangaId: '',
+  mangaDetailsById: {},
 };
 const select = (state = initialState, action) => {
   switch (action.type) {
     case SELECT_MANGA_REQUEST: {
-      const { mangaTitle } = action.payload;
+      const { mangaId } = action.payload;
       return {
         ...state,
         isFetching: true,
         error: null,
-        selectedManga: mangaTitle,
+        selectedMangaId: mangaId,
       };
     }
     case SELECT_MANGA_SUCCESS: {
-      const { mangaTitle, result } = action.payload;
+      const { mangaId, result } = action.payload;
       return {
         ...state,
         isFetching: false,
-        mangaDetailsByTitle: {
-          ...state.mangaDetailsByTitle,
-          [mangaTitle]: { ...result, didInvalidate: false },
+        mangaDetailsById: {
+          ...state.mangaDetailsById,
+          [mangaId]: { ...result, didInvalidate: false },
         },
       };
     }
@@ -55,24 +59,72 @@ const select = (state = initialState, action) => {
       };
     }
     case SELECT_MANGA: {
-      const { mangaTitle } = action.payload;
+      const { mangaId } = action.payload;
       return {
         ...state,
-        selectedManga: mangaTitle,
+        selectedMangaId: mangaId,
       };
     }
     case REVERSE_CHAPTERS: {
-      const { mangaTitle } = action.payload;
-      const mangaDetail = state.mangaDetailsByTitle[mangaTitle];
+      const { mangaId } = action.payload;
+      const mangaDetail = state.mangaDetailsById[mangaId];
       return {
         ...state,
-        mangaDetailsByTitle: {
-          ...state.mangaDetailsByTitle,
-          [mangaTitle]: {
+        mangaDetailsById: {
+          ...state.mangaDetailsById,
+          [mangaId]: {
             ...mangaDetail,
             chapterRefs: [...mangaDetail.chapterRefs.reverse()],
           },
         },
+      };
+    }
+    case MARK_CHAPTER_READ: {
+      const { mangaId, chapterRefIndex } = action.payload;
+      const mangaDetail = state.mangaDetailsById[mangaId];
+      return {
+        ...state,
+        mangaDetailsById: {
+          ...state.mangaDetailsById,
+          [mangaId]: {
+            ...mangaDetail,
+            chapterRefs: mangaDetail.chapterRefs.map((chapterRef, i) => {
+              if (i !== chapterRefIndex) {
+                return chapterRef;
+              }
+              return { ...chapterRef, hasRead: true };
+            }),
+          },
+        },
+      };
+    }
+    case MARK_CHAPTERS_READ: {
+      const { mangaId, index } = action.payload;
+      const mangaDetail = state.mangaDetailsById[mangaId];
+      return {
+        ...state,
+        mangaDetailsById: {
+          ...state.mangaDetailsById,
+          [mangaId]: {
+            ...mangaDetail,
+            chapterRefs: mangaDetail.chapterRefs.map((chapterRef, i) => {
+              if (i >= index) {
+                return { ...chapterRef, hasRead: true };
+              }
+              return chapterRef;
+            }),
+          },
+        },
+      };
+    }
+    case SELECT_MULTIPLE_MANGA_SUCCESS: {
+      const { results } = action.payload;
+      return {
+        ...state,
+        mangaDetailsById: results.reduce((map, obj) => {
+          map[obj.mangaId] = { ...obj };
+          return map;
+        }, {}),
       };
     }
     default:

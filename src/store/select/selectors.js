@@ -1,14 +1,14 @@
 export const getSelectState = (store) => store.select;
 
-export const getSelectedManga = (store) =>
-  getSelectState(store) ? getSelectState(store).selectedManga : '';
+export const getSelectedMangaId = (store) =>
+  getSelectState(store) ? getSelectState(store).selectedMangaId : '';
 
 export const getSelectFetchState = (store) =>
   getSelectState(store) ? getSelectState(store).isFetching : false;
 
-export const getMangaByTitle = (store, title) =>
+export const getMangaById = (store, mangaId) =>
   getSelectState(store)
-    ? { ...getSelectState(store).mangaDetailsByTitle[title], title }
+    ? { ...getSelectState(store).mangaDetailsById[mangaId], mangaId }
     : {};
 
 export const getSelectError = (store) =>

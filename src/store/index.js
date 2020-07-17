@@ -3,15 +3,16 @@ import thunkMiddleware from 'redux-thunk';
 import search from './search/reducer';
 import select from './select/reducer';
 import chapters from './chapters/reducer';
-import { visibilityFilter, todos } from './todos/reducers';
+import account from './account/reducer';
+import library from './library/reducer';
 import logger from 'redux-logger';
 
 const rootReducer = combineReducers({
-  todos,
-  visibilityFilter,
   search,
   select,
   chapters,
+  account,
+  library,
 });
 
 export default createStore(

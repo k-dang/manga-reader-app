@@ -1,5 +1,5 @@
 Arguments: 
-  D:\Programs\nodejs\node.exe D:\Programs\nodejs\node_modules\yarn\bin\yarn.js add buffer
+  D:\Programs\nodejs\node.exe D:\Programs\nodejs\node_modules\yarn\bin\yarn.js add react-native-swiper
 
 PATH: 
   D:\Programs\cmder_mini\bin;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Users\Kevin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;D:\Programs\HashiCorp\Vagrant\bin;D:\Programs\Git\cmd;D:\Programs\ffmpeg\bin;D:\Programs\sqlite-tools;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;D:\Programs\Microsoft VS Code\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\Programs\nvm;D:\Programs\nodejs;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\Kevin\.dotnet\tools;D:\Programs\nvm;D:\Programs\nodejs;C:\Users\Kevin\AppData\Local\Yarn\bin;node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Kevin\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Kevin\AppData\Roaming\npm\node_modules\.bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Users\Kevin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;D:\Programs\HashiCorp\Vagrant\bin;D:\Programs\Git\cmd;D:\Programs\ffmpeg\bin;D:\Programs\sqlite-tools;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;D:\Programs\Microsoft VS Code\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\Programs\MikTeX\miktex\bin\x64\;D:\Programs\Docker Toolbox;D:\Programs\Python\Python 3;D:\Programs\Python\Python 3\Scripts;D:\Programs\Heroku\bin;C:\Users\Kevin\AppData\Roaming\npm;C:\Users\Kevin\.dotnet\tools;D:\Programs\nvm;D:\Programs\nodejs;C:\Users\Kevin\AppData\Local\Microsoft\WindowsApps;C:\Users\Kevin\AppData\Local\Yarn\bin;;D:\Programs\Git\usr\bin;D:\Programs\Git\usr\share\vim\vim74;D:\Programs\cmder_mini\
@@ -39,15 +39,15 @@ npm manifest:
     "dependencies": {
       "@react-native-community/masked-view": "0.1.6",
       "@react-navigation/bottom-tabs": "^5.5.2",
-      "@react-navigation/material-top-tabs": "^5.2.12",
       "@react-navigation/native": "^5.5.1",
       "@react-navigation/stack": "^5.5.1",
       "axios": "^0.19.2",
-      "cheerio": "^1.0.0-rc.3",
+      "date-fns": "^2.14.0",
       "expo": "~37.0.3",
       "react": "~16.9.0",
       "react-dom": "~16.9.0",
       "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
+      "react-native-cheerio": "^1.0.0-rc.4",
       "react-native-elements": "^2.0.2",
       "react-native-gesture-handler": "~1.6.0",
       "react-native-image-zoom-viewer": "^3.0.1",
@@ -55,10 +55,10 @@ npm manifest:
       "react-native-reanimated": "~1.7.0",
       "react-native-safe-area-context": "0.7.3",
       "react-native-screens": "~2.2.0",
-      "react-native-tab-view": "^2.14.4",
       "react-native-web": "~0.11.7",
       "react-redux": "^7.2.0",
       "redux": "^4.0.5",
+      "redux-logger": "^3.0.6",
       "redux-thunk": "^2.3.0"
     },
     "devDependencies": {
@@ -1252,13 +1252,6 @@ Lockfile:
       react-is "^16.13.0"
       use-subscription "^1.4.0"
   
-  "@react-navigation/material-top-tabs@^5.2.12":
-    version "5.2.12"
-    resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.2.12.tgz#a9d1bc6b0446cb37cc24774c6db409ded38beb84"
-    integrity sha512-q1Rb/yo94+2TAQO29XZVJyWB5xhY2WKEVtXFjbtHGHl3q5ijerBXHkIt7akdkE00z5Jn9Ir5JJAmeyx6uWtVmg==
-    dependencies:
-      color "^3.1.2"
-  
   "@react-navigation/native@^5.5.1":
     version "5.5.1"
     resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.5.1.tgz#e669d9561e54d86b1315637b8d5630dc55ee9383"
@@ -1333,11 +1326,6 @@ Lockfile:
     version "4.14.155"
     resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
     integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
-  
-  "@types/node@*":
-    version "14.0.14"
-    resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.14.tgz#24a0b5959f16ac141aeb0c5b3cd7a15b7c64cbce"
-    integrity sha512-syUgf67ZQpaJj01/tRTknkMNoBBLWJOBODF0Zm4NrXmiSuxjymFrxnTu1QVYRubhVkRcZLYZG8STTwJRdVm/WQ==
   
   "@types/prop-types@*":
     version "15.7.3"
@@ -1723,7 +1711,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
     integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
   
-  base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.3:
+  base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.0, base64-js@^1.2.3:
     version "1.3.1"
     resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.1.tgz#58ece8cb75dd07e71ed08c736abc5fac4dbf8df1"
     integrity sha512-mLQ4i2QO1ytvGWFWmcngKO//JXAQueZvwEKtjgQFM4jIK0kU+ytMfplL8j+n5mspOfjHwoAg+9yhb7BwAHm36g==
@@ -1853,7 +1841,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
     integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
   
-  buffer@^5.6.0:
+  buffer@^5.0.7:
     version "5.6.0"
     resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
     integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
@@ -1948,18 +1936,6 @@ Lockfile:
     version "0.4.2"
     resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
     integrity sha1-tUc7M9yXxCTl2Y3IfVXU2KKci/I=
-  
-  cheerio@^1.0.0-rc.3:
-    version "1.0.0-rc.3"
-    resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.3.tgz#094636d425b2e9c0f4eb91a46c05630c9a1a8bf6"
-    integrity sha512-0td5ijfUPuubwLUu0OBoe98gZj8C/AA+RW3v67GPlGOrvxWjZmBXiBCRU+I8VEiNyJzjth40POfHiz2RB3gImA==
-    dependencies:
-      css-select "~1.2.0"
-      dom-serializer "~0.1.1"
-      entities "~1.1.1"
-      htmlparser2 "^3.9.1"
-      lodash "^4.15.0"
-      parse5 "^3.0.1"
   
   ci-info@^2.0.0:
     version "2.0.0"
@@ -2263,6 +2239,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.10.tgz#e63af50e66d7c266edb6b32909cfd0aabe03928b"
     integrity sha512-D34BqZU4cIlMCY93rZHbrq9pjTAQJ3U8S8rfBqjwHxkGPThWFjzZDQpgMJY0QViLxth6ZKYiwFBo14RdN44U/w==
   
+  date-fns@^2.14.0:
+    version "2.14.0"
+    resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.14.0.tgz#359a87a265bb34ef2e38f93ecf63ac453f9bc7ba"
+    integrity sha512-1zD+68jhFgDIM0rF05rcwYO8cExdNqxjq4xP1QKM60Q45mnO6zaMWB4tOzrIr4M4GSLntsKeE4c9Bdl2jhL/yw==
+  
   dayjs@^1.8.15:
     version "1.8.28"
     resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.28.tgz#37aa6201df483d089645cb6c8f6cef6f0c4dbc07"
@@ -2310,6 +2291,11 @@ Lockfile:
     integrity sha512-YX2i9XjJ7h5q/aQ/IM9PEwEnDqETAIYbggmdDB3HLTlSgo1CxPsj6pvhPG68rq6SVE0+p+6Ywsm5fTYNrYtBWw==
     dependencies:
       is-obj "^1.0.0"
+  
+  deep-diff@^0.3.5:
+    version "0.3.8"
+    resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
+    integrity sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ=
   
   deepmerge@^3.1.0, deepmerge@^3.2.0:
     version "3.3.0"
@@ -2385,7 +2371,7 @@ Lockfile:
       domelementtype "^2.0.1"
       entities "^2.0.0"
   
-  dom-serializer@~0.1.1:
+  dom-serializer@~0.1.0:
     version "0.1.1"
     resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.1.tgz#1ec4059e284babed36eec2941d4a970a189ce7c0"
     integrity sha512-l0IU0pPzLWSHBcieZbpOKgkIn3ts3vAh7ZuFyXNwJxJXk/c4Gwj9xaTJwIDVQCXawWD0qb3IzMGH5rglQaO0XA==
@@ -2393,7 +2379,7 @@ Lockfile:
       domelementtype "^1.3.0"
       entities "^1.1.1"
   
-  domelementtype@1, domelementtype@^1.3.0, domelementtype@^1.3.1:
+  domelementtype@1, domelementtype@^1.3.0:
     version "1.3.1"
     resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.1.tgz#d048c44b37b0d10a7f2a3d5fee3f4333d790481f"
     integrity sha512-BSKB+TSpMpFI/HOxCNr1O8aMOTZ8hT3pM3GQ0w/mWRmkhEDSFJkkyzz4XQsBV44BChwGkrDfMyjVD0eA2aFV3w==
@@ -2519,6 +2505,11 @@ Lockfile:
     version "5.0.1"
     resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
     integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
+  
+  eventemitter2@^1.0.0:
+    version "1.0.5"
+    resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-1.0.5.tgz#f983610517b1737c0b9dc643beca93893c04df18"
+    integrity sha1-+YNhBRexc3wLncZDvsqTiTwE3xg=
   
   eventemitter3@^3.0.0:
     version "3.1.2"
@@ -3081,17 +3072,18 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
     integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
   
-  htmlparser2@^3.9.1:
-    version "3.10.1"
-    resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.10.1.tgz#bd679dc3f59897b6a34bb10749c855bb53a9392f"
-    integrity sha512-IgieNijUMbkDovyoKObU1DUhm1iwNYE/fuifEoEHfd1oZKZDaONBSkal7Y01shxsM49R4XaMdGez3WnF9UfiCQ==
+  htmlparser2-without-node-native@^3.9.0:
+    version "3.9.2"
+    resolved "https://registry.yarnpkg.com/htmlparser2-without-node-native/-/htmlparser2-without-node-native-3.9.2.tgz#b3ed050d877d0ff3465969e339877b7f9f6631f6"
+    integrity sha1-s+0FDYd9D/NGWWnjOYd7f59mMfY=
     dependencies:
-      domelementtype "^1.3.1"
+      domelementtype "^1.3.0"
       domhandler "^2.3.0"
       domutils "^1.5.1"
       entities "^1.1.1"
+      eventemitter2 "^1.0.0"
       inherits "^2.0.1"
-      readable-stream "^3.1.1"
+      readable-stream "^2.0.2"
   
   http-errors@~1.7.2:
     version "1.7.3"
@@ -3116,7 +3108,7 @@ Lockfile:
     dependencies:
       safer-buffer ">= 2.1.2 < 3"
   
-  ieee754@^1.1.4:
+  ieee754@^1.1.4, ieee754@^1.1.8:
     version "1.1.13"
     resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.13.tgz#ec168558e95aa181fd87d37f55c32bbcb6708b84"
     integrity sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==
@@ -4422,13 +4414,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/parse-node-version/-/parse-node-version-1.0.1.tgz#e2b5dbede00e7fa9bc363607f53327e8b073189b"
     integrity sha512-3YHlOa/JgH6Mnpr05jP9eDG254US9ek25LyIxZlDItp2iJtwyaXQb57lBYLdT3MowkUFYEV2XXNAYIPlESvJlA==
   
-  parse5@^3.0.1:
-    version "3.0.3"
-    resolved "https://registry.yarnpkg.com/parse5/-/parse5-3.0.3.tgz#042f792ffdd36851551cf4e9e066b3874ab45b5c"
-    integrity sha512-rgO9Zg5LLLkfJF9E6CCmXlSE4UVceloys8JrFqCcHloC3usd/kJCyPDwH2SOlzix2j3xaP9sUX3e8+kvkuleAA==
-    dependencies:
-      "@types/node" "*"
-  
   parseurl@~1.3.3:
     version "1.3.3"
     resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
@@ -4665,6 +4650,19 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
     integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
   
+  react-native-cheerio@^1.0.0-rc.4:
+    version "1.0.0-rc.4"
+    resolved "https://registry.yarnpkg.com/react-native-cheerio/-/react-native-cheerio-1.0.0-rc.4.tgz#bab0c1fe5888bbd69481d9b928d58b525f18f3b1"
+    integrity sha512-V2nAoxikHGV1vl2nKL2rlw832Ze+p8op5p6MDltd5ZrEZGp1+eTl+qjC+l4TY9ju3CNpt/uiNuOEQoWqgdwzUQ==
+    dependencies:
+      buffer "^5.0.7"
+      css-select "~1.2.0"
+      dom-serializer "~0.1.0"
+      entities "~1.1.1"
+      htmlparser2-without-node-native "^3.9.0"
+      lodash "^4.15.0"
+      react-native-parse-html "^2.2.6"
+  
   react-native-elements@^2.0.2:
     version "2.0.2"
     resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-2.0.2.tgz#2819d556cea481cad29fa79c6a8ccb47ef6f456e"
@@ -4714,6 +4712,13 @@ Lockfile:
     dependencies:
       prop-types "^15.5.10"
   
+  react-native-parse-html@^2.2.6:
+    version "2.2.6"
+    resolved "https://registry.yarnpkg.com/react-native-parse-html/-/react-native-parse-html-2.2.6.tgz#21f28f97b38407784759bc59e244b51109d9cc87"
+    integrity sha1-IfKPl7OEB3hHWbxZ4kS1EQnZzIc=
+    dependencies:
+      react-native-stream "^0.1.0"
+  
   react-native-ratings@^7.2.0:
     version "7.2.0"
     resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-7.2.0.tgz#8523e98868470855ec1d2feb112e466e17a1fd9f"
@@ -4746,10 +4751,20 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-status-bar-height/-/react-native-status-bar-height-2.5.0.tgz#bc0fb85230603850aab9667ee8111a62954de90c"
     integrity sha512-sYBCPYA/NapBSHkdm/IVL4ID3LLlIuLqINi2FBDyMkc2BU9pfSGOtkz9yfxoK39mYJuTrlTOQ7mManARUsYDSA==
   
-  react-native-tab-view@^2.14.4:
-    version "2.14.4"
-    resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.14.4.tgz#740007e62c8723c6813b8c8a05caaaf82c816620"
-    integrity sha512-oqkCflPFuZwDTbyY2WaN0377akSsmcttuYACR9LT7htZfO/tKR2Z/ynj1tbv2cz2esGuVICoga9cetN1lPimog==
+  react-native-stream@^0.1.0:
+    version "0.1.9"
+    resolved "https://registry.yarnpkg.com/react-native-stream/-/react-native-stream-0.1.9.tgz#13680cce893ca7d34a86664d9d5b4ee1a772c97c"
+    integrity sha1-E2gMzok8p9NKhmZNnVtO4adyyXw=
+    dependencies:
+      base64-js "^1.2.0"
+      ieee754 "^1.1.8"
+  
+  react-native-swiper@^1.6.0:
+    version "1.6.0"
+    resolved "https://registry.yarnpkg.com/react-native-swiper/-/react-native-swiper-1.6.0.tgz#59fdbdf95addee49630312f27077622c27776819"
+    integrity sha512-OnkTTZi+9uZUgy0uz1I9oYDhCU3z36lZn+LFsk9FXPRelxb/KeABzvPs3r3SrHWy1aA67KGtSFj0xNK2QD0NJQ==
+    dependencies:
+      prop-types "^15.5.10"
   
   react-native-view-shot@3.1.2:
     version "3.1.2"
@@ -4853,7 +4868,7 @@ Lockfile:
       normalize-package-data "^2.3.2"
       path-type "^2.0.0"
   
-  readable-stream@^2.0.1, readable-stream@^2.2.2, readable-stream@~2.3.6:
+  readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.2.2, readable-stream@~2.3.6:
     version "2.3.7"
     resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
     integrity sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==
@@ -4866,14 +4881,12 @@ Lockfile:
       string_decoder "~1.1.1"
       util-deprecate "~1.0.1"
   
-  readable-stream@^3.1.1:
-    version "3.6.0"
-    resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
-    integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
+  redux-logger@^3.0.6:
+    version "3.0.6"
+    resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"
+    integrity sha1-91VZZvMJjzyIYExEnPC69XeCdL8=
     dependencies:
-      inherits "^2.0.3"
-      string_decoder "^1.1.1"
-      util-deprecate "^1.0.1"
+      deep-diff "^0.3.5"
   
   redux-thunk@^2.3.0:
     version "2.3.0"
@@ -5055,11 +5068,6 @@ Lockfile:
     version "5.1.2"
     resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
     integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
-  
-  safe-buffer@~5.2.0:
-    version "5.2.1"
-    resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
-    integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
   
   safe-regex@^1.1.0:
     version "1.1.0"
@@ -5423,13 +5431,6 @@ Lockfile:
       is-fullwidth-code-point "^2.0.0"
       strip-ansi "^4.0.0"
   
-  string_decoder@^1.1.1:
-    version "1.3.0"
-    resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.3.0.tgz#42f114594a46cf1a8e30b0a84f56c78c3edac21e"
-    integrity sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==
-    dependencies:
-      safe-buffer "~5.2.0"
-  
   string_decoder@~1.1.1:
     version "1.1.1"
     resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
@@ -5751,7 +5752,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
     integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
   
-  util-deprecate@^1.0.1, util-deprecate@~1.0.1:
+  util-deprecate@~1.0.1:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
     integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=

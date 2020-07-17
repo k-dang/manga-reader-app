@@ -1,46 +1,67 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import MangaList from '../components/MangaList';
+import ErrorContainer from '../components/ErrorContainer';
+import { connect } from 'react-redux';
+import {
+  getMangaList,
+  getLibraryLoadingStatus,
+  getLoadError,
+} from '../store/library/selectors';
+import { getChapterTotals } from '../store/chapters/selectors';
+import { getUserId } from '../store/account/selectors';
+import { loadLibrary, loadLibraryAndSelect } from '../store/library/actions';
+import { loadChapterTotalsAsyncStorage } from '../store/chapters/actions';
 
-const coverImages = [
-  {
-    imageUrl: 'https://mangadex.org/images/manga/28495.jpg',
-    id: '1',
-    title: 'title 11111111111144444444444444444444444444444444444444444444444',
-    updates: 1,
-  },
-  {
-    imageUrl: 'https://mangadex.org/images/manga/3845.jpg',
-    id: '2',
-    title: 'title 2',
-    updates: 5,
-  },
-  {
-    imageUrl: 'https://mangadex.org/images/manga/28495.jpg',
-    id: '3',
-    title: 'title 3',
-    updates: 0,
-  },
-  {
-    imageUrl: 'https://mangadex.org/images/manga/3845.jpg',
-    id: '4',
-    title: 'title 4',
-    updates: 3,
-  },
-  {
-    imageUrl: 'https://mangadex.org/images/manga/28495.jpg',
-    id: '5',
-    title: 'title 5',
-    updates: 0,
-  },
-];
+const LibraryScreen = ({
+  navigation,
+  mangaList,
+  status,
+  userId,
+  loadLibrary,
+  loadError,
+  loadChapterTotalsAsyncStorage,
+  chapterTotals,
+}) => {
+  useEffect(() => {
+    loadChapterTotalsAsyncStorage();
+    loadLibrary(userId);
+    // loadLibraryAndSelect(userId);
+  }, [userId]);
+  const [refreshing, setRefreshing] = useState(false);
+  if (status === 'idle' || status === 'pending') {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator
+          style={styles.spinner}
+          size="large"
+          color="#0000ff"
+        />
+      </View>
+    );
+  }
 
-const LibraryScreen = ({ navigation }) => {
-  const [counter, setCounter] = useState(0);
+  if (status === 'rejected') {
+    return <ErrorContainer errorMessage={loadError} />;
+  }
+
+  const mangaListWithUpdates = () => {
+    return mangaList.map((manga) => {
+      manga.updates = chapterTotals[manga.id];
+      return manga;
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <MangaList results={coverImages} />
+      <MangaList
+        results={mangaListWithUpdates()}
+        // refreshing={refreshing}
+        // onRefresh={() => {
+        //   console.log('refresh');
+        //   setRefreshing(true);
+        // }}
+      />
     </View>
   );
 };
@@ -50,6 +71,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  spinner: {
+    flex: 1,
+  },
 });
 
-export default LibraryScreen;
+const mapStateToProps = (state) => {
+  return {
+    mangaList: getMangaList(state),
+    status: getLibraryLoadingStatus(state),
+    userId: getUserId(state),
+    loadError: getLoadError(state),
+    chapterTotals: getChapterTotals(state),
+  };
+};
+
+export default connect(mapStateToProps, {
+  loadLibrary,
+  loadChapterTotalsAsyncStorage,
+})(LibraryScreen);

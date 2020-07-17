@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { connect } from 'react-redux';
+import React from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
+
+// store
+import { connect } from 'react-redux';
 import {
   getFetchState,
   getSearchResults,
@@ -11,10 +13,19 @@ import {
   getSearchTotalPages,
   getSearchLoadedPages,
 } from '../store/search/selectors';
-import { searchMangaPaginated } from '../store/search/actions';
+import { searchManga, searchMangaPaginated } from '../store/search/actions';
 
-const SearchScreen = (props) => {
-  if (props.isFetching) {
+const SearchScreen = ({
+  isFetching,
+  errorMessage,
+  searchResults,
+  searchTerm,
+  loadedPages,
+  totalPages,
+  searchMangaPaginated,
+  searchManga,
+}) => {
+  if (isFetching) {
     return (
       <View style={styles.container}>
         <ActivityIndicator
@@ -26,16 +37,15 @@ const SearchScreen = (props) => {
     );
   }
 
-  if (props.errorMessage != '') {
-    return <ErrorContainer errorMessage={props.errorMessage} />;
+  if (errorMessage != '') {
+    return <ErrorContainer errorMessage={errorMessage} />;
   }
 
-  const isResultsEmpty =
-    props.searchResults.length == 0 && props.searchTerm != '';
+  const isResultsEmpty = searchResults.length == 0 && searchTerm != '';
   const handleEndReached = () => {
-    if (props.loadedPages < props.totalPages) {
-      const pageToLoad = props.loadedPages + 1;
-      props.searchMangaPaginated(props.searchTerm, pageToLoad);
+    if (loadedPages < totalPages) {
+      const pageToLoad = loadedPages + 1;
+      searchMangaPaginated(searchTerm, pageToLoad);
     }
   };
 
@@ -46,8 +56,12 @@ const SearchScreen = (props) => {
       ) : (
         <View style={styles.container}>
           <MangaList
-            results={props.searchResults}
+            results={searchResults}
             onEndReached={handleEndReached}
+            refreshing={isFetching}
+            onRefresh={() => {
+              searchManga(searchTerm);
+            }}
           />
         </View>
       )}
@@ -76,4 +90,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { searchMangaPaginated })(SearchScreen);
+export default connect(mapStateToProps, { searchManga, searchMangaPaginated })(
+  SearchScreen
+);

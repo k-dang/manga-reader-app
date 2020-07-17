@@ -3,9 +3,12 @@ import {
   FETCH_CHAPTER_SUCCESS,
   FETCH_CHAPTER_FAILURE,
   VIEW_CHAPTER,
+  LOAD_CHAPTER_UPDATES,
+  SET_CHAPTER_UPDATE,
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloChapter } from '../../services/parseChapter';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const fetchChapterRequest = (chapterRef, chapterRefIndex) => ({
   type: FETCH_CHAPTER_REQUEST,
@@ -44,7 +47,7 @@ const fetchChapter = (chapterRef, chapterRefIndex) => {
 
       dispatch(fetchChapterSuccess(chapterRef, results));
     } catch (err) {
-      console.log(err)
+      console.log(err);
       dispatch(fetchChapterFailure());
     }
   };
@@ -65,6 +68,67 @@ export const fetchChapterIfNeeded = (chapterRef, chapterRefIndex) => {
       return dispatch(fetchChapter(chapterRef, chapterRefIndex));
     } else {
       return dispatch(viewChapter(chapterRef, chapterRefIndex));
+    }
+  };
+};
+
+const loadChapterTotals = (chapterUpdatesByMangaId) => ({
+  type: LOAD_CHAPTER_UPDATES,
+  payload: {
+    chapterUpdatesByMangaId,
+  },
+});
+
+export const loadChapterTotalsAsyncStorage = () => {
+  return async (dispatch) => {
+    const keys = await AsyncStorage.getAllKeys();
+    const chapterUpdatesByMangaId = {};
+    for (const key of keys) {
+      const value = JSON.parse(await AsyncStorage.getItem(key));
+      // account for "totalChapters" key
+      const readTotal = Object.keys(value).length - 1;
+      chapterUpdatesByMangaId[key] = value.totalChapters - readTotal;
+    }
+    delete chapterUpdatesByMangaId['userId'];
+    dispatch(loadChapterTotals(chapterUpdatesByMangaId));
+  };
+};
+
+export const setChapterUpdate = (mangaId, chapterUpdates) => ({
+  type: SET_CHAPTER_UPDATE,
+  payload: {
+    mangaId,
+    chapterUpdates,
+  },
+});
+
+export const decrementChapterUpdate = (mangaId) => {
+  return (dispatch, getState) => {
+    const current = getState().chapters.chapterUpdatesByMangaId[mangaId];
+    if (current > 0) {
+      dispatch(setChapterUpdate(mangaId, current - 1));
+    }
+  };
+};
+
+export const syncChapterUpdate = (mangaId) => {
+  return async (dispatch, getState) => {
+    if (getState().library.mangaById[mangaId]) {
+      const mangaDetails = getState().select.mangaDetailsById[mangaId];
+      const totalChapters = mangaDetails.chapterRefs.length;
+      const value = await AsyncStorage.getItem(mangaId);
+      const jsonValue = value ? JSON.parse(value) : {};
+      jsonValue.totalChapters = totalChapters;
+      await AsyncStorage.setItem(mangaId, JSON.stringify(jsonValue));
+
+      const leftOver = mangaDetails.chapterRefs.reduce((total, chapterRef) => {
+        if (!chapterRef.hasRead) {
+          return total + 1;
+        } else {
+          return total;
+        }
+      }, 0);
+      dispatch(setChapterUpdate(mangaId, leftOver));
     }
   };
 };

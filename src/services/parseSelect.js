@@ -21,10 +21,13 @@ export const parseManganeloSelect = (html) => {
   chaptersList.each((i, el) => {
     const chapter = $(el).find('a.chapter-name');
     const found = chapterRegEx.exec($(chapter).attr('href'));
+
+    const prev = chapterRefs[chapterRefs.length - 1];
     chapterRefs.push({
       chapterRef: found[2],
       name: $(chapter).text(),
       date: $(el).find('.chapter-time').attr('title'),
+      next: prev ? prev.chapterRef : null,
     });
   });
 

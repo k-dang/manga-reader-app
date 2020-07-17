@@ -11,11 +11,17 @@ import { useNavigation } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { selectMangaFetchIfNeeded } from '../store/select/actions';
 
-const MangaList = ({ results, onEndReached, selectMangaFetchIfNeeded }) => {
+const MangaList = ({
+  results,
+  onEndReached,
+  selectMangaFetchIfNeeded,
+  onRefresh,
+  refreshing,
+}) => {
   const navigation = useNavigation();
 
   const handleNavigation = (manga) => {
-    selectMangaFetchIfNeeded(manga.title, manga.id);
+    selectMangaFetchIfNeeded(manga.id, manga.title);
     navigation.navigate('Info');
   };
 
@@ -24,10 +30,12 @@ const MangaList = ({ results, onEndReached, selectMangaFetchIfNeeded }) => {
       data={results}
       keyExtractor={(result) => result.id}
       numColumns={2}
-      columnWrapperStyle={styles.coverRow}
       renderItem={({ item }) => {
         return (
-          <TouchableOpacity onPress={() => handleNavigation(item)}>
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => handleNavigation(item)}
+          >
             <MangaCover mangaItem={item} />
           </TouchableOpacity>
         );
@@ -36,13 +44,16 @@ const MangaList = ({ results, onEndReached, selectMangaFetchIfNeeded }) => {
         return <Text></Text>;
       }}
       onEndReached={onEndReached}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  coverRow: {
-    justifyContent: 'space-evenly',
+  listItem: {
+    flex: 1 / 2,
+    alignItems: 'center',
   },
 });
 

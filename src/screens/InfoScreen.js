@@ -7,39 +7,108 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ScrollView,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import ErrorContainer from '../components/ErrorContainer';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Toast from 'react-native-root-toast';
+import isBefore from 'date-fns/isBefore';
+import parse from 'date-fns/parse';
+
+// store
 import { connect } from 'react-redux';
 import {
-  getSelectedManga,
   getSelectFetchState,
-  getMangaByTitle,
+  getMangaById,
   getSelectError,
 } from '../store/select/selectors';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { saveToLibrary, removeFromLibrary } from '../store/library/actions';
+import { getUserId } from '../store/account/selectors';
+import { getLibraryMangaById } from '../store/library/selectors';
+import { saveChapterReadIfNeeded } from '../store/select/actions';
+import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
 const InfoScreen = ({
   isFetching,
-  selectedManga,
   selectedMangaDetail,
   error,
   navigation,
+  saveToLibrary,
+  userId,
+  libraryManga,
+  removeFromLibrary,
+  saveChapterReadIfNeeded,
+  fetchChapterIfNeeded,
 }) => {
   useEffect(() => {
-    navigation.setOptions({ title: selectedManga });
-  });
+    navigation.setOptions({
+      title: selectedMangaDetail.mangaTitle,
+    });
+  }, [selectedMangaDetail.mangaTitle]);
+  const [favourite, setFavourite] = useState(libraryManga != undefined);
+  const favouriteIconName = favourite ? 'heart' : 'heart-outline';
+  const iconColor = 'black';
+  const toggleFavourite = () => {
+    setFavourite(!favourite);
+    if (!favourite) {
+      saveToLibrary(
+        selectedMangaDetail.mangaId,
+        selectedMangaDetail.mangaTitle,
+        selectedMangaDetail.infoImageUrl,
+        userId
+      );
+      // if (Platform.OS === 'android') {
+      //   ToastAndroid.show(
+      //     'Saved to Library',
+      //     ToastAndroid.SHORT,
+      //     ToastAndroid.BOTTOM
+      //   );
+      // }
+      Toast.show('Saved to Library', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+      });
+    } else {
+      removeFromLibrary(userId, selectedMangaDetail.mangaId);
+      // if (Platform.OS === 'android') {
+      //   ToastAndroid.show(
+      //     'Removed from Library',
+      //     ToastAndroid.SHORT,
+      //     ToastAndroid.BOTTOM
+      //   );
+      // }
+      Toast.show('Removed from Library', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+      });
+    }
+  };
 
-  const [favourite, setFavourite] = useState(false);
   const handleChapterListNavigation = () => {
     navigation.navigate('Chapters');
   };
 
-  const favouriteIconName = favourite ? 'heart' : 'heart-outline';
-  const toggleFavourite = () => {
-    setFavourite(!favourite);
+  const quickRead = () => {
+    const originalIndexIncluded = selectedMangaDetail.chapterRefs.map(
+      (obj, i) => {
+        return {
+          ...obj,
+          originalIndex: i,
+        };
+      }
+    );
+    const firstUnRead = originalIndexIncluded
+      .reverse()
+      .find((chapterRefObj) => !chapterRefObj.hasRead);
+    saveChapterReadIfNeeded(
+      selectedMangaDetail.mangaId,
+      firstUnRead.chapterRef,
+      firstUnRead.originalIndex
+    );
+    fetchChapterIfNeeded(firstUnRead.chapterRef, firstUnRead.originalIndex);
+    navigation.navigate('MangaViewer');
   };
-
-  const iconColor = 'black';
 
   if (isFetching) {
     return (
@@ -71,7 +140,7 @@ const InfoScreen = ({
       </View>
       <View style={styles.descriptionContainer}>
         <View style={styles.iconRow}>
-          <TouchableOpacity style={styles.icons}>
+          <TouchableOpacity style={styles.icons} onPress={quickRead}>
             <MaterialCommunityIcons
               name="play-outline"
               size={36}
@@ -156,11 +225,17 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    selectedManga: getSelectedManga(state),
     isFetching: getSelectFetchState(state),
-    selectedMangaDetail: getMangaByTitle(state, state.select.selectedManga),
+    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
     error: getSelectError(state),
+    userId: getUserId(state),
+    libraryManga: getLibraryMangaById(state, state.select.selectedMangaId),
   };
 };
 
-export default connect(mapStateToProps)(InfoScreen);
+export default connect(mapStateToProps, {
+  saveToLibrary,
+  removeFromLibrary,
+  saveChapterReadIfNeeded,
+  fetchChapterIfNeeded,
+})(InfoScreen);

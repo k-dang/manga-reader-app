@@ -5,72 +5,132 @@ import {
   View,
   ActivityIndicator,
   Image,
-  FlatList,
+  Dimensions,
 } from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import Swiper from 'react-native-swiper';
+import TransitionCard from '../components/TransitionCard';
+
+// store
 import { connect } from 'react-redux';
 import {
   getCurrentChapterRef,
-  getChapterByRef,
+  getCurrentChapterRefIndex,
   getChaptersFetchState,
+  getChaptersByChapterRef,
 } from '../store/chapters/selectors';
-import axios from 'axios';
-import { Dimensions } from 'react-native';
+import { getMangaById } from '../store/select/selectors';
+import { fetchChapterIfNeeded } from '../store/chapters/actions';
+import { saveChapterReadIfNeeded } from '../store/select/actions';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const MangaViewerScreen = ({ isFetching, chapterImages, chapterRef }) => {
+const MangaViewerScreen = ({
+  isFetching,
+  currentChapterRef,
+  currentChapterIndex,
+  chaptersByChapterRef,
+  selectedMangaDetail,
+  fetchChapterIfNeeded,
+  saveChapterReadIfNeeded,
+  navigation,
+}) => {
+  const renderImages = () => {
+    const images = chaptersByChapterRef[currentChapterRef].map((element) => {
+      return (
+        <Image
+          key={element.url}
+          source={{
+            uri: `${element.url}`,
+            headers: {
+              Referer: `https://manganelo.com/chapter${currentChapterRef}`,
+            },
+          }}
+          style={styles.chapterImage}
+          onError={(err) => {
+            console.log(err.nativeEvent);
+          }}
+        />
+      );
+    });
+    if (images.length > 0) {
+      const selectedChapterRefObject =
+        selectedMangaDetail.chapterRefs[currentChapterIndex];
+      const nextChapterName = selectedMangaDetail.chapterRefs.find(
+        (element) => element.chapterRef == selectedChapterRefObject.next
+      )?.name;
+      images.push(
+        <TransitionCard
+          key={`${currentChapterRef}-card`}
+          finishedChapterName={selectedChapterRefObject.name}
+          nextChapterName={nextChapterName}
+        />
+      );
+      images.push(
+        <View
+          key={`${currentChapterRef}-loader`}
+          style={styles.darkContainer}
+        ></View>
+      );
+    }
+    return images;
+  };
+
   if (isFetching) {
     return (
-      <View style={styles.container}>
+      <View style={styles.darkContainer}>
         <ActivityIndicator
           style={styles.spinner}
           size="large"
-          color="#0000ff"
+          color="#F0F8FF"
         />
       </View>
     );
   }
 
-  const addReferer = chapterImages;
-  addReferer.forEach((element) => {
-    element.props = {
-      source: {
-        headers: {
-          Referer: `https://manganelo.com/chapter/${chapterRef}`,
-        },
-      },
-      style: {
-        resizeMode: 'contain',
-      },
-    };
-    (element.width = windowWidth), (element.height = windowHeight);
-  });
+  const renderPagination = (index, total, context) => {
+    if (index >= chaptersByChapterRef[currentChapterRef].length) {
+      return null;
+    }
+    return (
+      <View style={styles.paginationStyle}>
+        <Text style={styles.paginationText}>
+          <Text>{index + 1}</Text>/{total - 2}
+        </Text>
+      </View>
+    );
+  };
+
+  const handleSwipeIndexChange = (index) => {
+    // account for 2 transition cards
+    if (index == chaptersByChapterRef[currentChapterRef].length + 1) {
+      const selectedChapterRefObject =
+        selectedMangaDetail.chapterRefs[currentChapterIndex];
+      if (selectedChapterRefObject.next != null) {
+        const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
+          (element) => element.chapterRef === selectedChapterRefObject.next
+        );
+        saveChapterReadIfNeeded(selectedMangaDetail.mangaId, selectedChapterRefObject.next, nextIndex);
+        fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
+      } else {
+        navigation.goBack();
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* <ImageViewer
-        imageUrls={addReferer}
-        loadingRender={() => (
-          <ActivityIndicator
-            style={styles.spinner}
-            size="large"
-            color="#f0ffff"
-          />
-        )}
-      /> */}
-      <Image
-        source={{
-          uri: `${chapterImages[0].url}`,
-          headers: {
-            Referer: `https://manganelo.com/chapter${chapterRef}`,
-          },
-        }}
-        style={{ width: windowWidth, height: windowHeight }}
-        onError={(err) => {
-          console.log(err.nativeEvent);
-        }}
-      />
+      <Swiper
+        key={currentChapterRef}
+        renderPagination={renderPagination}
+        showsButtons={false}
+        loop={false}
+        loadMinimal={true}
+        loadMinimalSize={2}
+        onIndexChanged={handleSwipeIndexChange}
+      >
+        {renderImages()}
+      </Swiper>
     </View>
   );
 };
@@ -78,18 +138,43 @@ const MangaViewerScreen = ({ isFetching, chapterImages, chapterRef }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black',
+  },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: 'black',
   },
   spinner: {
     flex: 1,
+  },
+  chapterImage: {
+    width: windowWidth,
+    height: windowHeight,
+    resizeMode: 'contain',
+    backgroundColor: 'black',
+  },
+  paginationStyle: {
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+  },
+  paginationText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 
 const mapStateToProps = (state) => {
   return {
-    chapterImages: getChapterByRef(state, state.chapters.currentChapterRef),
     isFetching: getChaptersFetchState(state),
-    chapterRef: getCurrentChapterRef(state),
+    currentChapterRef: getCurrentChapterRef(state),
+    currentChapterIndex: getCurrentChapterRefIndex(state),
+    chaptersByChapterRef: getChaptersByChapterRef(state),
+    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
   };
 };
 
-export default connect(mapStateToProps)(MangaViewerScreen);
+export default connect(mapStateToProps, {
+  fetchChapterIfNeeded,
+  saveChapterReadIfNeeded,
+})(MangaViewerScreen);

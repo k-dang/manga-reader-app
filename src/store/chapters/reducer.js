@@ -3,6 +3,8 @@ import {
   FETCH_CHAPTER_SUCCESS,
   FETCH_CHAPTER_FAILURE,
   VIEW_CHAPTER,
+  LOAD_CHAPTER_UPDATES,
+  SET_CHAPTER_UPDATE,
 } from './constants';
 
 // chaptersByChapterRefs is dictionary of
@@ -15,6 +17,7 @@ const initialState = {
   currentChapterRef: '',
   currentChapterRefIndex: 0,
   chaptersByChapterRefs: {},
+  chapterUpdatesByMangaId: {},
 };
 const chapters = (state = initialState, action) => {
   switch (action.type) {
@@ -50,8 +53,26 @@ const chapters = (state = initialState, action) => {
       const { chapterRef, chapterRefIndex } = action.payload;
       return {
         ...state,
+        error: null,
         currentChapterRef: chapterRef,
         currentChapterRefIndex: chapterRefIndex,
+      };
+    }
+    case LOAD_CHAPTER_UPDATES: {
+      const { chapterUpdatesByMangaId } = action.payload;
+      return {
+        ...state,
+        chapterUpdatesByMangaId,
+      };
+    }
+    case SET_CHAPTER_UPDATE: {
+      const { mangaId, chapterUpdates } = action.payload;
+      return {
+        ...state,
+        chapterUpdatesByMangaId: {
+          ...state.chapterUpdatesByMangaId,
+          [mangaId]: chapterUpdates,
+        },
       };
     }
     default:

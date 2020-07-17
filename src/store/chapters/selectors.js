@@ -6,13 +6,14 @@ export const getChaptersFetchState = (store) =>
 export const getChaptersError = (store) =>
   getChaptersState(store) ? getChaptersState(store).error : null;
 
-export const getChapterByRef = (store, chapterRef) =>
-  getChaptersState(store)
-    ? getChaptersState(store).chaptersByChapterRefs[chapterRef]
-    : {};
+export const getChaptersByChapterRef = (store) =>
+  getChaptersState(store) ? getChaptersState(store).chaptersByChapterRefs : {};
 
 export const getCurrentChapterRefIndex = (store) =>
   getChaptersState(store) ? getChaptersState(store).currentChapterRefIndex : 0;
 
 export const getCurrentChapterRef = (store) =>
   getChaptersState(store) ? getChaptersState(store).currentChapterRef : '';
+
+export const getChapterTotals = (store) =>
+  getChaptersState(store) ? getChaptersState(store).chapterUpdatesByMangaId : {};

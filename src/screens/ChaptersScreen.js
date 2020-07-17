@@ -1,22 +1,43 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { connect } from 'react-redux';
-import { FlatList } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+} from 'react-native';
 import Ripple from 'react-native-material-ripple';
-import { getMangaByTitle, getSelectedManga } from '../store/select/selectors';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { reverseChapters } from '../store/select/actions';
+import { debounce } from 'lodash';
+import { Overlay } from 'react-native-elements';
+
+// store
+import { connect } from 'react-redux';
+import { getMangaById } from '../store/select/selectors';
+import {
+  reverseChapters,
+  saveChapterReadIfNeeded,
+  saveChaptersRead,
+} from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
+const windowWidth = Dimensions.get('window').width;
+
 const ChaptersScreen = ({
-  selectedManga,
   selectedMangaDetail,
   reverseChapters,
   fetchChapterIfNeeded,
+  saveChapterReadIfNeeded,
+  saveChaptersRead,
   navigation,
 }) => {
+  const [visible, setVisible] = useState(false);
+  const [heldIndex, setHeldIndex] = useState(0);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -28,12 +49,22 @@ const ChaptersScreen = ({
   });
 
   const toggleSort = () => {
-    reverseChapters(selectedManga);
+    reverseChapters(selectedMangaDetail.mangaId);
   };
 
-  const handleMangaViewerNavigation = (chapterRef, index) => {
-    fetchChapterIfNeeded(chapterRef, index);
-    navigation.navigate('MangaViewer');
+  const handleMangaViewerNavigation = debounce(
+    (chapterRef, index) => {
+      saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index);
+      fetchChapterIfNeeded(chapterRef, index);
+      navigation.navigate('MangaViewer');
+    },
+    1000,
+    { leading: true, trailing: false }
+  );
+
+  const markReadBelow = () => {
+    saveChaptersRead(selectedMangaDetail.mangaId, heldIndex);
+    setVisible(false);
   };
 
   return (
@@ -45,13 +76,27 @@ const ChaptersScreen = ({
           return (
             <>
               <Ripple
-                onPress={() =>
-                  handleMangaViewerNavigation(item.chapterRef, index)
-                }
+                onPress={() => {
+                  handleMangaViewerNavigation(item.chapterRef, index);
+                }}
+                delayLongPress={500}
+                onLongPress={() => {
+                  setHeldIndex(index);
+                  setVisible(true);
+                }}
               >
                 <View style={styles.row}>
-                  <Text style={[styles.chapterTitle]}>{item.name}</Text>
-                  <Text style={[styles.date]}>
+                  <Text
+                    style={[
+                      styles.chapterTitle,
+                      item.hasRead ? styles.greyText : null,
+                    ]}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={[styles.date, item.hasRead ? styles.greyText : null]}
+                  >
                     {format(
                       parse(item.date, 'MMM dd,yyyy HH:mm', new Date()),
                       'MM/dd/yyyy'
@@ -64,6 +109,19 @@ const ChaptersScreen = ({
           );
         }}
       />
+      <Overlay
+        isVisible={visible}
+        onBackdropPress={() => setVisible(false)}
+        backdropStyle={styles.backdrop}
+        overlayStyle={styles.overlay}
+      >
+        <View style={styles.iconRow}>
+          <TouchableOpacity style={styles.icons} onPress={markReadBelow}>
+            <MaterialIcons name="playlist-add-check" size={28} color="black" />
+            <Text style={{ textAlign: 'center' }}>Below</Text>
+          </TouchableOpacity>
+        </View>
+      </Overlay>
     </View>
   );
 };
@@ -90,16 +148,35 @@ const styles = StyleSheet.create({
   headerRight: {
     marginRight: 24,
   },
+  greyText: {
+    color: 'darkgrey',
+  },
+  backdrop: {
+    backgroundColor: 'transparent',
+  },
+  overlay: {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 50,
+    width: windowWidth - 100,
+  },
+  iconRow: {
+    flexDirection: 'row',
+  },
+  icons: {
+    alignItems: 'center',
+  },
 });
 
 const mapStateToProps = (state) => {
   return {
-    selectedMangaDetail: getMangaByTitle(state, state.select.selectedManga),
-    selectedManga: getSelectedManga(state),
+    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
   };
 };
 
 export default connect(mapStateToProps, {
   reverseChapters,
   fetchChapterIfNeeded,
+  saveChapterReadIfNeeded,
+  saveChaptersRead,
 })(ChaptersScreen);
