@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Dimensions } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { searchManga } from '../store/search/actions';
@@ -18,7 +19,10 @@ const HeaderSearchBar = ({ searchTerm, searchManga }) => {
       onChangeText={(text) => setTerm(text)}
       onEndEditing={() => handleSearch()}
       platform="android"
-      inputContainerStyle={{ height: 30 }}
+      inputContainerStyle={{
+        height: 20,
+        width: Dimensions.get('window').width - 25,
+      }}
     />
   );
 };

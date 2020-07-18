@@ -94,7 +94,6 @@ const SettingsScreen = ({ saveAccount, userId }) => {
           <ListItem
             title="App theme"
             leftIcon={{ name: 'moon', type: 'feather', size: 26, color: color }}
-            bottomDivider
           />
         </Ripple>
         <Ripple
@@ -112,7 +111,6 @@ const SettingsScreen = ({ saveAccount, userId }) => {
               size: 26,
               color: color,
             }}
-            bottomDivider
           />
         </Ripple>
         <Ripple
@@ -128,7 +126,6 @@ const SettingsScreen = ({ saveAccount, userId }) => {
               size: 26,
               color: color,
             }}
-            bottomDivider
           />
         </Ripple>
         <Ripple
@@ -144,7 +141,6 @@ const SettingsScreen = ({ saveAccount, userId }) => {
               size: 26,
               color: color,
             }}
-            bottomDivider
           />
         </Ripple>
       </View>

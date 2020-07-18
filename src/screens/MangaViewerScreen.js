@@ -130,12 +130,15 @@ const MangaViewerScreen = ({
 
   return (
     <View style={styles.container}>
-      <GestureRecognizer
+      {/* <GestureRecognizer
         style={styles.container}
         onSwipeUp={() => {
           setVisible(true);
         }}
-      >
+        onSwipeRight={() => {
+          console.log('swiped right')
+        }}
+      > */}
         <Swiper
           key={currentChapterRef}
           renderPagination={renderPagination}
@@ -147,8 +150,8 @@ const MangaViewerScreen = ({
         >
           {renderImages()}
         </Swiper>
-      </GestureRecognizer>
-      <Overlay
+      {/* </GestureRecognizer> */}
+      {/* <Overlay
         overlayStyle={styles.overlay}
         isVisible={visible}
         onBackdropPress={() => setVisible(false)}
@@ -164,7 +167,7 @@ const MangaViewerScreen = ({
             <Text style={{ textAlign: 'center', color: 'white' }}>Back</Text>
           </TouchableOpacity>
         </View>
-      </Overlay>
+      </Overlay> */}
     </View>
   );
 };
