@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,9 +6,13 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import TransitionCard from '../components/TransitionCard';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import { Overlay } from 'react-native-elements';
+import { Feather } from '@expo/vector-icons';
 
 // store
 import { connect } from 'react-redux';
@@ -35,6 +39,8 @@ const MangaViewerScreen = ({
   saveChapterReadIfNeeded,
   navigation,
 }) => {
+  const [visible, setVisible] = useState(false);
+
   const renderImages = () => {
     const images = chaptersByChapterRef[currentChapterRef].map((element) => {
       return (
@@ -110,7 +116,11 @@ const MangaViewerScreen = ({
         const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
           (element) => element.chapterRef === selectedChapterRefObject.next
         );
-        saveChapterReadIfNeeded(selectedMangaDetail.mangaId, selectedChapterRefObject.next, nextIndex);
+        saveChapterReadIfNeeded(
+          selectedMangaDetail.mangaId,
+          selectedChapterRefObject.next,
+          nextIndex
+        );
         fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
       } else {
         navigation.goBack();
@@ -120,17 +130,41 @@ const MangaViewerScreen = ({
 
   return (
     <View style={styles.container}>
-      <Swiper
-        key={currentChapterRef}
-        renderPagination={renderPagination}
-        showsButtons={false}
-        loop={false}
-        loadMinimal={true}
-        loadMinimalSize={2}
-        onIndexChanged={handleSwipeIndexChange}
+      <GestureRecognizer
+        style={styles.container}
+        onSwipeUp={() => {
+          setVisible(true);
+        }}
       >
-        {renderImages()}
-      </Swiper>
+        <Swiper
+          key={currentChapterRef}
+          renderPagination={renderPagination}
+          showsButtons={false}
+          loop={false}
+          loadMinimal={true}
+          loadMinimalSize={2}
+          onIndexChanged={handleSwipeIndexChange}
+        >
+          {renderImages()}
+        </Swiper>
+      </GestureRecognizer>
+      <Overlay
+        overlayStyle={styles.overlay}
+        isVisible={visible}
+        onBackdropPress={() => setVisible(false)}
+      >
+        <View style={styles.iconRow}>
+          <TouchableOpacity
+            onPress={() => {
+              setVisible(false);
+              navigation.goBack();
+            }}
+          >
+            <Feather name="arrow-left-circle" size={36} color="white" />
+            <Text style={{ textAlign: 'center', color: 'white' }}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      </Overlay>
     </View>
   );
 };
@@ -161,6 +195,18 @@ const styles = StyleSheet.create({
   paginationText: {
     color: 'white',
     fontSize: 14,
+  },
+  overlay: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    bottom: 50,
+    elevation: 0,
+  },
+  iconRow: {
+    flexDirection: 'row',
+  },
+  icons: {
+    alignItems: 'center',
   },
 });
 

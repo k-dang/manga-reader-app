@@ -75,7 +75,7 @@ export default function App() {
               if (currentIndex == undefined) {
                 // hack for initial tab
                 return {
-                  title: 'Library'
+                  title: 'Library',
                 };
               }
 
