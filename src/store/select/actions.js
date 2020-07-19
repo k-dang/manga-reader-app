@@ -6,7 +6,9 @@ import {
   REVERSE_CHAPTERS,
   MARK_CHAPTER_READ,
   MARK_CHAPTERS_READ,
+  SELECT_MULTIPLE_MANGA_REQUEST,
   SELECT_MULTIPLE_MANGA_SUCCESS,
+  SELECT_MULTIPLE_MANGA_FAILURE,
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloSelect } from '../../services/parseSelect';
@@ -99,18 +101,25 @@ export const selectMangaFetchIfNeeded = (mangaId, mangaTitle) => {
   };
 };
 
-// TODO implement REQUEST, FAILURE
+const selectMultipleMangaRequest = () => ({
+  type: SELECT_MULTIPLE_MANGA_REQUEST,
+});
 
-const selectMultipleManga = (results) => ({
+const selectMultipleMangaSuccess = (results) => ({
   type: SELECT_MULTIPLE_MANGA_SUCCESS,
   payload: {
     results,
   },
 });
 
+const selectMultipleMangaFailure = () => ({
+  type: SELECT_MULTIPLE_MANGA_FAILURE,
+});
+
 // manga is an array
 export const selectMultipleMangaFetch = (manga) => {
   return async (dispatch) => {
+    dispatch(selectMultipleMangaRequest(mangaId));
     try {
       const requests = [];
       for (const m of manga) {
@@ -137,9 +146,10 @@ export const selectMultipleMangaFetch = (manga) => {
           parsedResults.push(parsedResult);
         }
       }
-      dispatch(selectMultipleManga(parsedResults));
+      dispatch(selectMultipleMangaSuccess(parsedResults));
     } catch (err) {
       console.log(err);
+      dispatch(selectMultipleMangaFailure());
     }
   };
 };
@@ -162,7 +172,7 @@ export const markChapterRead = (mangaId, chapterRefIndex) => ({
 const saveChapterRead = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
     try {
-      const value = await AsyncStorage.getItem(mangaId);
+      const value = await AsyncStorage.getItem('chapters');
       const chapterRefsToSave = value ? JSON.parse(value) : {};
       // TODO maybe save in a diff format if size becomes an issue
       chapterRefsToSave[chapterRef] = {
