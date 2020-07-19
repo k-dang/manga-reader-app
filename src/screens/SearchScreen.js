@@ -45,7 +45,10 @@ const SearchScreen = ({
     return <ErrorContainer errorMessage={errorMessage} />;
   }
 
-  const isResultsEmpty = searchResults.length == 0 && searchTerm != '';
+  if (searchResults.length == 0 && searchTerm != '') {
+    return <ErrorContainer errorMessage="No results found" />;
+  }
+
   const handleEndReached = () => {
     if (loadedPages < totalPages) {
       const pageToLoad = loadedPages + 1;
@@ -55,8 +58,8 @@ const SearchScreen = ({
 
   return (
     <>
-      {isResultsEmpty ? (
-        <ErrorContainer errorMessage="No results found" />
+      {searchResults.length === 0 ? (
+        <ErrorContainer errorMessage="Search for a manga" />
       ) : (
         <View style={container}>
           <MangaList
