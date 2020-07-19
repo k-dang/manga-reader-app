@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
-import MangaCover from '../components/MangaCover';
+import { StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MangaCover from '../components/MangaCover';
+
+// store
 import { connect } from 'react-redux';
 import { selectMangaFetchIfNeeded } from '../store/select/actions';
 

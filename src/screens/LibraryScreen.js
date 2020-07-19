@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
+
+// store
 import { connect } from 'react-redux';
 import {
   getMangaList,
   getLibraryLoadingStatus,
   getLoadError,
 } from '../store/library/selectors';
-import { getChapterTotals } from '../store/chapters/selectors';
-import { getUserId } from '../store/account/selectors';
 import { loadLibrary, loadLibraryAndSelect } from '../store/library/actions';
+import { getChapterTotals } from '../store/chapters/selectors';
 import { loadChapterTotalsAsyncStorage } from '../store/chapters/actions';
+import { getUserId } from '../store/account/selectors';
 
 const LibraryScreen = ({
   navigation,
@@ -29,6 +32,8 @@ const LibraryScreen = ({
     // loadLibraryAndSelect(userId);
   }, [userId]);
   const [refreshing, setRefreshing] = useState(false);
+  const { dark, colors } = useTheme();
+
   if (status === 'idle' || status === 'pending') {
     return (
       <View style={styles.container}>
@@ -45,6 +50,10 @@ const LibraryScreen = ({
     return <ErrorContainer errorMessage={loadError} />;
   }
 
+  if (status === 'resolved' && mangaList.length === 0) {
+    return <ErrorContainer errorMessage="Library is empty" />;
+  }
+
   const mangaListWithUpdates = () => {
     return mangaList.map((manga) => {
       manga.updates = chapterTotals[manga.id];
@@ -53,7 +62,7 @@ const LibraryScreen = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <MangaList
         results={mangaListWithUpdates()}
         // refreshing={refreshing}
@@ -69,7 +78,6 @@ const LibraryScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   spinner: {
     flex: 1,

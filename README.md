@@ -1,8 +1,16 @@
 # manga-reader-app
 
-TODO
-test on ios
-pull refresh on library
+Image here?
+
+Start expo by running
+
+```bash
+yarn start
+```
+
+working on
 dark mode
 
-make error screens cute
+TODO
+pull refresh on library
+image zooming

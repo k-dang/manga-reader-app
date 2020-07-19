@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
 
@@ -25,9 +26,12 @@ const SearchScreen = ({
   searchMangaPaginated,
   searchManga,
 }) => {
+  const { colors } = useTheme();
+  const container = [styles.container, { backgroundColor: colors.background }];
+
   if (isFetching) {
     return (
-      <View style={styles.container}>
+      <View style={container}>
         <ActivityIndicator
           style={styles.spinner}
           size="large"
@@ -54,7 +58,7 @@ const SearchScreen = ({
       {isResultsEmpty ? (
         <ErrorContainer errorMessage="No results found" />
       ) : (
-        <View style={styles.container}>
+        <View style={container}>
           <MangaList
             results={searchResults}
             onEndReached={handleEndReached}
@@ -72,7 +76,6 @@ const SearchScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   spinner: {
     flex: 1,

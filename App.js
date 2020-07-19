@@ -1,9 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
+import CustomNavigationContainer from './src/navigation/CustomNavigationContainer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 // screens
 import LibraryScreen from './src/screens/LibraryScreen';
@@ -12,6 +12,7 @@ import SettingsScreen from './src/screens/SettingsScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import InfoScreen from './src/screens/InfoScreen';
 import ChaptersScreen from './src/screens/ChaptersScreen';
+import AdvancedScreen from './src/screens/AdvancedScreen';
 
 // components
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -23,16 +24,21 @@ import store from './src/store';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function TabsScreen() {
+const TabsScreen = () => {
+  const { colors } = useTheme();
   return (
     <Tab.Navigator
+      tabBarOptions={{
+        inactiveTintColor: '#7F7F80',
+        activeTintColor: colors.text,
+      }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           switch (route.name) {
             case 'Library':
-              iconName = focused ? 'book' : 'book-outline';
+              iconName = 'book-variant-multiple';
               break;
             case 'Search':
               iconName = 'magnify';
@@ -54,7 +60,7 @@ function TabsScreen() {
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
-}
+};
 
 const forFade = ({ current, closing }) => ({
   cardStyle: {
@@ -62,10 +68,10 @@ const forFade = ({ current, closing }) => ({
   },
 });
 
-export default function App() {
+const App = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <CustomNavigationContainer>
         <Stack.Navigator initialRouteName="Tabs">
           <Stack.Screen
             name="Tabs"
@@ -104,8 +110,11 @@ export default function App() {
           />
           <Stack.Screen name="Info" component={InfoScreen} />
           <Stack.Screen name="Chapters" component={ChaptersScreen} />
+          <Stack.Screen name="Advanced" component={AdvancedScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </CustomNavigationContainer>
     </Provider>
   );
-}
+};
+
+export default App;

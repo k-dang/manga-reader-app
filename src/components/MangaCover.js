@@ -1,12 +1,18 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { Badge } from 'react-native-elements';
 
 const MangaCover = ({ mangaItem }) => {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.cover}>
       <Image source={{ uri: mangaItem.imageUrl }} style={styles.image} />
-      <Text numberOfLines={2} style={styles.titleText}>
+      <Text
+        numberOfLines={2}
+        style={[styles.titleText, { color: colors.text }]}
+      >
         {mangaItem.title}
       </Text>
       {mangaItem.updates ? (

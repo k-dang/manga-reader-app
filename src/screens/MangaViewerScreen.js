@@ -13,6 +13,7 @@ import TransitionCard from '../components/TransitionCard';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { Overlay } from 'react-native-elements';
 import { Feather } from '@expo/vector-icons';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 // store
 import { connect } from 'react-redux';

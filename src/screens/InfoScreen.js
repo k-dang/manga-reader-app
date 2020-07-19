@@ -10,11 +10,10 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import ErrorContainer from '../components/ErrorContainer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-root-toast';
-import isBefore from 'date-fns/isBefore';
-import parse from 'date-fns/parse';
 
 // store
 import { connect } from 'react-redux';
@@ -47,8 +46,10 @@ const InfoScreen = ({
     });
   }, [selectedMangaDetail.mangaTitle]);
   const [favourite, setFavourite] = useState(libraryManga != undefined);
+  const { colors } = useTheme();
+
   const favouriteIconName = favourite ? 'heart' : 'heart-outline';
-  const iconColor = 'black';
+
   const toggleFavourite = () => {
     setFavourite(!favourite);
     if (!favourite) {
@@ -127,7 +128,9 @@ const InfoScreen = ({
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <View>
         <Image
           source={{ uri: selectedMangaDetail.infoImageUrl }}
@@ -144,11 +147,10 @@ const InfoScreen = ({
             <MaterialCommunityIcons
               name="play-outline"
               size={36}
-              color={iconColor}
+              color={colors.text}
             />
-            <Text style={{ color: iconColor }}>Read</Text>
+            <Text style={{ color: colors.text }}>Read</Text>
           </TouchableOpacity>
-          <View style={styles.divider} />
           <TouchableOpacity
             style={styles.icons}
             onPress={handleChapterListNavigation}
@@ -156,22 +158,23 @@ const InfoScreen = ({
             <MaterialCommunityIcons
               name="format-list-bulleted"
               size={36}
-              color={iconColor}
+              color={colors.text}
             />
-            <Text style={{ color: iconColor }}>Chapters</Text>
+            <Text style={{ color: colors.text }}>Chapters</Text>
           </TouchableOpacity>
-          <View style={styles.divider} />
           <TouchableOpacity style={styles.icons} onPress={toggleFavourite}>
             <MaterialCommunityIcons
               name={favouriteIconName}
               size={36}
-              color={iconColor}
+              color={colors.text}
             />
-            <Text style={{ color: iconColor }}>Favourite</Text>
+            <Text style={{ color: colors.text }}>Favourite</Text>
           </TouchableOpacity>
         </View>
         <Text style={[styles.textBold]}>About</Text>
-        <Text>{selectedMangaDetail.cleanedDescription}</Text>
+        <Text style={{ color: colors.text }}>
+          {selectedMangaDetail.cleanedDescription}
+        </Text>
       </View>
     </ScrollView>
   );
@@ -180,7 +183,6 @@ const InfoScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   spinner: {
     flex: 1,
@@ -212,11 +214,6 @@ const styles = StyleSheet.create({
   },
   icons: {
     alignItems: 'center',
-  },
-  divider: {
-    borderLeftWidth: 2,
-    borderLeftColor: 'whitesmoke',
-    borderRadius: 8,
   },
   textBold: {
     fontWeight: 'bold',

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "manga-reader-app",
+    "name": "Manga for Sarah",
     "slug": "manga-reader-app",
     "platforms": [
       "ios",
@@ -9,9 +9,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/scaredy_cat_192.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/SplashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -7,13 +7,14 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import Ripple from 'react-native-material-ripple';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import { debounce } from 'lodash';
 import { Overlay } from 'react-native-elements';
+import ThemedView from '../components/ThemedView';
 
 // store
 import { connect } from 'react-redux';
@@ -37,7 +38,7 @@ const ChaptersScreen = ({
 }) => {
   const [visible, setVisible] = useState(false);
   const [heldIndex, setHeldIndex] = useState(0);
-
+  const { colors } = useTheme();
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -68,7 +69,7 @@ const ChaptersScreen = ({
   };
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <FlatList
         data={selectedMangaDetail.chapterRefs}
         keyExtractor={(chapter) => chapter.chapterRef}
@@ -79,6 +80,8 @@ const ChaptersScreen = ({
                 onPress={() => {
                   handleMangaViewerNavigation(item.chapterRef, index);
                 }}
+                rippleColor="rgb(211,211,211)"
+                rippleOpacity={1}
                 delayLongPress={500}
                 onLongPress={() => {
                   setHeldIndex(index);
@@ -89,13 +92,18 @@ const ChaptersScreen = ({
                   <Text
                     style={[
                       styles.chapterTitle,
+                      { color: colors.text },
                       item.hasRead ? styles.greyText : null,
                     ]}
                   >
                     {item.name}
                   </Text>
                   <Text
-                    style={[styles.date, item.hasRead ? styles.greyText : null]}
+                    style={[
+                      styles.date,
+                      { color: colors.text },
+                      item.hasRead ? styles.greyText : null,
+                    ]}
                   >
                     {format(
                       parse(item.date, 'MMM dd,yyyy HH:mm', new Date()),
@@ -104,7 +112,6 @@ const ChaptersScreen = ({
                   </Text>
                 </View>
               </Ripple>
-              <View style={styles.seperator}></View>
             </>
           );
         }}
@@ -122,22 +129,17 @@ const ChaptersScreen = ({
           </TouchableOpacity>
         </View>
       </Overlay>
-    </View>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   row: {
     paddingVertical: 15,
     paddingHorizontal: 10,
-  },
-  seperator: {
-    borderColor: 'lightgrey',
-    borderTopWidth: 1,
   },
   chapterTitle: {
     marginBottom: 5,
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
   },
   greyText: {
-    color: 'darkgrey',
+    color: 'rgba(169,169,169, 0.5)',
   },
   backdrop: {
     backgroundColor: 'transparent',
