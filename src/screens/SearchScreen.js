@@ -59,7 +59,7 @@ const SearchScreen = ({
   return (
     <>
       {searchResults.length === 0 ? (
-        <ErrorContainer errorMessage="Search for a manga" />
+        <ErrorContainer errorMessage="search for a manga" />
       ) : (
         <View style={container}>
           <MangaList

@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: 175,
+    width: 170,
     height: 250,
     borderRadius: 10,
   },
   titleText: {
     fontWeight: '600',
-    width: 175,
+    width: 170,
   },
 });
 

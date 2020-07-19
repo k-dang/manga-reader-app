@@ -29,7 +29,6 @@ const HeaderSearchBar = ({ searchTerm, searchManga }) => {
       }}
       inputStyle={{
         color: colors.text,
-        backgroundColor: colors.background,
       }}
       placeholderTextColor="#9a9a9a"
       containerStyle={{

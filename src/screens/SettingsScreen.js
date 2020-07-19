@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, FlatList, StatusBar,Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
@@ -21,7 +21,10 @@ const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
   const handleToggleTheme = () => {
     toggleTheme();
     // take theme state before update
-    StatusBar.setBackgroundColor(!dark ? 'black' : 'white');
+    // only on android
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor(!dark ? 'black' : 'white');
+    }
     StatusBar.setBarStyle(!dark ? 'light-content' : 'dark-content');
   };
 

@@ -4,6 +4,7 @@ export const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
+    card: 'black'
   },
 };
 
