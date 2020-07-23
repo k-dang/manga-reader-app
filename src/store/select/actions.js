@@ -172,7 +172,7 @@ export const markChapterRead = (mangaId, chapterRefIndex) => ({
 const saveChapterRead = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
     try {
-      const value = await AsyncStorage.getItem('chapters');
+      const value = await AsyncStorage.getItem(mangaId);
       const chapterRefsToSave = value ? JSON.parse(value) : {};
       // TODO maybe save in a diff format if size becomes an issue
       chapterRefsToSave[chapterRef] = {

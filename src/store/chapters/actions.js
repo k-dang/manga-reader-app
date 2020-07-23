@@ -90,7 +90,7 @@ export const loadChapterTotalsAsyncStorage = () => {
       const readTotal = Object.keys(value).length - 1;
       chapterUpdatesByMangaId[key] = value.totalChapters - readTotal;
     }
-    delete chapterUpdatesByMangaId['userId'];
+
     dispatch(loadChapterTotals(chapterUpdatesByMangaId));
   };
 };
