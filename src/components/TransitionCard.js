@@ -1,15 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 const TransitionCard = ({ finishedChapterName, nextChapterName }) => {
+  const { colors } = useTheme();
+  const textStyles = [styles.transitionText, { color: colors.text }];
   return (
-    <View style={styles.transitionCard}>
-      <Text style={styles.transitionText}>Finished:</Text>
-      <Text style={styles.transitionText}>{finishedChapterName}</Text>
+    <View
+      style={[styles.transitionCard, { backgroundColor: colors.background }]}
+    >
+      <Text style={textStyles}>Finished:</Text>
+      <Text style={textStyles}>{finishedChapterName}</Text>
       {nextChapterName ? (
         <>
-          <Text style={styles.transitionText}>Next:</Text>
-          <Text style={styles.transitionText}>{nextChapterName}</Text>
+          <Text style={textStyles}>Next:</Text>
+          <Text style={textStyles}>{nextChapterName}</Text>
         </>
       ) : null}
     </View>
@@ -18,7 +23,6 @@ const TransitionCard = ({ finishedChapterName, nextChapterName }) => {
 
 const styles = StyleSheet.create({
   transitionCard: {
-    backgroundColor: '#fff',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

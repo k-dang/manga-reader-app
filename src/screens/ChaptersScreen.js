@@ -43,7 +43,11 @@ const ChaptersScreen = ({
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={toggleSort}>
-          <MaterialCommunityIcons name="sort-numeric" size={24} color="black" />
+          <MaterialCommunityIcons
+            name="sort-numeric"
+            size={24}
+            color={colors.text}
+          />
         </TouchableOpacity>
       ),
     });

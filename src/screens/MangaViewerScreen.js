@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,14 +6,13 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
-  TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import TransitionCard from '../components/TransitionCard';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { Overlay } from 'react-native-elements';
 import { Feather } from '@expo/vector-icons';
-import ImageZoom from 'react-native-image-pan-zoom';
 
 // store
 import { connect } from 'react-redux';
@@ -40,8 +39,13 @@ const MangaViewerScreen = ({
   saveChapterReadIfNeeded,
   navigation,
 }) => {
-  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    StatusBar.setHidden(true);
 
+    return () => {
+      StatusBar.setHidden(false);
+    };
+  }, []);
   const renderImages = () => {
     const images = chaptersByChapterRef[currentChapterRef].map((element) => {
       return (
@@ -53,7 +57,7 @@ const MangaViewerScreen = ({
               Referer: `https://manganelo.com/chapter${currentChapterRef}`,
             },
           }}
-          style={styles.chapterImage}
+          style={[styles.chapterImage]}
           onError={(err) => {
             console.log(err.nativeEvent);
           }}
@@ -131,27 +135,17 @@ const MangaViewerScreen = ({
 
   return (
     <View style={styles.container}>
-      {/* <GestureRecognizer
-        style={styles.container}
-        onSwipeUp={() => {
-          setVisible(true);
-        }}
-        onSwipeRight={() => {
-          console.log('swiped right')
-        }}
-      > */}
-        <Swiper
-          key={currentChapterRef}
-          renderPagination={renderPagination}
-          showsButtons={false}
-          loop={false}
-          loadMinimal={true}
-          loadMinimalSize={2}
-          onIndexChanged={handleSwipeIndexChange}
-        >
-          {renderImages()}
-        </Swiper>
-      {/* </GestureRecognizer> */}
+      <Swiper
+        key={currentChapterRef}
+        renderPagination={renderPagination}
+        showsButtons={false}
+        loop={false}
+        loadMinimal={true}
+        loadMinimalSize={2}
+        onIndexChanged={handleSwipeIndexChange}
+      >
+        {renderImages()}
+      </Swiper>
       {/* <Overlay
         overlayStyle={styles.overlay}
         isVisible={visible}

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, StatusBar,Platform } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  StatusBar,
+  Platform,
+} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
