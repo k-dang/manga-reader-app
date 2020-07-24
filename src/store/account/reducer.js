@@ -1,4 +1,9 @@
-import { SET_ACCOUNT, SET_THEME, DEFAULT } from './constants';
+import {
+  SET_ACCOUNT,
+  SET_THEME,
+  DEFAULT,
+  LOAD_ACCOUNT_DATA,
+} from './constants';
 
 const initialState = {
   userId: '1',
@@ -18,6 +23,14 @@ const account = (state = initialState, action) => {
       return {
         ...state,
         theme,
+      };
+    }
+    case LOAD_ACCOUNT_DATA: {
+      const { userId, theme } = action.payload;
+      return {
+        ...state,
+        userId: userId ? userId : state.userId,
+        theme: theme ? theme : state.theme,
       };
     }
     default:

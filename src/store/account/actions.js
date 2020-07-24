@@ -1,5 +1,13 @@
-import { SET_ACCOUNT, SET_THEME, DEFAULT, DARK } from './constants';
+import {
+  SET_ACCOUNT,
+  SET_THEME,
+  DEFAULT,
+  DARK,
+  LOAD_ACCOUNT_DATA,
+} from './constants';
 import AsyncStorage from '@react-native-community/async-storage';
+import { loadLibrary } from '../library/actions';
+import { loadChapterTotalsAsyncStorage } from '../chapters/actions';
 
 export const setAccount = (userId) => ({
   type: SET_ACCOUNT,
@@ -44,5 +52,34 @@ export const toggleTheme = () => {
     } catch (e) {
       console.log(e);
     }
+  };
+};
+
+const loadAccountData = (userId, theme) => ({
+  type: LOAD_ACCOUNT_DATA,
+  payload: { userId, theme },
+});
+
+export const loadAccountDataAsyncStorage = () => {
+  return async (dispatch) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const theme = await AsyncStorage.getItem('theme');
+
+      dispatch(loadAccountData(userId, theme));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const loadAllData = () => {
+  return async (dispatch) => {
+    const userId = await AsyncStorage.getItem('userId');
+    const theme = await AsyncStorage.getItem('theme');
+
+    await dispatch(loadAccountData(userId, theme));
+    await dispatch(loadLibrary(userId));
+    await dispatch(loadChapterTotalsAsyncStorage());
   };
 };

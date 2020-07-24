@@ -40,10 +40,10 @@ const MangaViewerScreen = ({
   navigation,
 }) => {
   useEffect(() => {
-    StatusBar.setHidden(true);
+    StatusBar.setBarStyle('dark-content');
 
     return () => {
-      StatusBar.setHidden(false);
+      StatusBar.setBarStyle('light-content');
     };
   }, []);
   const renderImages = () => {
@@ -133,16 +133,34 @@ const MangaViewerScreen = ({
     }
   };
 
+  const renderNextButton = () => {
+    return (
+      <View style={styles.nextButton}>
+        <Text></Text>
+      </View>
+    );
+  };
+
+  const renderPrevButton = () => {
+    return (
+      <View style={styles.nextButton}>
+        <Text></Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Swiper
         key={currentChapterRef}
         renderPagination={renderPagination}
-        showsButtons={false}
+        showsButtons={true}
         loop={false}
         loadMinimal={true}
         loadMinimalSize={2}
         onIndexChanged={handleSwipeIndexChange}
+        nextButton={renderNextButton()}
+        prevButton={renderPrevButton()}
       >
         {renderImages()}
       </Swiper>
@@ -205,6 +223,10 @@ const styles = StyleSheet.create({
   },
   icons: {
     alignItems: 'center',
+  },
+  nextButton: {
+    width: 40,
+    height: windowHeight,
   },
 });
 

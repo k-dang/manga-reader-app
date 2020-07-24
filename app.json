@@ -22,7 +22,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.kdang12.manga-reader-app"
     }
   }
 }

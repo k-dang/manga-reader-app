@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
 
@@ -11,24 +11,21 @@ import {
   getLibraryLoadingStatus,
   getLoadError,
 } from '../store/library/selectors';
-import { loadLibrary, loadLibraryAndSelect } from '../store/library/actions';
+import { loadLibraryAndSelect } from '../store/library/actions';
 import { getChapterTotals } from '../store/chapters/selectors';
-import { loadChapterTotalsAsyncStorage } from '../store/chapters/actions';
 import { getUserId } from '../store/account/selectors';
+import { loadAllData } from '../store/account/actions';
 
 const LibraryScreen = ({
-  navigation,
   mangaList,
   status,
   userId,
-  loadLibrary,
   loadError,
-  loadChapterTotalsAsyncStorage,
   chapterTotals,
+  loadAllData,
 }) => {
   useEffect(() => {
-    loadChapterTotalsAsyncStorage();
-    loadLibrary(userId);
+    loadAllData();
     // loadLibraryAndSelect(userId);
   }, [userId]);
   const [refreshing, setRefreshing] = useState(false);
@@ -63,6 +60,10 @@ const LibraryScreen = ({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        backgroundColor={dark ? 'black' : 'white'}
+        barStyle={dark ? 'light-content' : 'dark-content'}
+      />
       <MangaList
         results={mangaListWithUpdates()}
         // refreshing={refreshing}
@@ -95,6 +96,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  loadLibrary,
-  loadChapterTotalsAsyncStorage,
+  loadAllData,
 })(LibraryScreen);
