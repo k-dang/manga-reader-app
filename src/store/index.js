@@ -7,6 +7,13 @@ import account from './account/reducer';
 import library from './library/reducer';
 import logger from 'redux-logger';
 
+const middlewares = [];
+middlewares.push(thunkMiddleware);
+
+if (process.env.NODE_ENV === `development`) {
+  middlewares.push(logger);
+}
+
 const rootReducer = combineReducers({
   search,
   select,
@@ -15,7 +22,4 @@ const rootReducer = combineReducers({
   library,
 });
 
-export default createStore(
-  rootReducer,
-  applyMiddleware(thunkMiddleware, logger)
-);
+export default createStore(rootReducer, applyMiddleware(...middlewares));

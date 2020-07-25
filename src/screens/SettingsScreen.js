@@ -10,8 +10,6 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
-import AsyncStorage from '@react-native-community/async-storage';
-import ThemedView from '../components/ThemedView';
 import { userProfiles } from '../services/userProfiles';
 
 // store
