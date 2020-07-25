@@ -60,26 +60,17 @@ const loadAccountData = (userId, theme) => ({
   payload: { userId, theme },
 });
 
-export const loadAccountDataAsyncStorage = () => {
+export const loadAllData = (userId) => {
   return async (dispatch) => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
+      // const userId = await AsyncStorage.getItem('userId');
       const theme = await AsyncStorage.getItem('theme');
-
-      dispatch(loadAccountData(userId, theme));
+  
+      await dispatch(loadAccountData(userId, theme));
+      await dispatch(loadLibrary(userId));
+      await dispatch(loadChapterTotalsAsyncStorage());
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
-};
-
-export const loadAllData = () => {
-  return async (dispatch) => {
-    const userId = await AsyncStorage.getItem('userId');
-    const theme = await AsyncStorage.getItem('theme');
-
-    await dispatch(loadAccountData(userId, theme));
-    await dispatch(loadLibrary(userId));
-    await dispatch(loadChapterTotalsAsyncStorage());
   };
 };

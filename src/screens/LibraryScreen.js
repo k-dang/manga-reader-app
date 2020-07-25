@@ -25,7 +25,7 @@ const LibraryScreen = ({
   loadAllData,
 }) => {
   useEffect(() => {
-    loadAllData();
+    loadAllData(userId);
     // loadLibraryAndSelect(userId);
   }, [userId]);
   const [refreshing, setRefreshing] = useState(false);
