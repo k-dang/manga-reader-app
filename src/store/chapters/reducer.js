@@ -5,12 +5,16 @@ import {
   VIEW_CHAPTER,
   LOAD_CHAPTER_UPDATES,
   SET_CHAPTER_UPDATE,
+  SET_MULTIPLE_CHAPTER_UPDATE,
 } from './constants';
 
 // chaptersByChapterRefs is dictionary of
 // chapterRef: [{
 //   url: ''
 // }]
+
+// chapterUpdatesByMangaId is dictionary of
+// mangaId: number
 const initialState = {
   isFetching: false,
   error: null,
@@ -73,6 +77,13 @@ const chapters = (state = initialState, action) => {
           ...state.chapterUpdatesByMangaId,
           [mangaId]: chapterUpdates,
         },
+      };
+    }
+    case SET_MULTIPLE_CHAPTER_UPDATE: {
+      const { chapterUpdatesByMangaId } = action.payload;
+      return {
+        ...state,
+        chapterUpdatesByMangaId,
       };
     }
     default:

@@ -1,66 +1,23 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { useTheme } from '@react-navigation/native';
 import CustomNavigationContainer from './src/navigation/CustomNavigationContainer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // screens
-import LibraryScreen from './src/screens/LibraryScreen';
 import MangaViewerScreen from './src/screens/MangaViewerScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
-import SearchScreen from './src/screens/SearchScreen';
 import InfoScreen from './src/screens/InfoScreen';
 import ChaptersScreen from './src/screens/ChaptersScreen';
 import AdvancedScreen from './src/screens/AdvancedScreen';
+import TabScreen from './src/screens/TabScreen';
 
 // components
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import HeaderSearchBar from './src/components/HeaderSearchBar';
+import HeaderRight from './src/components/HeaderRight';
 
 // store
 import store from './src/store';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-const TabsScreen = () => {
-  const { colors } = useTheme();
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        inactiveTintColor: '#7F7F80',
-        activeTintColor: colors.text,
-      }}
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          switch (route.name) {
-            case 'Library':
-              iconName = 'book-variant-multiple';
-              break;
-            case 'Search':
-              iconName = 'magnify';
-              break;
-            case 'Settings':
-              iconName = focused ? 'settings' : 'settings-outline';
-              break;
-          }
-
-          return (
-            <MaterialCommunityIcons name={iconName} size={size} color={color} />
-          );
-        },
-      })}
-      initialRouteName="Library"
-    >
-      <Tab.Screen name="Library" component={LibraryScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  );
-};
 
 const forFade = ({ current, closing }) => ({
   cardStyle: {
@@ -75,13 +32,14 @@ const App = () => {
         <Stack.Navigator initialRouteName="Tabs">
           <Stack.Screen
             name="Tabs"
-            component={TabsScreen}
+            component={TabScreen}
             options={({ route }) => {
               const currentIndex = route?.state?.index;
               if (currentIndex == undefined) {
                 // hack for initial tab
                 return {
                   title: 'Library',
+                  headerRight: () => <HeaderRight />,
                 };
               }
 
@@ -89,6 +47,7 @@ const App = () => {
                 case 'Library':
                   return {
                     title: 'Library',
+                    headerRight: () => <HeaderRight />,
                   };
                 case 'Settings':
                   return {
@@ -96,9 +55,7 @@ const App = () => {
                   };
                 case 'Search':
                   return {
-                    headerTitle: () => {
-                      return <HeaderSearchBar />;
-                    },
+                    headerTitle: () => <HeaderSearchBar />,
                   };
               }
             }}

@@ -13,7 +13,11 @@ import {
 import manganelo from '../../api/mangangelo';
 import { parseManganeloSelect } from '../../services/parseSelect';
 import AsyncStorage from '@react-native-community/async-storage';
-import { decrementChapterUpdate, syncChapterUpdate } from '../chapters/actions';
+import {
+  decrementChapterUpdate,
+  syncChapterUpdate,
+  syncAllChapterUpdates,
+} from '../chapters/actions';
 
 export const selectMangaRequest = (mangaId) => ({
   type: SELECT_MANGA_REQUEST,
@@ -116,10 +120,13 @@ const selectMultipleMangaFailure = () => ({
   type: SELECT_MULTIPLE_MANGA_FAILURE,
 });
 
-// manga is an array
+/**
+ *
+ * @param {array} manga - list of manga objects
+ */
 export const selectMultipleMangaFetch = (manga) => {
   return async (dispatch) => {
-    dispatch(selectMultipleMangaRequest(mangaId));
+    dispatch(selectMultipleMangaRequest());
     try {
       const requests = [];
       for (const m of manga) {
@@ -147,6 +154,7 @@ export const selectMultipleMangaFetch = (manga) => {
         }
       }
       dispatch(selectMultipleMangaSuccess(parsedResults));
+      dispatch(syncAllChapterUpdates(parsedResults));
     } catch (err) {
       console.log(err);
       dispatch(selectMultipleMangaFailure());

@@ -5,10 +5,12 @@ import {
   VIEW_CHAPTER,
   LOAD_CHAPTER_UPDATES,
   SET_CHAPTER_UPDATE,
+  SET_MULTIPLE_CHAPTER_UPDATE,
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloChapter } from '../../services/parseChapter';
 import AsyncStorage from '@react-native-community/async-storage';
+import { updateTotalChaptersAsyncStorage } from '../../services/asyncStorageHelpers';
 
 export const fetchChapterRequest = (chapterRef, chapterRefIndex) => ({
   type: FETCH_CHAPTER_REQUEST,
@@ -117,11 +119,8 @@ export const syncChapterUpdate = (mangaId) => {
     if (getState().library.mangaById[mangaId]) {
       const mangaDetails = getState().select.mangaDetailsById[mangaId];
       const totalChapters = mangaDetails.chapterRefs.length;
-      const value = await AsyncStorage.getItem(mangaId);
-      const jsonValue = value ? JSON.parse(value) : {};
-      jsonValue.totalChapters = totalChapters;
-      await AsyncStorage.setItem(mangaId, JSON.stringify(jsonValue));
 
+      await updateTotalChaptersAsyncStorage(mangaId, totalChapters);
       const leftOver = mangaDetails.chapterRefs.reduce((total, chapterRef) => {
         if (!chapterRef.hasRead) {
           return total + 1;
@@ -131,5 +130,40 @@ export const syncChapterUpdate = (mangaId) => {
       }, 0);
       dispatch(setChapterUpdate(mangaId, leftOver));
     }
+  };
+};
+
+export const setMultipleChapterUpdate = (chapterUpdatesByMangaId) => ({
+  type: SET_MULTIPLE_CHAPTER_UPDATE,
+  payload: {
+    chapterUpdatesByMangaId,
+  },
+});
+
+/**
+ *
+ * @param {array} parsedResults - results of parsing list of mangaIds from source
+ */
+export const syncAllChapterUpdates = (parsedResults) => {
+  return async (dispatch, getState) => {
+    const chapterUpdates = {};
+    for (const result of parsedResults) {
+      await updateTotalChaptersAsyncStorage(
+        result.mangaId,
+        result.chapterRefs.length
+      );
+      const mangaDetails = getState().select.mangaDetailsById[result.mangaId];
+      const leftOver = mangaDetails.chapterRefs.reduce((total, chapterRef) => {
+        if (!chapterRef.hasRead) {
+          return total + 1;
+        } else {
+          return total;
+        }
+      }, 0);
+
+      chapterUpdates[result.mangaId] = leftOver;
+    }
+
+    dispatch(setMultipleChapterUpdate(chapterUpdates));
   };
 };
