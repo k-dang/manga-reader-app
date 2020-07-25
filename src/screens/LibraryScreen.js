@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
-import { StyleSheet, View, ActivityIndicator, StatusBar } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
 
@@ -60,10 +60,6 @@ const LibraryScreen = ({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar
-        backgroundColor={dark ? 'black' : 'white'}
-        barStyle={dark ? 'light-content' : 'dark-content'}
-      />
       <MangaList
         results={mangaListWithUpdates()}
         // refreshing={refreshing}

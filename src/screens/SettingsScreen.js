@@ -4,8 +4,6 @@ import {
   Text,
   View,
   FlatList,
-  StatusBar,
-  Platform,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
@@ -25,12 +23,6 @@ const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
 
   const handleToggleTheme = () => {
     toggleTheme();
-    // take theme state before update
-    // only on android
-    if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(!dark ? 'black' : 'white');
-    }
-    StatusBar.setBarStyle(!dark ? 'light-content' : 'dark-content');
   };
 
   return (
