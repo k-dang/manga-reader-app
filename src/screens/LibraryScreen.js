@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
@@ -29,13 +29,12 @@ const LibraryScreen = ({
   loadAllData,
   sortType,
   multiFetchStatus,
+  loadLibraryAndSelect
 }) => {
   useEffect(() => {
     loadAllData(userId);
-    // loadLibraryAndSelect(userId);
   }, [userId]);
-  const [refreshing, setRefreshing] = useState(false);
-  const { dark, colors } = useTheme();
+  const { colors } = useTheme();
 
   if (status === 'idle' || status === 'pending') {
     return (
@@ -81,27 +80,15 @@ const LibraryScreen = ({
     return mergedMangaList;
   };
 
-  // TODO pull to refresh
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <MangaList
         results={mangaListWithUpdates()}
-        // refreshing={refreshing}
-        // onRefresh={() => {
-        //   console.log('refresh');
-        //   setRefreshing(true);
-        // }}
+        refreshing={multiFetchStatus === 'pending'}
+        onRefresh={() => {
+          loadLibraryAndSelect(userId);
+        }}
       />
-      <Overlay
-        isVisible={multiFetchStatus === 'pending'}
-        overlayStyle={styles.overlay}
-      >
-        <ActivityIndicator
-          style={styles.overlapSpinner}
-          size="large"
-          color="#CCCCFF"
-        />
-      </Overlay>
     </View>
   );
 };
@@ -133,4 +120,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   loadAllData,
+  loadLibraryAndSelect
 })(LibraryScreen);
