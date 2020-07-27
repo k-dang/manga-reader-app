@@ -89,6 +89,7 @@ const HeaderRight = ({
             }}
             onPress={toggleUnreadSort}
           />
+          <ListItem />
         </View>
       </Overlay>
     </>
