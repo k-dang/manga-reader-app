@@ -8,7 +8,7 @@ import {
   MARK_CHAPTERS_READ,
   SELECT_MULTIPLE_MANGA_REQUEST,
   SELECT_MULTIPLE_MANGA_SUCCESS,
-  SELECT_MULTIPLE_MANGA_FAILURE
+  SELECT_MULTIPLE_MANGA_FAILURE,
 } from './constants';
 
 // mangaDetailsById is a dictionary of
@@ -26,7 +26,7 @@ import {
 //   }]
 // }
 const initialState = {
-  isFetching: false,
+  status: 'idle',
   error: null,
   selectedMangaId: '',
   mangaDetailsById: {},
@@ -37,7 +37,7 @@ const select = (state = initialState, action) => {
       const { mangaId } = action.payload;
       return {
         ...state,
-        isFetching: true,
+        status: 'pending',
         error: null,
         selectedMangaId: mangaId,
       };
@@ -46,7 +46,7 @@ const select = (state = initialState, action) => {
       const { mangaId, result } = action.payload;
       return {
         ...state,
-        isFetching: false,
+        status: 'resolved',
         mangaDetailsById: {
           ...state.mangaDetailsById,
           [mangaId]: { ...result, didInvalidate: false },
@@ -56,7 +56,7 @@ const select = (state = initialState, action) => {
     case SELECT_MANGA_FAILURE: {
       return {
         ...state,
-        isFetching: false,
+        status: 'rejected',
         error: 'Failed to select manga',
       };
     }
@@ -119,10 +119,17 @@ const select = (state = initialState, action) => {
         },
       };
     }
+    case SELECT_MULTIPLE_MANGA_REQUEST: {
+      return {
+        ...state,
+        status: 'pending',
+      };
+    }
     case SELECT_MULTIPLE_MANGA_SUCCESS: {
       const { results } = action.payload;
       return {
         ...state,
+        status: 'resolved',
         mangaDetailsById: results.reduce((map, obj) => {
           map[obj.mangaId] = { ...obj };
           return map;

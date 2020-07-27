@@ -35,7 +35,7 @@ const SearchScreen = ({
         <ActivityIndicator
           style={styles.spinner}
           size="large"
-          color="#0000ff"
+          color="#CCCCFF"
         />
       </View>
     );

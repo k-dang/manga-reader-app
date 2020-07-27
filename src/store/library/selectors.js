@@ -1,7 +1,7 @@
 export const getLibraryState = (store) => store.library;
 
 export const getLibraryLoadingStatus = (store) =>
-  getLibraryState(store) ? getLibraryState(store).status : false;
+  getLibraryState(store) ? getLibraryState(store).status : 'idle';
 
 export const getMangaList = (store) => {
   if (getLibraryState(store)) {

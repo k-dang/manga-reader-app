@@ -3,8 +3,8 @@ export const getSelectState = (store) => store.select;
 export const getSelectedMangaId = (store) =>
   getSelectState(store) ? getSelectState(store).selectedMangaId : '';
 
-export const getSelectFetchState = (store) =>
-  getSelectState(store) ? getSelectState(store).isFetching : false;
+export const getSelectFetchStatus = (store) =>
+  getSelectState(store) ? getSelectState(store).status : 'idle';
 
 export const getMangaById = (store, mangaId) =>
   getSelectState(store)

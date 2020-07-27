@@ -105,7 +105,7 @@ export const selectMangaFetchIfNeeded = (mangaId, mangaTitle) => {
   };
 };
 
-const selectMultipleMangaRequest = () => ({
+export const selectMultipleMangaRequest = () => ({
   type: SELECT_MULTIPLE_MANGA_REQUEST,
 });
 

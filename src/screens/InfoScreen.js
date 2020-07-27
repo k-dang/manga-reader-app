@@ -18,9 +18,9 @@ import Toast from 'react-native-root-toast';
 // store
 import { connect } from 'react-redux';
 import {
-  getSelectFetchState,
   getMangaById,
   getSelectError,
+  getSelectFetchStatus,
 } from '../store/select/selectors';
 import { saveToLibrary, removeFromLibrary } from '../store/library/actions';
 import { getUserId } from '../store/account/selectors';
@@ -29,7 +29,6 @@ import { saveChapterReadIfNeeded } from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
 const InfoScreen = ({
-  isFetching,
   selectedMangaDetail,
   error,
   navigation,
@@ -39,6 +38,7 @@ const InfoScreen = ({
   removeFromLibrary,
   saveChapterReadIfNeeded,
   fetchChapterIfNeeded,
+  status,
 }) => {
   useEffect(() => {
     navigation.setOptions({
@@ -111,19 +111,19 @@ const InfoScreen = ({
     navigation.navigate('MangaViewer');
   };
 
-  if (isFetching) {
+  if (status === 'idle' || status === 'pending') {
     return (
       <View style={styles.container}>
         <ActivityIndicator
           style={styles.spinner}
           size="large"
-          color="#0000ff"
+          color="#CCCCFF"
         />
       </View>
     );
   }
 
-  if (error) {
+  if (status === 'rejected' && error) {
     return <ErrorContainer errorMessage={error} />;
   }
 
@@ -222,11 +222,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isFetching: getSelectFetchState(state),
     selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
     error: getSelectError(state),
     userId: getUserId(state),
     libraryManga: getLibraryMangaById(state, state.select.selectedMangaId),
+    status: getSelectFetchStatus(state),
   };
 };
 
