@@ -8,6 +8,7 @@ import {
   REMOVE_FROM_LIBRARY_REQUEST,
   REMOVE_FROM_LIBRARY_SUCCESS,
   REMOVE_FROM_LIBRARY_FAILURE,
+  SET_SORT_TYPE,
 } from './constants';
 
 // mangaById is a dictionary of
@@ -23,6 +24,7 @@ const initialState = {
   loadError: null,
   removeFromError: null,
   mangaById: {},
+  sortType: '',
 };
 const library = (state = initialState, action) => {
   switch (action.type) {
@@ -105,6 +107,13 @@ const library = (state = initialState, action) => {
         ...state,
         status: 'rejected',
         removeFromError: 'Failed to remove from library',
+      };
+    }
+    case SET_SORT_TYPE: {
+      const { type } = action.payload;
+      return {
+        ...state,
+        sortType: type,
       };
     }
     default:

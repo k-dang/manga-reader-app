@@ -10,11 +10,13 @@ import {
   getMangaList,
   getLibraryLoadingStatus,
   getLoadError,
+  getSortType,
 } from '../store/library/selectors';
 import { loadLibraryAndSelect } from '../store/library/actions';
 import { getChapterTotals } from '../store/chapters/selectors';
 import { getUserId } from '../store/account/selectors';
 import { loadAllData } from '../store/account/actions';
+import { sort } from '../store/library/constants';
 
 const LibraryScreen = ({
   mangaList,
@@ -23,6 +25,7 @@ const LibraryScreen = ({
   loadError,
   chapterTotals,
   loadAllData,
+  sortType,
 }) => {
   useEffect(() => {
     loadAllData(userId);
@@ -52,10 +55,27 @@ const LibraryScreen = ({
   }
 
   const mangaListWithUpdates = () => {
-    return mangaList.map((manga) => {
+    const mergedMangaList = mangaList.map((manga) => {
       manga.updates = chapterTotals[manga.id];
       return manga;
     });
+
+    switch (sortType) {
+      case sort.UNREAD_DESC: {
+        mergedMangaList.sort((a, b) => {
+          return b.updates - a.updates;
+        });
+        break;
+      }
+      case sort.UNREAD_ASC: {
+        mergedMangaList.sort((a, b) => {
+          return a.updates - b.updates;
+        });
+        break;
+      }
+    }
+
+    return mergedMangaList;
   };
 
   return (
@@ -88,6 +108,7 @@ const mapStateToProps = (state) => {
     userId: getUserId(state),
     loadError: getLoadError(state),
     chapterTotals: getChapterTotals(state),
+    sortType: getSortType(state),
   };
 };
 

@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
@@ -62,7 +57,7 @@ const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
           }}
         />
       </View>
-      <View style={styles.settingsList}>
+      <View>
         <Ripple
           onPress={handleToggleTheme}
           rippleColor="rgb(211,211,211)"

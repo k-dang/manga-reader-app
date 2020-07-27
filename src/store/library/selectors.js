@@ -22,3 +22,6 @@ export const getLibraryMangaById = (store, mangaId) =>
 
 export const getLoadError = (store) =>
   getLibraryState(store) ? getLibraryState(store).loadError : null;
+
+export const getSortType = (store) =>
+  getLibraryState(store) ? getLibraryState(store).sortType : null;

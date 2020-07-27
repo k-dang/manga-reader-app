@@ -8,6 +8,7 @@ import {
   REMOVE_FROM_LIBRARY_REQUEST,
   REMOVE_FROM_LIBRARY_SUCCESS,
   REMOVE_FROM_LIBRARY_FAILURE,
+  SET_SORT_TYPE,
 } from './constants';
 import cloudfunction from '../../api/cloudfunction';
 import { selectMultipleMangaFetch } from '../select/actions';
@@ -115,3 +116,10 @@ export const removeFromLibrary = (userId, mangaId) => {
     }
   };
 };
+
+export const setSortType = (type) => ({
+  type: SET_SORT_TYPE,
+  payload: {
+    type,
+  },
+});
