@@ -3,6 +3,7 @@ import { useTheme } from '@react-navigation/native';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
+import { Overlay } from 'react-native-elements';
 
 // store
 import { connect } from 'react-redux';
@@ -17,6 +18,7 @@ import { getChapterTotals } from '../store/chapters/selectors';
 import { getUserId } from '../store/account/selectors';
 import { loadAllData } from '../store/account/actions';
 import { sort } from '../store/library/constants';
+import { getSelectFetchStatus } from '../store/select/selectors';
 
 const LibraryScreen = ({
   mangaList,
@@ -26,6 +28,7 @@ const LibraryScreen = ({
   chapterTotals,
   loadAllData,
   sortType,
+  multiFetchStatus,
 }) => {
   useEffect(() => {
     loadAllData(userId);
@@ -40,7 +43,7 @@ const LibraryScreen = ({
         <ActivityIndicator
           style={styles.spinner}
           size="large"
-          color="#0000ff"
+          color="#CCCCFF"
         />
       </View>
     );
@@ -78,6 +81,7 @@ const LibraryScreen = ({
     return mergedMangaList;
   };
 
+  // TODO pull to refresh
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <MangaList
@@ -88,6 +92,16 @@ const LibraryScreen = ({
         //   setRefreshing(true);
         // }}
       />
+      <Overlay
+        isVisible={multiFetchStatus === 'pending'}
+        overlayStyle={styles.overlay}
+      >
+        <ActivityIndicator
+          style={styles.overlapSpinner}
+          size="large"
+          color="#CCCCFF"
+        />
+      </Overlay>
     </View>
   );
 };
@@ -95,9 +109,13 @@ const LibraryScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
   },
   spinner: {
     flex: 1,
+  },
+  overlay: {
+    backgroundColor: 'transparent',
   },
 });
 
@@ -109,6 +127,7 @@ const mapStateToProps = (state) => {
     loadError: getLoadError(state),
     chapterTotals: getChapterTotals(state),
     sortType: getSortType(state),
+    multiFetchStatus: getSelectFetchStatus(state),
   };
 };
 

@@ -33,8 +33,7 @@ const HeaderRight = ({
     sortType === sort.UNREAD_DESC ? 'arrow-down' : 'arrow-up';
 
   const handleRefresh = () => {
-    // loadLibraryAndSelect(userId);
-    console.log('refresh');
+    loadLibraryAndSelect(userId);
   };
 
   const handleFilter = () => {
@@ -89,7 +88,7 @@ const HeaderRight = ({
             }}
             onPress={toggleUnreadSort}
           />
-          <ListItem />
+          <ListItem containerStyle={{ backgroundColor: colors.background }} />
         </View>
       </Overlay>
     </>
