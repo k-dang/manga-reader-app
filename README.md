@@ -1,5 +1,8 @@
 # manga-reader-app
 
+expo link:
+https://expo.io/@kdang12/manga-reader-app
+
 Image here?
 
 Start expo by running
@@ -8,9 +11,3 @@ Start expo by running
 yarn start
 ```
 
-working on
-dark mode
-
-TODO
-pull refresh on library
-image zooming
