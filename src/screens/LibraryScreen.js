@@ -29,7 +29,7 @@ const LibraryScreen = ({
   loadAllData,
   sortType,
   multiFetchStatus,
-  loadLibraryAndSelect
+  loadLibraryAndSelect,
 }) => {
   useEffect(() => {
     loadAllData(userId);
@@ -120,5 +120,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   loadAllData,
-  loadLibraryAndSelect
+  loadLibraryAndSelect,
 })(LibraryScreen);

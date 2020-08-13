@@ -9,6 +9,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Overlay, ListItem } from 'react-native-elements';
+import Toast from 'react-native-root-toast';
 
 // store
 import { connect } from 'react-redux';
@@ -33,6 +34,10 @@ const HeaderRight = ({
     sortType === sort.UNREAD_DESC ? 'arrow-down' : 'arrow-up';
 
   const handleRefresh = () => {
+    Toast.show('Updating Library', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.BOTTOM,
+    });
     loadLibraryAndSelect(userId);
   };
 
