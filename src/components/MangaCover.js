@@ -3,15 +3,21 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Badge } from 'react-native-elements';
 
-const MangaCover = ({ mangaItem }) => {
+const MangaCover = ({ mangaItem, isSmall }) => {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.cover}>
-      <Image source={{ uri: mangaItem.imageUrl }} style={styles.image} />
+    <View style={[styles.cover, mangaItem.inLibrary ? styles.inLibrary : null]}>
+      <Image
+        source={{ uri: mangaItem.imageUrl }}
+        style={isSmall ? styles.smallImage : styles.image}
+      />
       <Text
         numberOfLines={2}
-        style={[styles.titleText, { color: colors.text }]}
+        style={[
+          isSmall ? styles.smallTitleText : styles.titleText,
+          { color: colors.text },
+        ]}
       >
         {mangaItem.title}
       </Text>
@@ -38,6 +44,19 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: '600',
     width: 170,
+  },
+  smallImage: {
+    width: 120,
+    height: 180,
+    borderRadius: 8,
+  },
+  smallTitleText: {
+    fontWeight: '600',
+    width: 120,
+    fontSize: 12,
+  },
+  inLibrary: {
+    opacity: 0.5,
   },
 });
 

@@ -8,6 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LibraryScreen from './LibraryScreen';
 import SearchScreen from './SearchScreen';
 import SettingsScreen from './SettingsScreen';
+import DiscoverScreen from './DiscoverScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,6 +35,9 @@ const TabScreen = () => {
             case 'Library':
               iconName = 'book-variant-multiple';
               break;
+            case 'Discover':
+              iconName = 'earth';
+              break;
             case 'Search':
               iconName = 'magnify';
               break;
@@ -50,6 +54,7 @@ const TabScreen = () => {
       initialRouteName="Library"
     >
       <Tab.Screen name="Library" component={LibraryScreen} />
+      <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

@@ -17,6 +17,9 @@ export const getMangaList = (store) => {
   }
 };
 
+export const getLibraryMangasById = (store) =>
+  getLibraryState(store) ? getLibraryState(store).mangaById : {};
+
 export const getLibraryMangaById = (store, mangaId) =>
   getLibraryState(store) ? getLibraryState(store).mangaById[mangaId] : {};
 

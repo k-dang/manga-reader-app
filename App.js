@@ -49,6 +49,10 @@ const App = () => {
                     title: 'Library',
                     headerRight: () => <HeaderRight />,
                   };
+                case 'Discover':
+                  return {
+                    title: 'Discover',
+                  };
                 case 'Settings':
                   return {
                     title: 'Settings',
