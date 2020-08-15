@@ -55,7 +55,7 @@ const MangaListHorizontal = ({
 const styles = StyleSheet.create({
   container: {},
   title: {
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 15,
   },
   listItem: {

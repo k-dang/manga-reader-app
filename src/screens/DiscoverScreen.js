@@ -6,7 +6,6 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { useTheme } from '@react-navigation/native';
 import MangaListHorizontal from '../components/MangaListHorizontal';
 import { debounce } from 'lodash';
 
@@ -35,7 +34,6 @@ const DiscoverScreen = ({
   useEffect(() => {
     fetchDiscoverMangaGenres(genres);
   }, []);
-  const { colors } = useTheme();
 
   const handleEndReached = debounce(
     (genre) => {

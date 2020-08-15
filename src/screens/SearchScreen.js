@@ -3,6 +3,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
+import { debounce } from 'lodash';
 
 // store
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ import {
   getSearchLoadedPages,
 } from '../store/search/selectors';
 import { searchManga, searchMangaPaginated } from '../store/search/actions';
+import { getLibraryMangasById } from '../store/library/selectors';
 
 const SearchScreen = ({
   isFetching,
@@ -25,6 +27,7 @@ const SearchScreen = ({
   totalPages,
   searchMangaPaginated,
   searchManga,
+  libraryMangaByIds,
 }) => {
   const { colors } = useTheme();
   const container = [styles.container, { backgroundColor: colors.background }];
@@ -49,11 +52,25 @@ const SearchScreen = ({
     return <ErrorContainer errorMessage="No results found" />;
   }
 
-  const handleEndReached = () => {
-    if (loadedPages < totalPages) {
-      const pageToLoad = loadedPages + 1;
-      searchMangaPaginated(searchTerm, pageToLoad);
-    }
+  const handleEndReached = debounce(
+    () => {
+      if (loadedPages < totalPages) {
+        const pageToLoad = loadedPages + 1;
+        searchMangaPaginated(searchTerm, pageToLoad);
+      }
+    },
+    1000,
+    { leading: true, trailing: false }
+  );
+
+  const searchResultsWithLibrary = () => {
+    const withLibrary = searchResults.map((searchResult) => {
+      if (searchResult.id in libraryMangaByIds) {
+        searchResult.inLibrary = true;
+      }
+      return searchResult;
+    });
+    return withLibrary;
   };
 
   return (
@@ -63,7 +80,7 @@ const SearchScreen = ({
       ) : (
         <View style={container}>
           <MangaList
-            results={searchResults}
+            results={searchResultsWithLibrary()}
             onEndReached={handleEndReached}
             refreshing={isFetching}
             onRefresh={() => {
@@ -93,6 +110,7 @@ const mapStateToProps = (state) => {
     errorMessage: getSearchError(state),
     totalPages: getSearchTotalPages(state),
     loadedPages: getSearchLoadedPages(state),
+    libraryMangaByIds: getLibraryMangasById(state),
   };
 };
 

@@ -57,4 +57,42 @@ const chapter = async () => {
   });
 };
 
-chapter();
+// chapter();
+
+const discover = async () => {
+  const response = await axios.get(
+    `https://manganelo.com/advanced_search?s=all&orby=topview`
+  );
+  const $ = cheerio.load(response.data);
+
+  const genreResults = $('.content-genres-item .genres-item-img');
+  const results = [];
+  const idRegEx = /(manga\/)(\w+)/;
+  genreResults.each((i, result) => {
+    const onClickUrl = $(result).attr('href');
+
+    let foundId = i;
+    if (onClickUrl != undefined) {
+      foundId = idRegEx.exec(onClickUrl);
+    }
+
+    results.push({
+      id: foundId[2],
+      title: $(result).attr('title'),
+      imageUrl: $(result).find('img').attr('src'),
+    });
+  });
+
+  
+  const lastPageHref = $('.group-page a').last().attr('href');
+  const pageNumberRegEx = /(page=)(\d+)/g;
+
+  let totalPages = 1;
+  if (lastPageHref != undefined) {
+    totalPages = pageNumberRegEx.exec(lastPageHref)[2];
+  }
+
+  console.log(totalPages);
+};
+
+discover();
