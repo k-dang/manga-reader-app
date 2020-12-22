@@ -62,6 +62,10 @@ export const loadLibraryFailure = () => ({
   type: LOAD_LIBRARY_FAILURE,
 });
 
+/**
+ * fetches list of manga for user & store
+ * @param {string} userId
+ */
 export const loadLibrary = (userId) => {
   return async (dispatch) => {
     dispatch(loadLibraryRequest());
@@ -75,6 +79,10 @@ export const loadLibrary = (userId) => {
   };
 };
 
+/**
+ * fetches list of manga for user & updates chapter totals
+ * @param {string} userId
+ */
 export const loadLibraryAndSelect = (userId) => {
   return async (dispatch) => {
     try {

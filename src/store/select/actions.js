@@ -121,7 +121,7 @@ const selectMultipleMangaFailure = () => ({
 });
 
 /**
- *
+ * fetch select data for each manga in list
  * @param {array} manga - list of manga objects
  */
 export const selectMultipleMangaFetch = (manga) => {

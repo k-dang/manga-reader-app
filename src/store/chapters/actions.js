@@ -141,7 +141,7 @@ export const setMultipleChapterUpdate = (chapterUpdatesByMangaId) => ({
 });
 
 /**
- *
+ * updates async storage with chapter totals & updates badges
  * @param {array} parsedResults - results of parsing list of mangaIds from source
  */
 export const syncAllChapterUpdates = (parsedResults) => {

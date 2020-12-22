@@ -12,7 +12,6 @@ import {
 // chapterRef: [{
 //   url: ''
 // }]
-
 // chapterUpdatesByMangaId is dictionary of
 // mangaId: number
 const initialState = {
