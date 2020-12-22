@@ -45,6 +45,11 @@ export const selectManga = (mangaId) => ({
   },
 });
 
+/**
+ * fetches manga detail & merges data from async storage
+ * @param {string} mangaId - id of manga from manganelo
+ * @param {string} mangaTitle - title of manga
+ */
 const selectMangaFetch = (mangaId, mangaTitle) => {
   return async (dispatch) => {
     dispatch(selectMangaRequest(mangaId));
@@ -177,6 +182,14 @@ export const markChapterRead = (mangaId, chapterRefIndex) => ({
   },
 });
 
+/**
+ * saves chapter has been read to async storage
+ * updates store manga chapter has been read
+ * decrements chapter totals store
+ * @param {string} mangaId - id of manga
+ * @param {string} chapterRef 
+ * @param {integer} chapterRefIndex 
+ */
 const saveChapterRead = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
     try {

@@ -114,6 +114,11 @@ export const decrementChapterUpdate = (mangaId) => {
   };
 };
 
+/**
+ * upserts chapter totals from store to async storage
+ * updates chapters left to read in store
+ * @param {string} mangaId - id of manga from manganelo
+ */
 export const syncChapterUpdate = (mangaId) => {
   return async (dispatch, getState) => {
     if (getState().library.mangaById[mangaId]) {
