@@ -23,6 +23,7 @@ import {
   reverseChapters,
   saveChapterReadIfNeeded,
   saveChaptersRead,
+  saveChapterPageRead,
 } from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
@@ -34,6 +35,7 @@ const ChaptersScreen = ({
   fetchChapterIfNeeded,
   saveChapterReadIfNeeded,
   saveChaptersRead,
+  saveChapterPageRead,
   navigation,
 }) => {
   const [visible, setVisible] = useState(false);
@@ -61,6 +63,7 @@ const ChaptersScreen = ({
     (chapterRef, index) => {
       saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index);
       fetchChapterIfNeeded(chapterRef, index);
+      saveChapterPageRead(selectedMangaDetail.mangaId, chapterRef, 0);
       navigation.navigate('MangaViewer');
     },
     1000,
@@ -185,4 +188,5 @@ export default connect(mapStateToProps, {
   fetchChapterIfNeeded,
   saveChapterReadIfNeeded,
   saveChaptersRead,
+  saveChapterPageRead,
 })(ChaptersScreen);

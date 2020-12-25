@@ -13,6 +13,7 @@ import TransitionCard from '../components/TransitionCard';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { Overlay } from 'react-native-elements';
 import { Feather } from '@expo/vector-icons';
+import { removePageItemAsyncStorage } from '../services/asyncStorageHelpers';
 
 // store
 import { connect } from 'react-redux';
@@ -24,10 +25,29 @@ import {
 } from '../store/chapters/selectors';
 import { getMangaById } from '../store/select/selectors';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
-import { saveChapterReadIfNeeded } from '../store/select/actions';
+import {
+  saveChapterReadIfNeeded,
+  saveChapterPageRead,
+} from '../store/select/actions';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+const renderNextButton = () => {
+  return (
+    <View style={styles.nextButton}>
+      <Text></Text>
+    </View>
+  );
+};
+
+const renderPrevButton = () => {
+  return (
+    <View style={styles.nextButton}>
+      <Text></Text>
+    </View>
+  );
+};
 
 const MangaViewerScreen = ({
   isFetching,
@@ -37,12 +57,13 @@ const MangaViewerScreen = ({
   selectedMangaDetail,
   fetchChapterIfNeeded,
   saveChapterReadIfNeeded,
+  saveChapterPageRead,
   navigation,
 }) => {
   useEffect(() => {
     StatusBar.setBarStyle('dark-content');
-
     return () => {
+      // clean up effect
       StatusBar.setBarStyle('light-content');
     };
   }, []);
@@ -112,11 +133,13 @@ const MangaViewerScreen = ({
     );
   };
 
-  const handleSwipeIndexChange = (index) => {
+  const handleSwipeIndexChange = async (index) => {
     // account for 2 transition cards
     if (index == chaptersByChapterRef[currentChapterRef].length + 1) {
+      await removePageItemAsyncStorage(currentChapterRef);
       const selectedChapterRefObject =
         selectedMangaDetail.chapterRefs[currentChapterIndex];
+      // more chapters available
       if (selectedChapterRefObject.next != null) {
         const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
           (element) => element.chapterRef === selectedChapterRefObject.next
@@ -127,28 +150,23 @@ const MangaViewerScreen = ({
           nextIndex
         );
         fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
+        saveChapterPageRead(
+          selectedMangaDetail.mangaId,
+          selectedChapterRefObject.next,
+          0
+        );
       } else {
+        // go back to chapter screen if no more chapters
         navigation.goBack();
       }
+    } else {
+      saveChapterPageRead(
+        selectedMangaDetail.mangaId,
+        currentChapterRef,
+        index
+      );
     }
   };
-
-  const renderNextButton = () => {
-    return (
-      <View style={styles.nextButton}>
-        <Text></Text>
-      </View>
-    );
-  };
-
-  const renderPrevButton = () => {
-    return (
-      <View style={styles.nextButton}>
-        <Text></Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <Swiper
@@ -161,6 +179,11 @@ const MangaViewerScreen = ({
         onIndexChanged={handleSwipeIndexChange}
         nextButton={renderNextButton()}
         prevButton={renderPrevButton()}
+        index={
+          selectedMangaDetail.latestChapterPage > 0
+            ? selectedMangaDetail.latestChapterPage
+            : 0
+        }
       >
         {renderImages()}
       </Swiper>
@@ -243,4 +266,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   fetchChapterIfNeeded,
   saveChapterReadIfNeeded,
+  saveChapterPageRead,
 })(MangaViewerScreen);

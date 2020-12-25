@@ -25,7 +25,10 @@ import {
 import { saveToLibrary, removeFromLibrary } from '../store/library/actions';
 import { getUserId } from '../store/account/selectors';
 import { getLibraryMangaById } from '../store/library/selectors';
-import { saveChapterReadIfNeeded } from '../store/select/actions';
+import {
+  saveChapterReadIfNeeded,
+  saveChapterPageRead,
+} from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
 const InfoScreen = ({
@@ -37,6 +40,7 @@ const InfoScreen = ({
   libraryManga,
   removeFromLibrary,
   saveChapterReadIfNeeded,
+  saveChapterPageRead,
   fetchChapterIfNeeded,
   status,
 }) => {
@@ -91,23 +95,42 @@ const InfoScreen = ({
   };
 
   const quickRead = () => {
-    const originalIndexIncluded = selectedMangaDetail.chapterRefs.map(
-      (obj, i) => {
+    let chapterRefToRead = {};
+    if (selectedMangaDetail.latestChapterRead) {
+      const index = selectedMangaDetail.chapterRefs.findIndex(
+        (x) => x.chapterRef === selectedMangaDetail.latestChapterRead
+      );
+      chapterRefToRead['chapterRef'] = selectedMangaDetail.latestChapterRead;
+      chapterRefToRead['index'] = index;
+    } else {
+      const indexIncluded = selectedMangaDetail.chapterRefs.map((obj, i) => {
         return {
           ...obj,
-          originalIndex: i,
+          index: i,
         };
+      });
+
+      let firstUnRead = indexIncluded
+        .reverse()
+        .find((chapterRefObj) => !chapterRefObj.hasRead);
+      if (firstUnRead == null) {
+        firstUnRead = indexIncluded[indexIncluded.length - 1];
       }
-    );
-    const firstUnRead = originalIndexIncluded
-      .reverse()
-      .find((chapterRefObj) => !chapterRefObj.hasRead);
+      chapterRefToRead = firstUnRead;
+    }
     saveChapterReadIfNeeded(
       selectedMangaDetail.mangaId,
-      firstUnRead.chapterRef,
-      firstUnRead.originalIndex
+      chapterRefToRead.chapterRef,
+      chapterRefToRead.index
     );
-    fetchChapterIfNeeded(firstUnRead.chapterRef, firstUnRead.originalIndex);
+    fetchChapterIfNeeded(chapterRefToRead.chapterRef, chapterRefToRead.index);
+    saveChapterPageRead(
+      selectedMangaDetail.mangaId,
+      chapterRefToRead.chapterRef,
+      selectedMangaDetail.latestChapterPage
+        ? selectedMangaDetail.latestChapterPage
+        : 0
+    );
     navigation.navigate('MangaViewer');
   };
 
@@ -234,5 +257,6 @@ export default connect(mapStateToProps, {
   saveToLibrary,
   removeFromLibrary,
   saveChapterReadIfNeeded,
+  saveChapterPageRead,
   fetchChapterIfNeeded,
 })(InfoScreen);

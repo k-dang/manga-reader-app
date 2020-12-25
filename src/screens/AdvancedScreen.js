@@ -6,6 +6,7 @@ import { ListItem } from 'react-native-elements';
 import ThemedView from '../components/ThemedView';
 import AsyncStorage from '@react-native-community/async-storage';
 import { userProfiles } from '../services/userProfiles';
+import { showPagesAsyncStorage } from '../services/asyncStorageHelpers';
 
 // store
 import { connect } from 'react-redux';
@@ -14,13 +15,29 @@ import { getUserId } from '../store/account/selectors';
 const showKeys = async () => {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    console.log('keys', keys);
-    // for (const key of keys) {
-    //   console.log(
-    //     `asyncStorage ${key}`,
-    //     JSON.parse(await AsyncStorage.getItem(key))
-    //   );
-    // }
+    for (const key of keys) {
+      if (key === 'userId' || key === 'theme') {
+        continue;
+      }
+      console.log(
+        `asyncStorage ${key}`,
+        JSON.parse(await AsyncStorage.getItem(key))
+      );
+    }
+  } catch (e) {
+    // read key error
+    console.log(e);
+  }
+};
+
+const clearPageKeys = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    for (const key of keys) {
+      if (key.includes('page')) {
+        await AsyncStorage.removeItem(key);
+      }
+    }
   } catch (e) {
     // read key error
     console.log(e);
@@ -70,7 +87,45 @@ const AdvancedScreen = ({ userId }) => {
         rippleOpacity={1}
       >
         <ListItem
-          title="Show Async Storage"
+          title="Show Async Storage Chapters"
+          containerStyle={{ backgroundColor: colors.background }}
+          titleStyle={{ color: colors.text }}
+          leftIcon={{
+            name: 'compass',
+            type: 'feather',
+            size: 26,
+            color: color,
+          }}
+        />
+      </Ripple>
+      <Ripple
+        onPress={async () => {
+          showPagesAsyncStorage();
+        }}
+        rippleColor="rgb(211,211,211)"
+        rippleOpacity={1}
+      >
+        <ListItem
+          title="Show Async Storage Pages"
+          containerStyle={{ backgroundColor: colors.background }}
+          titleStyle={{ color: colors.text }}
+          leftIcon={{
+            name: 'compass',
+            type: 'feather',
+            size: 26,
+            color: color,
+          }}
+        />
+      </Ripple>
+      <Ripple
+        onPress={async () => {
+          clearPageKeys();
+        }}
+        rippleColor="rgb(211,211,211)"
+        rippleOpacity={1}
+      >
+        <ListItem
+          title="Clear Async Storage Pages"
           containerStyle={{ backgroundColor: colors.background }}
           titleStyle={{ color: colors.text }}
           leftIcon={{
