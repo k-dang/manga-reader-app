@@ -84,7 +84,7 @@ const loadChapterTotals = (chapterUpdatesByMangaId) => ({
 export const loadChapterTotalsAsyncStorage = () => {
   return async (dispatch) => {
     const keys = await AsyncStorage.getAllKeys();
-    const chapterKeys = keys.filter((key) => key != 'userId' && key != 'theme');
+    const chapterKeys = keys.filter((key) => key != 'userId' && key != 'theme' && !key.includes('page'));
     const chapterUpdatesByMangaId = {};
     for (const key of chapterKeys) {
       const value = JSON.parse(await AsyncStorage.getItem(key));

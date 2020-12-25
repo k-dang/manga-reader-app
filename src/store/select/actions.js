@@ -9,10 +9,12 @@ import {
   SELECT_MULTIPLE_MANGA_REQUEST,
   SELECT_MULTIPLE_MANGA_SUCCESS,
   SELECT_MULTIPLE_MANGA_FAILURE,
+  SET_CHAPTER_PAGE_READ,
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloSelect } from '../../services/parseSelect';
 import AsyncStorage from '@react-native-community/async-storage';
+import { getPageItemAsyncStorage } from '../../services/asyncStorageHelpers';
 import {
   decrementChapterUpdate,
   syncChapterUpdate,
@@ -68,6 +70,13 @@ const selectMangaFetch = (mangaId, mangaTitle) => {
           }
           return chapterRefObj;
         });
+
+        const pageItem = await getPageItemAsyncStorage(mangaId);
+        if (pageItem != null) {
+          result['latestChapterRead'] = pageItem[0];
+          result['latestChapterPage'] = parseInt(pageItem[1]);
+        }
+
         dispatch(selectMangaSuccess(mangaId, { ...result, mangaTitle }));
         dispatch(syncChapterUpdate(mangaId));
       } else {
@@ -183,12 +192,10 @@ export const markChapterRead = (mangaId, chapterRefIndex) => ({
 });
 
 /**
- * saves chapter has been read to async storage
- * updates store manga chapter has been read
- * decrements chapter totals store
+ * save chapter read to async storage, updates store and decrement chapter total
  * @param {string} mangaId - id of manga
- * @param {string} chapterRef 
- * @param {integer} chapterRefIndex 
+ * @param {string} chapterRef - ref to specific chapter
+ * @param {integer} chapterRefIndex - index of the ref
  */
 const saveChapterRead = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
@@ -199,7 +206,6 @@ const saveChapterRead = (mangaId, chapterRef, chapterRefIndex) => {
       chapterRefsToSave[chapterRef] = {
         hasRead: true,
       };
-
       await AsyncStorage.setItem(mangaId, JSON.stringify(chapterRefsToSave));
       dispatch(markChapterRead(mangaId, chapterRefIndex));
       dispatch(decrementChapterUpdate(mangaId));
@@ -254,6 +260,27 @@ export const saveChaptersRead = (mangaId, index) => {
       await AsyncStorage.setItem(mangaId, JSON.stringify(chapterRefsToSave));
       dispatch(markChaptersRead(mangaId, index));
       dispatch(syncChapterUpdate(mangaId));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+export const setChapterPageRead = (mangaId, chapterRef, page) => ({
+  type: SET_CHAPTER_PAGE_READ,
+  payload: {
+    mangaId,
+    chapterRef,
+    page,
+  },
+});
+
+export const saveChapterPageRead = (mangaId, chapterRef, page) => {
+  return async (dispatch) => {
+    try {
+      // just upsert w/e
+      await AsyncStorage.setItem(`${mangaId};page`, `${chapterRef};${page}`);
+      dispatch(setChapterPageRead(mangaId, chapterRef, page));
     } catch (e) {
       console.log(e);
     }
