@@ -9,6 +9,7 @@ import {
   SELECT_MULTIPLE_MANGA_REQUEST,
   SELECT_MULTIPLE_MANGA_SUCCESS,
   SELECT_MULTIPLE_MANGA_FAILURE,
+  SET_CHAPTER_PAGE_READ
 } from './constants';
 
 // mangaDetailsById is a dictionary of
@@ -23,7 +24,9 @@ import {
 //     chapterRef: '',
 //     name: ''
 //     date: ''
-//   }]
+//   }],
+//   latestChapterRead: '',
+//   latestChapterPage: '',
 // }
 const initialState = {
   status: 'idle',
@@ -134,6 +137,28 @@ const select = (state = initialState, action) => {
           map[obj.mangaId] = { ...obj };
           return map;
         }, {}),
+      };
+    }
+    case SELECT_MULTIPLE_MANGA_FAILURE: {
+      return {
+        ...state,
+        status: 'rejected',
+        error: 'Failed to select multiple manga',
+      };
+    }
+    case SET_CHAPTER_PAGE_READ: {
+      const { mangaId, chapterRef, page } = action.payload;
+      const mangaDetail = state.mangaDetailsById[mangaId];
+      return {
+        ...state,
+        mangaDetailsById: {
+          ...state.mangaDetailsById,
+          [mangaId]: {
+            ...mangaDetail,
+            latestChapterRead: chapterRef,
+            latestChapterPage: page
+          }
+        }
       };
     }
     default:
