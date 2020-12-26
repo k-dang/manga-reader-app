@@ -9,6 +9,7 @@ import {
   REMOVE_FROM_LIBRARY_SUCCESS,
   REMOVE_FROM_LIBRARY_FAILURE,
   SET_SORT_TYPE,
+  sort,
 } from './constants';
 
 // mangaById is a dictionary of
@@ -24,7 +25,7 @@ const initialState = {
   loadError: null,
   removeFromError: null,
   mangaById: {},
-  sortType: '',
+  sortType: sort.UNREAD_DESC, // TODO default sorting
 };
 const library = (state = initialState, action) => {
   switch (action.type) {

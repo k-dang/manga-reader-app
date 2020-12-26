@@ -67,8 +67,8 @@ export const loadAllData = (userId) => {
       const theme = await AsyncStorage.getItem('theme');
   
       await dispatch(loadAccountData(userId, theme));
-      await dispatch(loadLibrary(userId));
       await dispatch(loadChapterTotalsAsyncStorage());
+      await dispatch(loadLibrary(userId));
     } catch (e) {
       console.log(e)
     }
