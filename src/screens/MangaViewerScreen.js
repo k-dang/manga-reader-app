@@ -4,16 +4,15 @@ import {
   Text,
   View,
   ActivityIndicator,
-  Image,
   Dimensions,
   StatusBar,
+  Easing,
 } from 'react-native';
-import Swiper from 'react-native-swiper';
 import TransitionCard from '../components/TransitionCard';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import { Overlay } from 'react-native-elements';
 import { Feather } from '@expo/vector-icons';
 import { removePageItemAsyncStorage } from '../services/asyncStorageHelpers';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 // store
 import { connect } from 'react-redux';
@@ -60,53 +59,13 @@ const MangaViewerScreen = ({
   saveChapterPageRead,
   navigation,
 }) => {
-  useEffect(() => {
-    StatusBar.setBarStyle('dark-content');
-    return () => {
-      // clean up effect
-      StatusBar.setBarStyle('light-content');
-    };
-  }, []);
-  const renderImages = () => {
-    const images = chaptersByChapterRef[currentChapterRef].map((element) => {
-      return (
-        <Image
-          key={element.url}
-          source={{
-            uri: `${element.url}`,
-            headers: {
-              Referer: `https://manganelo.com/chapter${currentChapterRef}`,
-            },
-          }}
-          style={[styles.chapterImage]}
-          onError={(err) => {
-            console.log(err.nativeEvent);
-          }}
-        />
-      );
-    });
-    if (images.length > 0) {
-      const selectedChapterRefObject =
-        selectedMangaDetail.chapterRefs[currentChapterIndex];
-      const nextChapterName = selectedMangaDetail.chapterRefs.find(
-        (element) => element.chapterRef == selectedChapterRefObject.next
-      )?.name;
-      images.push(
-        <TransitionCard
-          key={`${currentChapterRef}-card`}
-          finishedChapterName={selectedChapterRefObject.name}
-          nextChapterName={nextChapterName}
-        />
-      );
-      images.push(
-        <View
-          key={`${currentChapterRef}-loader`}
-          style={styles.darkContainer}
-        ></View>
-      );
-    }
-    return images;
-  };
+  // useEffect(() => {
+  //   StatusBar.setBarStyle('dark-content');
+  //   return () => {
+  //     // clean up effect
+  //     StatusBar.setBarStyle('light-content');
+  //   };
+  // }, []);
 
   if (isFetching) {
     return (
@@ -120,73 +79,94 @@ const MangaViewerScreen = ({
     );
   }
 
-  const renderPagination = (index, total, context) => {
-    if (index >= chaptersByChapterRef[currentChapterRef].length) {
-      return null;
-    }
+  const transitionCard = () => {
+    const selectedChapterRefObject =
+      selectedMangaDetail.chapterRefs[currentChapterIndex];
+    const nextChapterName = selectedMangaDetail.chapterRefs.find(
+      (element) => element.chapterRef == selectedChapterRefObject.next
+    )?.name;
     return (
-      <View style={styles.paginationStyle}>
-        <Text style={styles.paginationText}>
-          <Text>{index + 1}</Text>/{total - 2}
-        </Text>
-      </View>
+      <TransitionCard
+        key={`${currentChapterRef}-card`}
+        finishedChapterName={selectedChapterRefObject.name}
+        nextChapterName={nextChapterName}
+      />
     );
   };
 
   const handleSwipeIndexChange = async (index) => {
-    // account for 2 transition cards
-    if (index == chaptersByChapterRef[currentChapterRef].length + 1) {
-      await removePageItemAsyncStorage(currentChapterRef);
-      const selectedChapterRefObject =
-        selectedMangaDetail.chapterRefs[currentChapterIndex];
-      // more chapters available
-      if (selectedChapterRefObject.next != null) {
-        const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
-          (element) => element.chapterRef === selectedChapterRefObject.next
-        );
-        saveChapterReadIfNeeded(
-          selectedMangaDetail.mangaId,
-          selectedChapterRefObject.next,
-          nextIndex
-        );
-        fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
-        saveChapterPageRead(
-          selectedMangaDetail.mangaId,
-          selectedChapterRefObject.next,
-          0
-        );
-      } else {
-        // go back to chapter screen if no more chapters
-        navigation.goBack();
-      }
-    } else {
+    saveChapterPageRead(selectedMangaDetail.mangaId, currentChapterRef, index);
+  };
+
+  const handleChapterTransition = async () => {
+    await removePageItemAsyncStorage(currentChapterRef);
+    const selectedChapterRefObject =
+      selectedMangaDetail.chapterRefs[currentChapterIndex];
+    // more chapters available
+    if (selectedChapterRefObject.next != null) {
+      const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
+        (element) => element.chapterRef === selectedChapterRefObject.next
+      );
+      saveChapterReadIfNeeded(
+        selectedMangaDetail.mangaId,
+        selectedChapterRefObject.next,
+        nextIndex
+      );
+      fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
       saveChapterPageRead(
         selectedMangaDetail.mangaId,
-        currentChapterRef,
-        index
+        selectedChapterRefObject.next,
+        0
       );
+    } else {
+      // go back to chapter screen if no more chapters
+      navigation.goBack();
     }
   };
+
+  const imageUrls = () => {
+    // TODO add a previous transition card
+
+    const images = chaptersByChapterRef[currentChapterRef].map((element) => {
+      return {
+        url: element.url,
+        props: {
+          source: {
+            headers: {
+              Referer: `https://manganelo.com/chapter${currentChapterRef}`,
+            },
+          },
+        },
+      };
+    });
+
+    if (images.length > 0) {
+      images.push({
+        isNextTransitionCard: true,
+      });
+    }
+    return images;
+  };
+
   return (
     <View style={styles.container}>
-      <Swiper
-        key={currentChapterRef}
-        renderPagination={renderPagination}
-        showsButtons={true}
-        loop={false}
-        loadMinimal={true}
-        loadMinimalSize={2}
-        onIndexChanged={handleSwipeIndexChange}
-        nextButton={renderNextButton()}
-        prevButton={renderPrevButton()}
+      <ImageViewer
+        imageUrls={imageUrls()}
+        enablePreload={true}
+        pageAnimateTime={400}
+        easingFunction={Easing.out(Easing.cubic)}
+        renderArrowRight={renderNextButton}
+        renderArrowLeft={renderPrevButton}
+        onChange={handleSwipeIndexChange}
+        useNativeDriver={true}
         index={
           selectedMangaDetail.latestChapterPage > 0
             ? selectedMangaDetail.latestChapterPage
             : 0
         }
-      >
-        {renderImages()}
-      </Swiper>
+        nextTransitionCard={transitionCard}
+        onGoNextFail={handleChapterTransition}
+      />
       {/* <Overlay
         overlayStyle={styles.overlay}
         isVisible={visible}
@@ -211,7 +191,7 @@ const MangaViewerScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    // backgroundColor: 'black',
   },
   darkContainer: {
     flex: 1,
@@ -219,21 +199,6 @@ const styles = StyleSheet.create({
   },
   spinner: {
     flex: 1,
-  },
-  chapterImage: {
-    width: windowWidth,
-    height: windowHeight,
-    resizeMode: 'contain',
-    backgroundColor: 'black',
-  },
-  paginationStyle: {
-    position: 'absolute',
-    bottom: 10,
-    alignSelf: 'center',
-  },
-  paginationText: {
-    color: 'white',
-    fontSize: 14,
   },
   overlay: {
     backgroundColor: 'transparent',

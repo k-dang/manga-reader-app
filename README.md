@@ -22,8 +22,7 @@ https://expo.io/@kdang12/manga-reader-app
 
 TODO
 
-zoom image viewer
-previous/back chapter button
+previous/back chapter transition
 
 figure out why library screen is rendered twice
 history tab
