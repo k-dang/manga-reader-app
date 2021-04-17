@@ -33,6 +33,7 @@ const HeaderRight = ({
   const unreadSortIcon =
     sortType === sort.UNREAD_DESC ? 'arrow-down' : 'arrow-up';
 
+  // TODO add debounce to this
   const handleRefresh = () => {
     Toast.show('Updating Library', {
       duration: Toast.durations.SHORT,

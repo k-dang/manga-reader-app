@@ -6,6 +6,7 @@ import { Badge } from 'react-native-elements';
 const MangaCover = ({ mangaItem, isSmall }) => {
   const { colors } = useTheme();
 
+  // TODO imageUrl needs some fixing 
   return (
     <View style={[styles.cover, mangaItem.inLibrary ? styles.inLibrary : null]}>
       <Image

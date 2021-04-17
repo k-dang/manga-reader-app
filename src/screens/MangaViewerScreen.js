@@ -166,6 +166,7 @@ const MangaViewerScreen = ({
         }
         nextTransitionCard={transitionCard}
         onGoNextFail={handleChapterTransition}
+        saveToLocalByLongPress={false}
       />
       {/* <Overlay
         overlayStyle={styles.overlay}
