@@ -9,7 +9,7 @@ import {
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloChapter } from '../../services/parseChapter';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateTotalChaptersAsyncStorage } from '../../services/asyncStorageHelpers';
 
 export const fetchChapterRequest = (chapterRef, chapterRefIndex) => ({

@@ -18,7 +18,7 @@ expo publish
 ```
 
 expo link:
-https://expo.io/@kdang12/manga-reader-app
+<https://expo.io/@kdang12/manga-reader-app>
 
 TODO
 

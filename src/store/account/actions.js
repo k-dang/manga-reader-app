@@ -5,7 +5,7 @@ import {
   DARK,
   LOAD_ACCOUNT_DATA,
 } from './constants';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loadLibrary } from '../library/actions';
 import { loadChapterTotalsAsyncStorage } from '../chapters/actions';
 

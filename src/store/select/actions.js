@@ -13,7 +13,7 @@ import {
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import { parseManganeloSelect } from '../../services/parseSelect';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPageItemAsyncStorage } from '../../services/asyncStorageHelpers';
 import {
   decrementChapterUpdate,

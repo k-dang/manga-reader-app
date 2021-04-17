@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import Ripple from 'react-native-material-ripple';
 import { ListItem } from 'react-native-elements';
 import ThemedView from '../components/ThemedView';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userProfiles } from '../services/userProfiles';
 import { showPagesAsyncStorage } from '../services/asyncStorageHelpers';
 

@@ -42,7 +42,7 @@ const TabScreen = () => {
               iconName = 'magnify';
               break;
             case 'Settings':
-              iconName = focused ? 'settings' : 'settings-outline';
+              iconName = focused ? 'cog' : 'cog-outline';
               break;
           }
 
