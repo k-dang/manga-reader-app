@@ -69,9 +69,21 @@ const App = () => {
             component={MangaViewerScreen}
             options={{ headerShown: false, cardStyleInterpolator: forFade }}
           />
-          <Stack.Screen name="Info" component={InfoScreen} />
-          <Stack.Screen name="Chapters" component={ChaptersScreen} />
-          <Stack.Screen name="Advanced" component={AdvancedScreen} />
+          <Stack.Screen
+            name="Info"
+            component={InfoScreen}
+            options={{ cardStyleInterpolator: forFade }}
+          />
+          <Stack.Screen
+            name="Chapters"
+            component={ChaptersScreen}
+            options={{ cardStyleInterpolator: forFade }}
+          />
+          <Stack.Screen
+            name="Advanced"
+            component={AdvancedScreen}
+            options={{ cardStyleInterpolator: forFade }}
+          />
         </Stack.Navigator>
       </CustomNavigationContainer>
     </Provider>

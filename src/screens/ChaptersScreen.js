@@ -46,7 +46,7 @@ const ChaptersScreen = ({
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={toggleSort}>
           <MaterialCommunityIcons
-            name="sort-numeric"
+            name="sort-numeric-variant"
             size={24}
             color={colors.text}
           />
