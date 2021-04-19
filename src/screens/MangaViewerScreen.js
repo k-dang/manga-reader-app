@@ -9,8 +9,6 @@ import {
   Easing,
 } from 'react-native';
 import TransitionCard from '../components/TransitionCard';
-import { Overlay } from 'react-native-elements';
-import { Feather } from '@expo/vector-icons';
 import { removePageItemAsyncStorage } from '../services/asyncStorageHelpers';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
@@ -126,16 +124,20 @@ const MangaViewerScreen = ({
 
   const imageUrls = () => {
     // TODO add a previous transition card
-
     const images = chaptersByChapterRef[currentChapterRef].map((element) => {
       return {
+        width: windowWidth,
+        height: windowHeight,
         url: element.url,
         props: {
           source: {
             headers: {
-              Referer: `https://manganelo.com/chapter${currentChapterRef}`,
+              Referer: `https://manganelo.com/chapter/${currentChapterRef}`,
             },
           },
+          style: {
+            resizeMode: 'contain'
+          }
         },
       };
     });
@@ -168,23 +170,6 @@ const MangaViewerScreen = ({
         onGoNextFail={handleChapterTransition}
         saveToLocalByLongPress={false}
       />
-      {/* <Overlay
-        overlayStyle={styles.overlay}
-        isVisible={visible}
-        onBackdropPress={() => setVisible(false)}
-      >
-        <View style={styles.iconRow}>
-          <TouchableOpacity
-            onPress={() => {
-              setVisible(false);
-              navigation.goBack();
-            }}
-          >
-            <Feather name="arrow-left-circle" size={36} color="white" />
-            <Text style={{ textAlign: 'center', color: 'white' }}>Back</Text>
-          </TouchableOpacity>
-        </View>
-      </Overlay> */}
     </View>
   );
 };
@@ -192,7 +177,7 @@ const MangaViewerScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'black',
+    backgroundColor: 'black'
   },
   darkContainer: {
     flex: 1,
@@ -200,18 +185,6 @@ const styles = StyleSheet.create({
   },
   spinner: {
     flex: 1,
-  },
-  overlay: {
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    bottom: 50,
-    elevation: 0,
-  },
-  iconRow: {
-    flexDirection: 'row',
-  },
-  icons: {
-    alignItems: 'center',
   },
   nextButton: {
     width: 40,
