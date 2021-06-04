@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import MangaListHorizontal from '../components/MangaListHorizontal';
 import { debounce } from 'lodash';
+import ErrorContainer from '../components/ErrorContainer';
 
 // store
 import { connect } from 'react-redux';

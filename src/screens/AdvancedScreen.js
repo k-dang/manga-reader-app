@@ -16,13 +16,10 @@ const showKeys = async () => {
   try {
     const keys = await AsyncStorage.getAllKeys();
     for (const key of keys) {
-      if (key === 'userId' || key === 'theme') {
+      if (key === 'userId' || key === 'theme' || key.includes('page')) {
         continue;
       }
-      console.log(
-        `asyncStorage ${key}`,
-        JSON.parse(await AsyncStorage.getItem(key))
-      );
+      console.log(`asyncStorage ${key}`);
     }
   } catch (e) {
     // read key error
