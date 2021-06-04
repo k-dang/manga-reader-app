@@ -38,7 +38,8 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
-    "babel-preset-expo": "8.3.0"
+    "babel-preset-expo": "8.3.0",
+    "cheerio": "^1.0.0-rc.9"
   },
   "private": true
 }
