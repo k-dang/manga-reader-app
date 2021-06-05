@@ -5,7 +5,11 @@ import {
   DISCOVER_MANGA_PAGINATED_SUCCESS,
 } from './constants';
 import manganelo from '../../api/mangangelo';
-import { parseManganeloAdvancedSearch } from '../../services/parseSearch';
+import manganato from '../../api/manganato';
+import {
+  parseManganeloAdvancedSearch,
+  parseManganatoAdvancedSearch,
+} from '../../services/parseSearch';
 import { getGenreTopUrl } from '../../services/manganeloHelpers';
 
 const discoverMangaRequest = () => ({
@@ -31,13 +35,13 @@ export const fetchDiscoverMangaGenres = (genres) => {
     try {
       const requests = [];
       for (const genre of genres) {
-        requests.push(manganelo.get(getGenreTopUrl(genre)));
+        requests.push(manganato.get(getGenreTopUrl(genre)));
       }
 
       const allParsedResults = {};
       const results = await Promise.all(requests);
       for (const [index, result] of results.entries()) {
-        const [results, totalPages] = parseManganeloAdvancedSearch(result.data);
+        const [results, totalPages] = parseManganatoAdvancedSearch(result.data);
 
         allParsedResults[genres[index]] = {
           results,
@@ -69,10 +73,11 @@ export const fetchGenrePaginated = (genre) => {
       if (genreResult.loadedPages < genreResult.totalPages) {
         const pageToLoad = genreResult.loadedPages + 1;
         // console.log(getGenreTopUrl(genre) + `&page=${pageToLoad}`);
-        const response = await manganelo.get(
+
+        const response = await manganato.get(
           getGenreTopUrl(genre) + `&page=${pageToLoad}`
         );
-        const [results, totalPages] = parseManganeloAdvancedSearch(
+        const [results, totalPages] = parseManganatoAdvancedSearch(
           response.data
         );
 

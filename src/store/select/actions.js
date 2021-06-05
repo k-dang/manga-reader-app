@@ -12,7 +12,11 @@ import {
   SET_CHAPTER_PAGE_READ,
 } from './constants';
 import manganelo from '../../api/mangangelo';
-import { parseManganeloSelect } from '../../services/parseSelect';
+import manganato from '../../api/manganato';
+import {
+  parseManganeloSelect,
+  parseManganatoSelect,
+} from '../../services/parseSelect';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPageItemAsyncStorage } from '../../services/asyncStorageHelpers';
 import {
@@ -49,15 +53,15 @@ export const selectManga = (mangaId) => ({
 
 /**
  * fetches manga detail & merges data from async storage
- * @param {string} mangaId - id of manga from manganelo
+ * @param {string} mangaId - id of manga from manganato
  * @param {string} mangaTitle - title of manga
  */
 const selectMangaFetch = (mangaId, mangaTitle) => {
   return async (dispatch) => {
     dispatch(selectMangaRequest(mangaId));
     try {
-      const response = await manganelo.get(`/manga/${mangaId}`);
-      const result = parseManganeloSelect(response.data);
+      const response = await manganato.get(`/${mangaId}`);
+      const result = parseManganatoSelect(response.data);
 
       if (isMangaFetchResultValid(result)) {
         // get from async storage and merge everytime fetch successful
@@ -144,13 +148,13 @@ export const selectMultipleMangaFetch = (manga) => {
     try {
       const requests = [];
       for (const m of manga) {
-        requests.push(manganelo.get(`/manga/${m.id}`));
+        requests.push(manganato.get(`/${m.id}`));
       }
       const results = await Promise.all(requests);
 
       const parsedResults = [];
       for (const [index, result] of results.entries()) {
-        const parsedResult = parseManganeloSelect(result.data);
+        const parsedResult = parseManganatoSelect(result.data);
         if (isMangaFetchResultValid(parsedResult)) {
           const value = await AsyncStorage.getItem(manga[index].id);
           const jsonValue = JSON.parse(value);

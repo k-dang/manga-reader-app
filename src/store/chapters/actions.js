@@ -8,7 +8,11 @@ import {
   SET_MULTIPLE_CHAPTER_UPDATE,
 } from './constants';
 import manganelo from '../../api/mangangelo';
-import { parseManganeloChapter } from '../../services/parseChapter';
+import manganato from '../../api/manganato';
+import {
+  parseManganeloChapter,
+  parseManganatoChapter,
+} from '../../services/parseChapter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateTotalChaptersAsyncStorage } from '../../services/asyncStorageHelpers';
 
@@ -40,12 +44,12 @@ export const viewChapter = (chapterRef, chapterRefIndex) => ({
   },
 });
 
-const fetchChapter = (chapterRef, chapterRefIndex) => {
+const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
     dispatch(fetchChapterRequest(chapterRef, chapterRefIndex));
     try {
-      const response = await manganelo.get(`/chapter/${chapterRef}`);
-      const results = parseManganeloChapter(response.data);
+      const response = await manganato.get(`/${mangaId}/${chapterRef}`);
+      const results = parseManganatoChapter(response.data);
 
       dispatch(fetchChapterSuccess(chapterRef, results));
     } catch (err) {
@@ -67,7 +71,13 @@ const shouldFetchChapter = (state, chapterRef) => {
 export const fetchChapterIfNeeded = (chapterRef, chapterRefIndex) => {
   return (dispatch, getState) => {
     if (shouldFetchChapter(getState(), chapterRef)) {
-      return dispatch(fetchChapter(chapterRef, chapterRefIndex));
+      return dispatch(
+        fetchChapter(
+          getState().select.selectedMangaId,
+          chapterRef,
+          chapterRefIndex
+        )
+      );
     } else {
       return dispatch(viewChapter(chapterRef, chapterRefIndex));
     }
@@ -84,7 +94,9 @@ const loadChapterTotals = (chapterUpdatesByMangaId) => ({
 export const loadChapterTotalsAsyncStorage = () => {
   return async (dispatch) => {
     const keys = await AsyncStorage.getAllKeys();
-    const chapterKeys = keys.filter((key) => key != 'userId' && key != 'theme' && !key.includes('page'));
+    const chapterKeys = keys.filter(
+      (key) => key != 'userId' && key != 'theme' && !key.includes('page')
+    );
     const chapterUpdatesByMangaId = {};
     for (const key of chapterKeys) {
       const value = JSON.parse(await AsyncStorage.getItem(key));

@@ -132,7 +132,7 @@ const MangaViewerScreen = ({
         props: {
           source: {
             headers: {
-              Referer: `https://manganelo.com/chapter/${currentChapterRef}`,
+              Referer: `https://readmanganato.com`,
             },
           },
           style: {

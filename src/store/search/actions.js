@@ -5,7 +5,11 @@ import {
   SEARCH_MANGA_PAGINATED_SUCCESS,
 } from './constants';
 import manganelo from '../../api/mangangelo';
-import { parseManganeloSearch } from '../../services/parseSearch';
+import manganato from '../../api/manganato';
+import {
+  parseManganeloSearch,
+  parseManganatoSearch,
+} from '../../services/parseSearch';
 
 export const searchMangaRequest = (searchTerm) => ({
   type: SEARCH_MANGA_REQUEST,
@@ -32,8 +36,8 @@ export const searchManga = (searchTerm) => {
     try {
       // support different sources here
       const searchSafeString = searchTerm.replace(/\s/, '_');
-      const response = await manganelo.get(`/search/story/${searchSafeString}`);
-      const [results, totalPages] = parseManganeloSearch(response.data);
+      const response = await manganato.get(`/search/story/${searchSafeString}`);
+      const [results, totalPages] = parseManganatoSearch(response.data);
 
       dispatch(searchMangaSuccess(results, totalPages));
     } catch (err) {
@@ -43,7 +47,10 @@ export const searchManga = (searchTerm) => {
   };
 };
 
-export const searchMangaPaginatedSuccess = (additionalResults, loadedPages) => ({
+export const searchMangaPaginatedSuccess = (
+  additionalResults,
+  loadedPages
+) => ({
   type: SEARCH_MANGA_PAGINATED_SUCCESS,
   payload: {
     additionalResults,
@@ -56,10 +63,10 @@ export const searchMangaPaginated = (searchTerm, page) => {
     try {
       // support different sources here
       const searchSafeString = searchTerm.replace(/\s/, '_');
-      const response = await manganelo.get(
+      const response = await manganato.get(
         `/search/story/${searchSafeString}?page=${page}`
       );
-      const [results, totalPages] = parseManganeloSearch(response.data);
+      const [results, totalPages] = parseManganatoSearch(response.data);
 
       dispatch(searchMangaPaginatedSuccess(results, page));
     } catch (err) {}
