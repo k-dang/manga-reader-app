@@ -24,11 +24,12 @@ export const fetchChapterRequest = (chapterRef, chapterRefIndex) => ({
   },
 });
 
-export const fetchChapterSuccess = (chapterRef, imagesResult) => ({
+export const fetchChapterSuccess = (chapterRef, imagesResult, mangaId) => ({
   type: FETCH_CHAPTER_SUCCESS,
   payload: {
     chapterRef,
     imagesResult,
+    mangaId,
   },
 });
 
@@ -51,7 +52,7 @@ const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
       const response = await manganato.get(`/${mangaId}/${chapterRef}`);
       const results = parseManganatoChapter(response.data);
 
-      dispatch(fetchChapterSuccess(chapterRef, results));
+      dispatch(fetchChapterSuccess(chapterRef, results, mangaId));
     } catch (err) {
       console.log(err);
       dispatch(fetchChapterFailure());
@@ -60,7 +61,9 @@ const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
 };
 
 const shouldFetchChapter = (state, chapterRef) => {
-  const chapter = state.chapters.chaptersByChapterRefs[chapterRef];
+  const chapters = state.chapters.chaptersByMangaId[state.select.selectedMangaId];
+  // conditional access
+  const chapter = chapters?.[chapterRef];
   if (!chapter) {
     return true;
   } else {
@@ -99,6 +102,7 @@ export const loadChapterTotalsAsyncStorage = () => {
     );
     const chapterUpdatesByMangaId = {};
     for (const key of chapterKeys) {
+      // TODO: get items in parallel
       const value = JSON.parse(await AsyncStorage.getItem(key));
       // account for "totalChapters" key
       const readTotal = Object.keys(value).length - 1;

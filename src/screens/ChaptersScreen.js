@@ -64,6 +64,7 @@ const ChaptersScreen = ({
       saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index);
       fetchChapterIfNeeded(chapterRef, index);
       saveChapterPageRead(selectedMangaDetail.mangaId, chapterRef, 0);
+      // too fast?
       navigation.navigate('MangaViewer');
     },
     1000,
