@@ -8,10 +8,9 @@ import {
   SET_MULTIPLE_CHAPTER_UPDATE,
 } from './constants';
 
-// chaptersByChapterRefs is dictionary of
-// chapterRef: [{
-//   url: ''
-// }]
+// chaptersByMangaId is dictionary of
+// mangaId: { chapterRef: [{ url: '' }] }
+// chaptersByMangaId: {}
 // chapterUpdatesByMangaId is dictionary of
 // mangaId: number
 const initialState = {
@@ -19,7 +18,7 @@ const initialState = {
   error: null,
   currentChapterRef: '',
   currentChapterRefIndex: 0,
-  chaptersByChapterRefs: {},
+  chaptersByMangaId: {},
   chapterUpdatesByMangaId: {},
 };
 const chapters = (state = initialState, action) => {
@@ -35,14 +34,18 @@ const chapters = (state = initialState, action) => {
       };
     }
     case FETCH_CHAPTER_SUCCESS: {
-      const { chapterRef, imagesResult } = action.payload;
+      const { chapterRef, imagesResult, mangaId } = action.payload;
+      const mangaChapters = state.chaptersByMangaId[mangaId] ? state.chaptersByMangaId[mangaId] : {};
       return {
         ...state,
         isFetching: false,
-        chaptersByChapterRefs: {
-          ...state.chaptersByChapterRefs,
-          [chapterRef]: imagesResult,
-        },
+        chaptersByMangaId: {
+          ...state.chaptersByMangaId,
+          [mangaId]: {
+            ...mangaChapters,
+            [chapterRef]: imagesResult
+          }
+        }
       };
     }
     case FETCH_CHAPTER_FAILURE: {

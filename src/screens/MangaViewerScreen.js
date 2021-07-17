@@ -18,7 +18,7 @@ import {
   getCurrentChapterRef,
   getCurrentChapterRefIndex,
   getChaptersFetchState,
-  getChaptersByChapterRef,
+  getChaptersByMangaId
 } from '../store/chapters/selectors';
 import { getMangaById } from '../store/select/selectors';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
@@ -50,7 +50,7 @@ const MangaViewerScreen = ({
   isFetching,
   currentChapterRef,
   currentChapterIndex,
-  chaptersByChapterRef,
+  chapters,
   selectedMangaDetail,
   fetchChapterIfNeeded,
   saveChapterReadIfNeeded,
@@ -124,7 +124,7 @@ const MangaViewerScreen = ({
 
   const imageUrls = () => {
     // TODO add a previous transition card
-    const images = chaptersByChapterRef[currentChapterRef].map((element) => {
+    const images = chapters[currentChapterRef].map((element) => {
       return {
         width: windowWidth,
         height: windowHeight,
@@ -197,7 +197,7 @@ const mapStateToProps = (state) => {
     isFetching: getChaptersFetchState(state),
     currentChapterRef: getCurrentChapterRef(state),
     currentChapterIndex: getCurrentChapterRefIndex(state),
-    chaptersByChapterRef: getChaptersByChapterRef(state),
+    chapters: getChaptersByMangaId(state, state.select.selectedMangaId),
     selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
   };
 };

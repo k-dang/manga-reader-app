@@ -36,7 +36,7 @@ export const showPagesAsyncStorage = async () => {
       if (!key.includes('page')) {
         continue;
       }
-      console.log(key, await AsyncStorage.getItem(key));
+      console.log(`key: ${key} value:${await AsyncStorage.getItem(key)}`);
     }
   } catch (e) {
     console.log(e);
