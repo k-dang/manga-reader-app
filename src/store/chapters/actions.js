@@ -45,6 +45,13 @@ export const viewChapter = (chapterRef, chapterRefIndex) => ({
   },
 });
 
+/**
+ * fetch image urls for a chapter and store them in redux store
+ * @param {string} mangaId - id of manga
+ * @param {string} chapterRef - ref to specific chapter
+ * @param {integer} chapterRefIndex - index of the ref
+ * @returns 
+ */
 const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
   return async (dispatch) => {
     dispatch(fetchChapterRequest(chapterRef, chapterRefIndex));
@@ -71,6 +78,12 @@ const shouldFetchChapter = (state, chapterRef) => {
   }
 };
 
+/**
+ * dispatches fetchChapter if chapter data isn't already saved
+ * @param {*} chapterRef - ref to specific chapter
+ * @param {*} chapterRefIndex - index of the ref
+ * @returns 
+ */
 export const fetchChapterIfNeeded = (chapterRef, chapterRefIndex) => {
   return (dispatch, getState) => {
     if (shouldFetchChapter(getState(), chapterRef)) {

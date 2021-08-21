@@ -228,6 +228,13 @@ const shouldSaveChapterRead = (state, mangaId, chapterRefIndex) => {
   }
 };
 
+/**
+ * dispatches saveChapterRead if chapter read hasn't already been saved
+ * @param {string} mangaId - id of manga
+ * @param {string} chapterRef - ref to specific chapter
+ * @param {integer} chapterRefIndex - index of the ref
+ * @returns 
+ */
 export const saveChapterReadIfNeeded = (
   mangaId,
   chapterRef,
