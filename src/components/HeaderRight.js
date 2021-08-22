@@ -37,7 +37,7 @@ const HeaderRight = ({
   const handleRefresh = () => {
     Toast.show('Updating Library', {
       duration: Toast.durations.SHORT,
-      position: Toast.positions.BOTTOM,
+      position: -100,
     });
     loadLibraryAndSelect(userId);
   };
