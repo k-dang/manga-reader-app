@@ -12,9 +12,9 @@ export const updateTotalChaptersAsyncStorage = async (
   } catch (e) {}
 };
 
-export const removePageItemAsyncStorage = async (chapterRef) => {
+export const removePageItemAsyncStorage = async (mangaId) => {
   try {
-    await AsyncStorage.removeItem(`${chapterRef};page`);
+    await AsyncStorage.removeItem(`${mangaId};page`);
   } catch (e) {
     console.log(e);
   }

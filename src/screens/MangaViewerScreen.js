@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,9 @@ import {
   StatusBar,
   Easing,
 } from 'react-native';
-import TransitionCard from '../components/TransitionCard';
+import TransitionCard from '../components/ImageViewer/TransitionCard';
+import LoadingCard from '../components/ImageViewer/LoadingCard';
+import FailCard from '../components/ImageViewer/FailCard';
 import { removePageItemAsyncStorage } from '../services/asyncStorageHelpers';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
@@ -18,7 +20,7 @@ import {
   getCurrentChapterRef,
   getCurrentChapterRefIndex,
   getChaptersFetchState,
-  getChaptersByMangaId
+  getChaptersByMangaId,
 } from '../store/chapters/selectors';
 import { getMangaById } from '../store/select/selectors';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
@@ -57,13 +59,6 @@ const MangaViewerScreen = ({
   saveChapterPageRead,
   navigation,
 }) => {
-  // useEffect(() => {
-  //   StatusBar.setBarStyle('dark-content');
-  //   return () => {
-  //     // clean up effect
-  //     StatusBar.setBarStyle('light-content');
-  //   };
-  // }, []);
 
   if (isFetching) {
     return (
@@ -97,7 +92,7 @@ const MangaViewerScreen = ({
   };
 
   const handleChapterTransition = async () => {
-    await removePageItemAsyncStorage(currentChapterRef);
+    await removePageItemAsyncStorage(selectedMangaDetail.mangaId);
     const selectedChapterRefObject =
       selectedMangaDetail.chapterRefs[currentChapterIndex];
     // more chapters available
@@ -136,8 +131,8 @@ const MangaViewerScreen = ({
             },
           },
           style: {
-            resizeMode: 'contain'
-          }
+            resizeMode: 'contain',
+          },
         },
       };
     });
@@ -169,6 +164,8 @@ const MangaViewerScreen = ({
         nextTransitionCard={transitionCard}
         onGoNextFail={handleChapterTransition}
         saveToLocalByLongPress={false}
+        loadingRender={() => <LoadingCard/>}
+        failImageRender={() => <FailCard/>}
       />
     </View>
   );
@@ -177,7 +174,7 @@ const MangaViewerScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   darkContainer: {
     flex: 1,

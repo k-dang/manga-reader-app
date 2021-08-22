@@ -19,7 +19,7 @@ const showKeys = async () => {
       if (key === 'userId' || key === 'theme' || key.includes('page')) {
         continue;
       }
-      console.log(`asyncStorage ${key}`);
+      console.log(`key: ${key}`);
     }
   } catch (e) {
     // read key error
