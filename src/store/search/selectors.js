@@ -3,8 +3,7 @@ export const getSearchState = (store) => store.search;
 export const getSearchTerm = (store) =>
   getSearchState(store) ? getSearchState(store).searchTerm : '';
 
-export const getFetchState = (store) =>
-  getSearchState(store) ? getSearchState(store).isFetching : false;
+export const getSearchFetchStatus = (store) => getSearchState(store) ? getSearchState(store).status : 'idle';
 
 export const getSearchResults = (store) =>
   getSearchState(store) ? getSearchState(store).results : [];

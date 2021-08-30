@@ -8,7 +8,7 @@ import { debounce } from 'lodash';
 // store
 import { connect } from 'react-redux';
 import {
-  getFetchState,
+  getSearchFetchStatus,
   getSearchResults,
   getSearchError,
   getSearchTerm,
@@ -19,7 +19,7 @@ import { searchManga, searchMangaPaginated } from '../store/search/actions';
 import { getLibraryMangasById } from '../store/library/selectors';
 
 const SearchScreen = ({
-  isFetching,
+  status,
   errorMessage,
   searchResults,
   searchTerm,
@@ -32,7 +32,7 @@ const SearchScreen = ({
   const { colors } = useTheme();
   const container = [styles.container, { backgroundColor: colors.background }];
 
-  if (isFetching) {
+  if (status === 'pending') {
     return (
       <View style={container}>
         <ActivityIndicator
@@ -44,7 +44,7 @@ const SearchScreen = ({
     );
   }
 
-  if (errorMessage != '') {
+  if (status === 'rejected') {
     return <ErrorContainer errorMessage={errorMessage} />;
   }
 
@@ -82,7 +82,7 @@ const SearchScreen = ({
           <MangaList
             results={searchResultsWithLibrary()}
             onEndReached={handleEndReached}
-            refreshing={isFetching}
+            refreshing={status === 'pending'}
             onRefresh={() => {
               searchManga(searchTerm);
             }}
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     searchTerm: getSearchTerm(state),
-    isFetching: getFetchState(state),
+    status: getSearchFetchStatus(state),
     searchResults: getSearchResults(state),
     errorMessage: getSearchError(state),
     totalPages: getSearchTotalPages(state),

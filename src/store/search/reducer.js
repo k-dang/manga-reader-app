@@ -12,7 +12,7 @@ import {
 //   "title": "Ice Guy and the Cool Female Colleague",
 // }
 const initialState = {
-  isFetching: false,
+  status: 'idle',
   errorMessage: '',
   searchTerm: '',
   results: [],
@@ -25,7 +25,7 @@ const search = (state = initialState, action) => {
       const { searchTerm } = action.payload;
       return {
         ...state,
-        isFetching: true,
+        status: 'pending',
         searchTerm: searchTerm,
         errorMessage: '',
         loadedPages: 0,
@@ -36,7 +36,7 @@ const search = (state = initialState, action) => {
       const { results, totalPages } = action.payload;
       return {
         ...state,
-        isFetching: false,
+        status: 'resolved',
         results: results,
         loadedPages: 1,
         totalPages: totalPages,
@@ -45,7 +45,7 @@ const search = (state = initialState, action) => {
     case SEARCH_MANGA_FAILURE: {
       return {
         ...state,
-        isFetching: false,
+        status: 'rejected',
         errorMessage: 'Oh no, there was a problem finding manga',
       };
     }
