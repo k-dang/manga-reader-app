@@ -3,7 +3,6 @@ import { useTheme } from '@react-navigation/native';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
-import { Overlay } from 'react-native-elements';
 
 // store
 import { connect } from 'react-redux';

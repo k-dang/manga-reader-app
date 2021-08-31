@@ -68,7 +68,7 @@ export const parseManganeloAdvancedSearch = (html) => {
  * @param {string} html
  * @returns {[object, number]} tuple containing results object & total pages
  * 
- * return object format
+ * return results object format
  * {
  *  id: '',
  *  title: '',
