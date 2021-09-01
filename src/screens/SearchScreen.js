@@ -4,6 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
 import { debounce } from 'lodash';
+import SourceSwitchButton from '../components/SourceSwitchButton';
 
 // store
 import { connect } from 'react-redux';
@@ -14,9 +15,13 @@ import {
   getSearchTerm,
   getSearchTotalPages,
   getSearchLoadedPages,
+  getSearchSource,
+  getSearchLoadedResults,
+  getSearchTotalResults,
 } from '../store/search/selectors';
 import { searchManga, searchMangaPaginated } from '../store/search/actions';
 import { getLibraryMangasById } from '../store/library/selectors';
+import { sources } from '../store/search/constants';
 
 const SearchScreen = ({
   status,
@@ -28,6 +33,9 @@ const SearchScreen = ({
   searchMangaPaginated,
   searchManga,
   libraryMangaByIds,
+  source,
+  loadedResults,
+  totalResults,
 }) => {
   const { colors } = useTheme();
   const container = [styles.container, { backgroundColor: colors.background }];
@@ -54,9 +62,18 @@ const SearchScreen = ({
 
   const handleEndReached = debounce(
     () => {
-      if (loadedPages < totalPages) {
-        const pageToLoad = loadedPages + 1;
-        searchMangaPaginated(searchTerm, pageToLoad);
+      switch (source) {
+        case sources.MANGADEX: {
+          if (loadedResults < totalResults) {
+            searchMangaPaginated(searchTerm);
+          }
+          break;
+        }
+        case sources.MANGANATO: {
+          if (loadedPages < totalPages) {
+            searchMangaPaginated(searchTerm);
+          }
+        }
       }
     },
     1000,
@@ -89,6 +106,7 @@ const SearchScreen = ({
           />
         </View>
       )}
+      <SourceSwitchButton></SourceSwitchButton>
     </>
   );
 };
@@ -111,6 +129,9 @@ const mapStateToProps = (state) => {
     totalPages: getSearchTotalPages(state),
     loadedPages: getSearchLoadedPages(state),
     libraryMangaByIds: getLibraryMangasById(state),
+    source: getSearchSource(state),
+    loadedResults: getSearchLoadedResults(state),
+    totalResults: getSearchTotalResults(state),
   };
 };
 
