@@ -3,6 +3,10 @@ import {
   SEARCH_MANGA_SUCCESS,
   SEARCH_MANGA_FAILURE,
   SEARCH_MANGA_PAGINATED_SUCCESS,
+  sources,
+  SET_SEARCH_SOURCE,
+  SEARCH_MANGA_DEX_SUCCESS,
+  SEARCH_MANGA_DEX_PAGINATED_SUCCESS,
 } from './constants';
 
 // results is array of
@@ -18,6 +22,9 @@ const initialState = {
   results: [],
   loadedPages: 0,
   totalPages: 0,
+  searchSource: sources.MANGANATO, // default source
+  loadedResults: 0,
+  totalResults: 0,
 };
 const search = (state = initialState, action) => {
   switch (action.type) {
@@ -30,6 +37,8 @@ const search = (state = initialState, action) => {
         errorMessage: '',
         loadedPages: 0,
         totalPages: 0,
+        loadedResults: 0,
+        totalResults: 0,
       };
     }
     case SEARCH_MANGA_SUCCESS: {
@@ -55,6 +64,31 @@ const search = (state = initialState, action) => {
         ...state,
         results: [...state.results, ...additionalResults],
         loadedPages: loadedPages,
+      };
+    }
+    case SET_SEARCH_SOURCE: {
+      const { source } = action.payload;
+      return {
+        ...state,
+        searchSource: source,
+      };
+    }
+    case SEARCH_MANGA_DEX_SUCCESS: {
+      const { results, totalResults } = action.payload;
+      return {
+        ...state,
+        status: 'resolved',
+        results: results,
+        loadedResults: results.length,
+        totalResults: totalResults,
+      };
+    }
+    case SEARCH_MANGA_DEX_PAGINATED_SUCCESS: {
+      const { additionalResults } = action.payload;
+      return {
+        ...state,
+        results: [...state.results, ...additionalResults],
+        loadedResults: state.loadedResults + additionalResults.length,
       };
     }
     default:

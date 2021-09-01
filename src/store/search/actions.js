@@ -3,6 +3,10 @@ import {
   SEARCH_MANGA_SUCCESS,
   SEARCH_MANGA_FAILURE,
   SEARCH_MANGA_PAGINATED_SUCCESS,
+  SET_SEARCH_SOURCE,
+  sources,
+  SEARCH_MANGA_DEX_SUCCESS,
+  SEARCH_MANGA_DEX_PAGINATED_SUCCESS,
 } from './constants';
 import manganelo from '../../api/mangangelo';
 import manganato from '../../api/manganato';
@@ -10,6 +14,7 @@ import {
   parseManganeloSearch,
   parseManganatoSearch,
 } from '../../services/parseSearch';
+import { getSearchResults } from '../../services/mangadexService';
 
 export const searchMangaRequest = (searchTerm) => ({
   type: SEARCH_MANGA_REQUEST,
@@ -31,15 +36,27 @@ export const searchMangaFailure = () => ({
 });
 
 export const searchManga = (searchTerm) => {
-  return async (dispatch) => {
+  // return async (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch(searchMangaRequest(searchTerm));
     try {
-      // support different sources here
-      const searchSafeString = searchTerm.replace(/\s/, '_');
-      const response = await manganato.get(`/search/story/${searchSafeString}`);
-      const [results, totalPages] = parseManganatoSearch(response.data);
+      const source = getState().search.searchSource;
 
-      dispatch(searchMangaSuccess(results, totalPages));
+      switch (source) {
+        case sources.MANGADEX: {
+          const [results, totalResults] = await getSearchResults(searchTerm);
+          dispatch(searchMangaDexSuccess(results, totalResults));
+          break;
+        }
+        case sources.MANGANATO: {
+          const searchSafeString = searchTerm.replace(/\s/, '_');
+          const response = await manganato.get(
+            `/search/story/${searchSafeString}`
+          );
+          const [results, totalPages] = parseManganatoSearch(response.data);
+          dispatch(searchMangaSuccess(results, totalPages));
+        }
+      }
     } catch (err) {
       console.log(err);
       dispatch(searchMangaFailure());
@@ -58,17 +75,55 @@ export const searchMangaPaginatedSuccess = (
   },
 });
 
-export const searchMangaPaginated = (searchTerm, page) => {
-  return async (dispatch) => {
+export const searchMangaPaginated = (searchTerm) => {
+  return async (dispatch, getState) => {
     try {
-      // support different sources here
-      const searchSafeString = searchTerm.replace(/\s/, '_');
-      const response = await manganato.get(
-        `/search/story/${searchSafeString}?page=${page}`
-      );
-      const [results, totalPages] = parseManganatoSearch(response.data);
+      const source = getState().search.searchSource;
 
-      dispatch(searchMangaPaginatedSuccess(results, page));
+      switch (source) {
+        case sources.MANGADEX: {
+          // offset should be length of current results
+          const currentResultsLength = getState().search.loadedResults;
+          const [results, totalResults] = await getSearchResults(
+            searchTerm,
+            currentResultsLength
+          );
+          dispatch(searchMangaDexPaginatedSuccess(results));
+          break;
+        }
+        case sources.MANGANATO: {
+          const searchSafeString = searchTerm.replace(/\s/, '_');
+          const pageToLoad = getState().search.loadedPages + 1
+          const response = await manganato.get(
+            `/search/story/${searchSafeString}?page=${pageToLoad}`
+          );
+          const [results, totalPages] = parseManganatoSearch(response.data);
+
+          dispatch(searchMangaPaginatedSuccess(results, pageToLoad));
+        }
+      }
     } catch (err) {}
   };
 };
+
+export const setSearchSource = (source) => ({
+  type: SET_SEARCH_SOURCE,
+  payload: {
+    source,
+  },
+});
+
+export const searchMangaDexSuccess = (results, totalResults) => ({
+  type: SEARCH_MANGA_DEX_SUCCESS,
+  payload: {
+    results,
+    totalResults,
+  },
+});
+
+export const searchMangaDexPaginatedSuccess = (additionalResults) => ({
+  type: SEARCH_MANGA_DEX_PAGINATED_SUCCESS,
+  payload: {
+    additionalResults,
+  },
+});
