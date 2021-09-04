@@ -33,12 +33,132 @@ export const getSearchResults = async (searchTerm, offset = 0) => {
       coverUrl = `https://uploads.mangadex.org/covers/${id}/${coverArt.attributes.fileName}`;
     }
 
+    const altTitle = data.attributes?.altTitles[0]?.en ?? 'No title available';
+    const title = data.attributes?.title?.en ?? altTitle;
+
     results.push({
       id: id,
-      title: data.attributes.title.en,
+      title: title,
       imageUrl: coverUrl,
     });
   });
 
   return [results, response.data.total];
+};
+
+/**
+ * get manga details from mangadex api
+ * @param {string} mangaId - manga id from manga dex
+ * @returns {object} object containing manga details
+ */
+export const getMangaDetail = async (mangaId) => {
+  const response = await mangadex.get(`/manga/${mangaId}?includes[]=cover_art`);
+  const data = response.data;
+  const attributes = data.data.attributes;
+
+  const coverArt = data.relationships.find(({ type }) => type === 'cover_art');
+  let coverUrl = '';
+  if (coverArt === undefined) {
+    coverUrl = 'https://imgur.com/N5nDw9J';
+  } else {
+    coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${coverArt.attributes.fileName}`;
+  }
+  const description = attributes.description.hasOwnProperty('en')
+    ? attributes.description.en
+    : 'No english description';
+
+  return {
+    infoImageUrl: coverUrl,
+    status: attributes.status,
+    lastUpdated: attributes.updatedAt, // unused
+    cleanedDescription: description,
+    lastChapter: attributes.lastChapter, // unused, might be null for ongoing
+    // chapterRefs: seperate API for this field
+  };
+};
+
+/**
+ * Get parsed list of all chapters objects for a given mangaId
+ * @param {string} mangaId - manga id from manga dex
+ * @returns [chapterObject] array of objects containing all chapter details
+ */
+export const getMangaFeed = async (mangaId) => {
+  // by default limit is 100 results
+  const response = await mangadex.get(
+    `/manga/${mangaId}/feed?order[chapter]=desc&offset=0&translatedLanguage[]=en`
+  );
+  const total = response.data.total;
+  const allResults = parseChapters(response.data.results);
+
+  const promises = [];
+  for (let i = 100; i < total; i += 100) {
+    promises.push(getChapters(mangaId, i));
+  }
+
+  const end = await Promise.all(promises);
+  const flatten = end.reduce((prev, curr) => {
+    return [...prev, ...curr];
+  }, []);
+
+  allResults.push(...flatten);
+
+  // now we do the processing
+  const seen = new Set();
+  const filteredResults = allResults.filter((element) => {
+    if (seen.has(element.number)) {
+      return false;
+    }
+    seen.add(element.number);
+    return true;
+  });
+
+  filteredResults.forEach((element, index, chapters) => {
+    const prevIndex = index > 0 ? index - 1 : null;
+    const prevChapter = prevIndex != null ? chapters[prevIndex] : null;
+    element.next = prevChapter ? prevChapter.chapterRef : null;
+  });
+
+  return filteredResults;
+};
+
+/**
+ * Get parsed list of chapter objects for a given mangaId and offset
+ * @param {string} mangaId - manga id from manga dex
+ * @param {number} offset - offset for results (pagination)
+ * @returns [chapterObject] array of objects containing chapter details
+ */
+export const getChapters = async (mangaId, offset) => {
+  const response = await mangadex.get(
+    `/manga/${mangaId}/feed?order[chapter]=desc&offset=${offset}&translatedLanguage[]=en`
+  );
+
+  return parseChapters(response.data.results);
+};
+
+/**
+ * Parses results array to chapterObject
+ * @param {[object]} resultsList - array of result objects to parse
+ * @returns [chapterObject] array of objects containing chapter details
+ */
+const parseChapters = (resultsList) => {
+  const chapters = [];
+  resultsList.forEach(({ data, relationships }) => {
+    if (data.attributes.translatedLanguage === 'en') {
+      const hash = data.attributes.hash; // similar to ref
+      const chapterNumber = data.attributes.chapter;
+      const title = data.attributes.title === null ? '' : data.attributes.title;
+      const publishDate = data.attributes.publishAt;
+
+      // const sg = relationships.find(({ type }) => type === 'scanlation_group');
+
+      chapters.push({
+        chapterRef: hash,
+        number: chapterNumber,
+        name: `Chapter ${chapterNumber}${title ? ' ' + title : title}`, // add extra space when title is valid
+        date: publishDate,
+        // next: prev ? prev.chapterRef : null,
+      });
+    }
+  });
+  return chapters;
 };
