@@ -4,6 +4,7 @@ import {
   getMangaDetail,
   getMangaFeed,
   getChapters,
+  getChapterImages,
 } from '../../src/services/mangadexService';
 
 describe('getSearchResults', () => {
@@ -60,5 +61,16 @@ describe('getChapters', () => {
     expect(typeof result[0].chapterRef).toBe('string');
     expect(typeof result[0].name).toBe('string');
     expect(typeof result[0].date).toBe('string');
+  });
+});
+
+describe('getChapterImages', () => {
+  test('should return image array', async () => {
+    const result = await getChapterImages(
+      '1aef5635-80e3-410f-af69-472ac3349658'
+    );
+
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0].url).toContain('https://uploads.mangadex.org/data');
   });
 });

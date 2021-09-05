@@ -144,7 +144,6 @@ const parseChapters = (resultsList) => {
   const chapters = [];
   resultsList.forEach(({ data, relationships }) => {
     if (data.attributes.translatedLanguage === 'en') {
-      const hash = data.attributes.hash; // similar to ref
       const chapterNumber = data.attributes.chapter;
       const title = data.attributes.title === null ? '' : data.attributes.title;
       const publishDate = data.attributes.publishAt;
@@ -152,7 +151,7 @@ const parseChapters = (resultsList) => {
       // const sg = relationships.find(({ type }) => type === 'scanlation_group');
 
       chapters.push({
-        chapterRef: hash,
+        chapterRef: data.id,
         number: chapterNumber,
         name: `Chapter ${chapterNumber}${title ? ' ' + title : title}`, // add extra space when title is valid
         date: publishDate,
@@ -161,4 +160,19 @@ const parseChapters = (resultsList) => {
     }
   });
   return chapters;
+};
+
+export const getChapterImages = async (chapterRef) => {
+  const response = await mangadex.get(`/chapter/${chapterRef}`);
+  const attributes = response.data.data.attributes;
+
+  const chapterHash = attributes.hash;
+  const imageUrls = [];
+  attributes.data.forEach((fileName) => {
+    imageUrls.push({
+      url: `https://uploads.mangadex.org/data/${chapterHash}/${fileName}`,
+    });
+  });
+
+  return imageUrls;
 };
