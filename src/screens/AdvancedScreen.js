@@ -6,40 +6,18 @@ import { ListItem } from 'react-native-elements';
 import ThemedView from '../components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userProfiles } from '../services/userProfiles';
-import { showPagesAsyncStorage } from '../services/asyncStorageHelpers';
+import {
+  showPagesAsyncStorage,
+  showChapterKeysAsyncStorage,
+  getChapterKeysAsyncStorage,
+  showChapterAsyncStorage,
+  getPagesAsyncStorage,
+} from '../services/asyncStorageHelpers';
 
 // store
 import { connect } from 'react-redux';
 import { getUserId } from '../store/account/selectors';
-
-const showKeys = async () => {
-  try {
-    const keys = await AsyncStorage.getAllKeys();
-    for (const key of keys) {
-      if (key === 'userId' || key === 'theme' || key.includes('page')) {
-        continue;
-      }
-      console.log(`key: ${key}`);
-    }
-  } catch (e) {
-    // read key error
-    console.log(e);
-  }
-};
-
-const clearPageKeys = async () => {
-  try {
-    const keys = await AsyncStorage.getAllKeys();
-    for (const key of keys) {
-      if (key.includes('page')) {
-        await AsyncStorage.removeItem(key);
-      }
-    }
-  } catch (e) {
-    // read key error
-    console.log(e);
-  }
-};
+import { getMangaList } from '../store/library/selectors';
 
 const testChapterUpdates = async () => {
   try {
@@ -50,22 +28,49 @@ const testChapterUpdates = async () => {
   } catch (e) {}
 };
 
-const AdvancedScreen = ({ userId }) => {
+const getKeysToClear = (storageKeys, mangasInLibrary) => {
+  const result = storageKeys.filter(
+    (key) => mangasInLibrary.indexOf(key) == -1
+  );
+  return result;
+};
+
+// TODO create button to help clear out chapterUpdatesByMangaId from async storage
+
+const AdvancedScreen = ({ userId, mangaList }) => {
   const { colors } = useTheme();
   const color = userProfiles.find((x) => x.id === userId).color;
+
+  const clearChapterKeysNotInLibrary = async () => {
+    // TODO update all store chapter hasRead values?
+    const chapterKeys = await getChapterKeysAsyncStorage();
+    const mangasInLibrary = mangaList.reduce((p, c) => {
+      return [...p, c.id];
+    }, []);
+    const keysToClear = getKeysToClear(chapterKeys, mangasInLibrary);
+    await AsyncStorage.multiRemove(keysToClear);
+  };
+
+  const clearPageKeysNotInLibrary = async () => {
+    const pageKeys = await getPagesAsyncStorage();
+    const mangasInLibrary = mangaList.reduce((p, c) => {
+      return [...p, c.id + ';page'];
+    }, []);
+    const keysToClear = getKeysToClear(pageKeys, mangasInLibrary);
+    await AsyncStorage.multiRemove(keysToClear);
+  };
+
   return (
     <ThemedView>
       <Ripple
         onPress={async () => {
-          await AsyncStorage.clear();
-          console.log('cleared');
-          // TODO update all store chapter hasRead values?
+          await showChapterKeysAsyncStorage();
         }}
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
         <ListItem
-          title="Clear Storage"
+          title="Show Async Storage Chapter Keys"
           containerStyle={{ backgroundColor: colors.background }}
           titleStyle={{ color: colors.text }}
           leftIcon={{
@@ -78,13 +83,13 @@ const AdvancedScreen = ({ userId }) => {
       </Ripple>
       <Ripple
         onPress={async () => {
-          showKeys();
+          await showChapterAsyncStorage();
         }}
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
         <ListItem
-          title="Show Async Storage Chapters"
+          title="Show Async Storage Chapter Values"
           containerStyle={{ backgroundColor: colors.background }}
           titleStyle={{ color: colors.text }}
           leftIcon={{
@@ -97,7 +102,7 @@ const AdvancedScreen = ({ userId }) => {
       </Ripple>
       <Ripple
         onPress={async () => {
-          showPagesAsyncStorage();
+          await showPagesAsyncStorage();
         }}
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
@@ -116,13 +121,13 @@ const AdvancedScreen = ({ userId }) => {
       </Ripple>
       <Ripple
         onPress={async () => {
-          clearPageKeys();
+          await clearPageKeysNotInLibrary();
         }}
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
         <ListItem
-          title="Clear Async Storage Pages"
+          title="Clear Async Storage Pages (Latest Read, Not in library)"
           containerStyle={{ backgroundColor: colors.background }}
           titleStyle={{ color: colors.text }}
           leftIcon={{
@@ -135,7 +140,26 @@ const AdvancedScreen = ({ userId }) => {
       </Ripple>
       <Ripple
         onPress={async () => {
-          testChapterUpdates();
+          await clearChapterKeysNotInLibrary();
+        }}
+        rippleColor="rgb(211,211,211)"
+        rippleOpacity={1}
+      >
+        <ListItem
+          title="Clear Async Storage Chapters (Not in library)"
+          containerStyle={{ backgroundColor: colors.background }}
+          titleStyle={{ color: colors.text }}
+          leftIcon={{
+            name: 'compass',
+            type: 'feather',
+            size: 26,
+            color: color,
+          }}
+        />
+      </Ripple>
+      <Ripple
+        onPress={async () => {
+          await testChapterUpdates();
         }}
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
@@ -159,6 +183,7 @@ const AdvancedScreen = ({ userId }) => {
 const mapStateToProps = (state) => {
   return {
     userId: getUserId(state),
+    mangaList: getMangaList(state),
   };
 };
 
