@@ -1,4 +1,5 @@
 import mangadex from '../api/mangadex';
+import { sources } from '../store/search/constants';
 
 /**
  * get search results from mangadex api
@@ -11,6 +12,7 @@ import mangadex from '../api/mangadex';
  *  id: '',
  *  title: '',
  *  imageUrl: ''
+ *  source: MANGADEX
  * }
  */
 export const getSearchResults = async (searchTerm, offset = 0) => {
@@ -40,6 +42,7 @@ export const getSearchResults = async (searchTerm, offset = 0) => {
       id: id,
       title: title,
       imageUrl: coverUrl,
+      source: sources.MANGADEX,
     });
   });
 
@@ -73,6 +76,7 @@ export const getMangaDetail = async (mangaId) => {
     lastUpdated: attributes.updatedAt, // unused
     cleanedDescription: description,
     lastChapter: attributes.lastChapter, // unused, might be null for ongoing
+    source: sources.MANGADEX,
     // chapterRefs: seperate API for this field
   };
 };

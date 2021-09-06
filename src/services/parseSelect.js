@@ -1,4 +1,5 @@
 import cheerio from 'react-native-cheerio';
+import { sources } from '../store/search/constants';
 
 export const parseManganeloSelect = (html) => {
   const $ = cheerio.load(html);
@@ -84,5 +85,6 @@ export const parseManganatoSelect = (html) => {
     cleanedDescription,
     lastChapter,
     chapterRefs,
+    source: sources.MANGANATO
   };
 }

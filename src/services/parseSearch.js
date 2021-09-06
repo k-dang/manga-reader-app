@@ -1,4 +1,5 @@
 import cheerio from 'react-native-cheerio';
+import { sources } from '../store/search/constants';
 
 export const parseManganeloSearch = (html) => {
   const $ = cheerio.load(html);
@@ -67,7 +68,7 @@ export const parseManganeloAdvancedSearch = (html) => {
  * Parses the html string and returns a tuple containing results & total pages
  * @param {string} html
  * @returns {[object, number]} tuple containing results object & total pages
- * 
+ *
  * return results object format
  * {
  *  id: '',
@@ -92,6 +93,7 @@ export const parseManganatoSearch = (html) => {
       id: foundId[2],
       title: $(result).attr('title'),
       imageUrl: $(result).find('img').attr('src'),
+      source: sources.MANGANATO,
       // onClickUrl: onClickUrl,
     });
   });
@@ -105,13 +107,13 @@ export const parseManganatoSearch = (html) => {
   }
 
   return [results, totalPages];
-}
+};
 
 /**
  * Parses the html string and returns a tuple containing results & total pages
- * @param {string} html 
+ * @param {string} html
  * @returns {[object, number]} tuple containing results object & total pages
- * 
+ *
  * return object format
  * {
  *  id: '',
@@ -148,4 +150,4 @@ export const parseManganatoAdvancedSearch = (html) => {
   }
 
   return [results, totalPages];
-}
+};

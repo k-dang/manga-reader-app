@@ -6,6 +6,7 @@ import {
   getChapters,
   getChapterImages,
 } from '../../src/services/mangadexService';
+import { sources } from '../../src/store/search/constants';
 
 describe('getSearchResults', () => {
   test('should return results', async () => {
@@ -13,6 +14,10 @@ describe('getSearchResults', () => {
 
     expect(results.length).toBeGreaterThan(1);
     expect(parseInt(totalItems)).toBeGreaterThan(0);
+    expect(results[0].id).not.toBeNull();
+    expect(results[0].title).not.toBeNull();
+    expect(results[0].imageUrl).not.toBeNull();
+    expect(results[0].source).toMatch(sources.MANGADEX);
   });
 
   test('should return results with space in term', async () => {
@@ -20,6 +25,10 @@ describe('getSearchResults', () => {
 
     expect(results.length).toBeGreaterThan(1);
     expect(parseInt(totalItems)).toBeGreaterThan(0);
+    expect(results[0].id).not.toBeNull();
+    expect(results[0].title).not.toBeNull();
+    expect(results[0].imageUrl).not.toBeNull();
+    expect(results[0].source).toMatch(sources.MANGADEX);
   });
 });
 
@@ -32,6 +41,7 @@ describe('getMangaDetail', () => {
     expect(result.lastUpdated).not.toBeNull();
     expect(result.cleanedDescription).not.toBeNull();
     expect(result.hasOwnProperty('lastChapter')).toBeTruthy();
+    expect(result.source).toMatch(sources.MANGADEX);
   });
 });
 

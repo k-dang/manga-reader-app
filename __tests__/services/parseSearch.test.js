@@ -1,4 +1,4 @@
-import { expect, jest } from '@jest/globals';
+import { expect } from '@jest/globals';
 import { parseManganatoSearch } from '../../src/services/parseSearch';
 import axios from 'axios';
 
@@ -10,8 +10,6 @@ test('adds 1 + 2 to equal 3', () => {
 
 test('parseManganatoSearch should return results', async () => {
   const response = await axios.get(`https://manganato.com/search/story/demon`);
-
-  // cheerio.load().mockResolvedValue(response.data);
 
   const [results, totalPages] = parseManganatoSearch(response.data);
   expect(results.length).toBeGreaterThan(1);
