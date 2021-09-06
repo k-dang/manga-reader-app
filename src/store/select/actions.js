@@ -11,12 +11,14 @@ import {
   SELECT_MULTIPLE_MANGA_FAILURE,
   SET_CHAPTER_PAGE_READ,
 } from './constants';
+import { sources } from '../search/constants';
 import manganelo from '../../api/mangangelo';
 import manganato from '../../api/manganato';
 import {
   parseManganeloSelect,
   parseManganatoSelect,
 } from '../../services/parseSelect';
+import { getMangaDetail, getMangaFeed } from '../../services/mangadexService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPageItemAsyncStorage } from '../../services/asyncStorageHelpers';
 import {
@@ -55,13 +57,25 @@ export const selectManga = (mangaId) => ({
  * fetches manga detail & merges data from async storage
  * @param {string} mangaId - id of manga from manganato
  * @param {string} mangaTitle - title of manga
+ * @param {string} source - source for select
  */
-const selectMangaFetch = (mangaId, mangaTitle) => {
+const selectMangaFetch = (mangaId, mangaTitle, source) => {
   return async (dispatch) => {
     dispatch(selectMangaRequest(mangaId));
     try {
-      const response = await manganato.get(`/${mangaId}`);
-      const result = parseManganatoSelect(response.data);
+      let result = null;
+      switch (source) {
+        case sources.MANGADEX: {
+          result = await getMangaDetail(mangaId);
+          result.chapterRefs = await getMangaFeed(mangaId);
+          break;
+        }
+        case sources.MANGANATO:
+        default: {
+          const response = await manganato.get(`/${mangaId}`);
+          result = parseManganatoSelect(response.data);
+        }
+      }
 
       if (isMangaFetchResultValid(result)) {
         // get from async storage and merge everytime fetch successful
@@ -75,6 +89,7 @@ const selectMangaFetch = (mangaId, mangaTitle) => {
           return chapterRefObj;
         });
 
+        // for latest reads
         const pageItem = await getPageItemAsyncStorage(mangaId);
         if (pageItem != null) {
           result['latestChapterRead'] = pageItem[0];
@@ -98,8 +113,6 @@ const isMangaFetchResultValid = (result) => {
     result.chapterRefs.length > 0 &&
     result.cleanedDescription &&
     result.infoImageUrl &&
-    result.lastChapter &&
-    result.lastUpdated &&
     result.status
   );
 };
@@ -113,10 +126,10 @@ const shouldFetchSelectManga = (state, mangaId) => {
   }
 };
 
-export const selectMangaFetchIfNeeded = (mangaId, mangaTitle) => {
+export const selectMangaFetchIfNeeded = (mangaId, mangaTitle, source) => {
   return (dispatch, getState) => {
     if (shouldFetchSelectManga(getState(), mangaId)) {
-      return dispatch(selectMangaFetch(mangaId, mangaTitle));
+      return dispatch(selectMangaFetch(mangaId, mangaTitle, source));
     } else {
       return dispatch(selectManga(mangaId));
     }
@@ -233,7 +246,7 @@ const shouldSaveChapterRead = (state, mangaId, chapterRefIndex) => {
  * @param {string} mangaId - id of manga
  * @param {string} chapterRef - ref to specific chapter
  * @param {integer} chapterRefIndex - index of the ref
- * @returns 
+ * @returns
  */
 export const saveChapterReadIfNeeded = (
   mangaId,

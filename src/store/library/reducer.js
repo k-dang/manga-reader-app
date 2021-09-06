@@ -43,7 +43,7 @@ const library = (state = initialState, action) => {
       };
     }
     case SAVE_TO_LIBRARY_SUCCESS: {
-      const { id, title, imageUrl } = action.payload;
+      const { id, title, imageUrl, source } = action.payload;
       return {
         ...state,
         status: 'resolved',
@@ -52,6 +52,7 @@ const library = (state = initialState, action) => {
           [id]: {
             title,
             imageUrl,
+            source,
           },
         },
       };

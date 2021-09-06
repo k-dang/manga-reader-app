@@ -26,6 +26,7 @@ import {
   saveChapterPageRead,
 } from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
+import { sources } from '../store/search/constants';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -62,7 +63,7 @@ const ChaptersScreen = ({
   const handleMangaViewerNavigation = debounce(
     (chapterRef, index) => {
       saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index);
-      fetchChapterIfNeeded(chapterRef, index);
+      fetchChapterIfNeeded(chapterRef, index, selectedMangaDetail.source);
       saveChapterPageRead(selectedMangaDetail.mangaId, chapterRef, 0);
       // too fast?
       navigation.navigate('MangaViewer');
@@ -74,6 +75,21 @@ const ChaptersScreen = ({
   const markReadBelow = () => {
     saveChaptersRead(selectedMangaDetail.mangaId, heldIndex);
     setVisible(false);
+  };
+
+  const getFormattedDate = (dateString) => {
+    switch (selectedMangaDetail.source) {
+      case sources.MANGADEX: {
+        return format(new Date(dateString), 'MM/dd/yyyy');
+      }
+      case sources.MANGANATO:
+      default: {
+        return format(
+          parse(dateString, 'MMM dd,yyyy HH:mm', new Date()),
+          'MM/dd/yyyy'
+        );
+      }
+    }
   };
 
   return (
@@ -113,10 +129,7 @@ const ChaptersScreen = ({
                       item.hasRead ? styles.greyText : null,
                     ]}
                   >
-                    {format(
-                      parse(item.date, 'MMM dd,yyyy HH:mm', new Date()),
-                      'MM/dd/yyyy'
-                    )}
+                    {getFormattedDate(item.date)}
                   </Text>
                 </View>
               </Ripple>

@@ -17,7 +17,7 @@ const MangaList = ({
   const navigation = useNavigation();
 
   const handleNavigation = (manga) => {
-    selectMangaFetchIfNeeded(manga.id, manga.title);
+    selectMangaFetchIfNeeded(manga.id, manga.title, manga.source);
     navigation.navigate('Info');
   };
 

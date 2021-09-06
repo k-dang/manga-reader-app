@@ -13,6 +13,7 @@ import MangaCover from '../components/MangaCover';
 // store
 import { connect } from 'react-redux';
 import { selectMangaFetchIfNeeded } from '../store/select/actions';
+import { sources } from '../store/search/constants';
 
 const MangaListHorizontal = ({
   mangaResults,
@@ -24,7 +25,7 @@ const MangaListHorizontal = ({
   const { colors } = useTheme();
 
   const handleNavigation = (manga) => {
-    selectMangaFetchIfNeeded(manga.id, manga.title);
+    selectMangaFetchIfNeeded(manga.id, manga.title, sources.MANGANATO);
     navigation.navigate('Info');
   };
 

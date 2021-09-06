@@ -7,8 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ScrollView,
-  ToastAndroid,
-  Platform,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import ErrorContainer from '../components/ErrorContainer';
@@ -61,28 +59,17 @@ const InfoScreen = ({
         selectedMangaDetail.mangaId,
         selectedMangaDetail.mangaTitle,
         selectedMangaDetail.infoImageUrl,
-        userId
+        userId,
+        selectedMangaDetail.source
       );
-      // if (Platform.OS === 'android') {
-      //   ToastAndroid.show(
-      //     'Saved to Library',
-      //     ToastAndroid.SHORT,
-      //     ToastAndroid.BOTTOM
-      //   );
-      // }
+
       Toast.show('Saved to Library', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.BOTTOM,
       });
     } else {
       removeFromLibrary(userId, selectedMangaDetail.mangaId);
-      // if (Platform.OS === 'android') {
-      //   ToastAndroid.show(
-      //     'Removed from Library',
-      //     ToastAndroid.SHORT,
-      //     ToastAndroid.BOTTOM
-      //   );
-      // }
+
       Toast.show('Removed from Library', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.BOTTOM,
@@ -123,7 +110,11 @@ const InfoScreen = ({
       chapterRefToRead.chapterRef,
       chapterRefToRead.index
     );
-    fetchChapterIfNeeded(chapterRefToRead.chapterRef, chapterRefToRead.index);
+    fetchChapterIfNeeded(
+      chapterRefToRead.chapterRef,
+      chapterRefToRead.index,
+      selectedMangaDetail.source
+    );
     saveChapterPageRead(
       selectedMangaDetail.mangaId,
       chapterRefToRead.chapterRef,

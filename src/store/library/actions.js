@@ -19,16 +19,16 @@ export const saveToLibraryRequest = (id) => ({
   payload: { id },
 });
 
-export const saveToLibrarySuccess = (id, title, imageUrl) => ({
+export const saveToLibrarySuccess = (id, title, imageUrl, source) => ({
   type: SAVE_TO_LIBRARY_SUCCESS,
-  payload: { id, title, imageUrl },
+  payload: { id, title, imageUrl, source },
 });
 
 export const saveToLibraryFailure = () => ({
   type: SAVE_TO_LIBRARY_FAILURE,
 });
 
-export const saveToLibrary = (id, title, imageUrl, userId) => {
+export const saveToLibrary = (id, title, imageUrl, userId, source) => {
   return async (dispatch) => {
     dispatch(saveToLibraryRequest(id));
     dispatch(syncChapterUpdate(id));
@@ -39,9 +39,10 @@ export const saveToLibrary = (id, title, imageUrl, userId) => {
           id: id,
           title: title,
           imageUrl: imageUrl,
+          source: source,
         },
       });
-      dispatch(saveToLibrarySuccess(id, title, imageUrl));
+      dispatch(saveToLibrarySuccess(id, title, imageUrl, source));
     } catch (err) {
       console.log(err);
       dispatch(saveToLibraryFailure());

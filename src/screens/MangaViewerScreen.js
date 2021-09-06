@@ -59,7 +59,6 @@ const MangaViewerScreen = ({
   saveChapterPageRead,
   navigation,
 }) => {
-
   if (isFetching) {
     return (
       <View style={styles.darkContainer}>
@@ -105,7 +104,11 @@ const MangaViewerScreen = ({
         selectedChapterRefObject.next,
         nextIndex
       );
-      fetchChapterIfNeeded(selectedChapterRefObject.next, nextIndex);
+      fetchChapterIfNeeded(
+        selectedChapterRefObject.next,
+        nextIndex,
+        selectedMangaDetail.source
+      );
       saveChapterPageRead(
         selectedMangaDetail.mangaId,
         selectedChapterRefObject.next,
@@ -164,8 +167,8 @@ const MangaViewerScreen = ({
         nextTransitionCard={transitionCard}
         onGoNextFail={handleChapterTransition}
         saveToLocalByLongPress={false}
-        loadingRender={() => <LoadingCard/>}
-        failImageRender={() => <FailCard/>}
+        loadingRender={() => <LoadingCard />}
+        failImageRender={() => <FailCard />}
       />
     </View>
   );

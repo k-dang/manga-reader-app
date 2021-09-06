@@ -36,7 +36,6 @@ export const searchMangaFailure = () => ({
 });
 
 export const searchManga = (searchTerm) => {
-  // return async (dispatch, getState) => {
   return async (dispatch, getState) => {
     dispatch(searchMangaRequest(searchTerm));
     try {
@@ -48,7 +47,8 @@ export const searchManga = (searchTerm) => {
           dispatch(searchMangaDexSuccess(results, totalResults));
           break;
         }
-        case sources.MANGANATO: {
+        case sources.MANGANATO:
+        default: {
           const searchSafeString = searchTerm.replace(/\s/, '_');
           const response = await manganato.get(
             `/search/story/${searchSafeString}`
@@ -91,9 +91,10 @@ export const searchMangaPaginated = (searchTerm) => {
           dispatch(searchMangaDexPaginatedSuccess(results));
           break;
         }
-        case sources.MANGANATO: {
+        case sources.MANGANATO:
+        default: {
           const searchSafeString = searchTerm.replace(/\s/, '_');
-          const pageToLoad = getState().search.loadedPages + 1
+          const pageToLoad = getState().search.loadedPages + 1;
           const response = await manganato.get(
             `/search/story/${searchSafeString}?page=${pageToLoad}`
           );

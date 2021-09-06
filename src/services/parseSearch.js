@@ -138,6 +138,7 @@ export const parseManganatoAdvancedSearch = (html) => {
       id: foundId[2],
       title: $(result).attr('title'),
       imageUrl: $(result).find('img').attr('src'),
+      source: sources.MANGANATO,
     });
   });
 

@@ -7,12 +7,17 @@ import {
   SET_CHAPTER_UPDATE,
   SET_MULTIPLE_CHAPTER_UPDATE,
 } from './constants';
+import { sources } from '../search/constants';
+
 import manganelo from '../../api/mangangelo';
 import manganato from '../../api/manganato';
 import {
   parseManganeloChapter,
   parseManganatoChapter,
 } from '../../services/parseChapter';
+import { getChapterImages } from '../../services/mangadexService';
+
+// async storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateTotalChaptersAsyncStorage } from '../../services/asyncStorageHelpers';
 
@@ -50,14 +55,25 @@ export const viewChapter = (chapterRef, chapterRefIndex) => ({
  * @param {string} mangaId - id of manga
  * @param {string} chapterRef - ref to specific chapter
  * @param {integer} chapterRefIndex - index of the ref
- * @returns 
+ * @param {string} source - source for chapter fetch
+ * @returns
  */
-const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
+const fetchChapter = (mangaId, chapterRef, chapterRefIndex, source) => {
   return async (dispatch) => {
     dispatch(fetchChapterRequest(chapterRef, chapterRefIndex));
     try {
-      const response = await manganato.get(`/${mangaId}/${chapterRef}`);
-      const results = parseManganatoChapter(response.data);
+      let results = null;
+      switch (source) {
+        case sources.MANGADEX: {
+          results = await getChapterImages(chapterRef);
+          break;
+        }
+        case sources.MANGANATO:
+        default: {
+          const response = await manganato.get(`/${mangaId}/${chapterRef}`);
+          results = parseManganatoChapter(response.data);
+        }
+      }
 
       dispatch(fetchChapterSuccess(chapterRef, results, mangaId));
     } catch (err) {
@@ -68,7 +84,8 @@ const fetchChapter = (mangaId, chapterRef, chapterRefIndex) => {
 };
 
 const shouldFetchChapter = (state, chapterRef) => {
-  const chapters = state.chapters.chaptersByMangaId[state.select.selectedMangaId];
+  const chapters =
+    state.chapters.chaptersByMangaId[state.select.selectedMangaId];
   // conditional access
   const chapter = chapters?.[chapterRef];
   if (!chapter) {
@@ -80,18 +97,20 @@ const shouldFetchChapter = (state, chapterRef) => {
 
 /**
  * dispatches fetchChapter if chapter data isn't already saved
- * @param {*} chapterRef - ref to specific chapter
- * @param {*} chapterRefIndex - index of the ref
- * @returns 
+ * @param {string} chapterRef - ref to specific chapter
+ * @param {integer} chapterRefIndex - index of the ref
+ * @param {string} source - source for chapter fetch
+ * @returns
  */
-export const fetchChapterIfNeeded = (chapterRef, chapterRefIndex) => {
+export const fetchChapterIfNeeded = (chapterRef, chapterRefIndex, source) => {
   return (dispatch, getState) => {
     if (shouldFetchChapter(getState(), chapterRef)) {
       return dispatch(
         fetchChapter(
           getState().select.selectedMangaId,
           chapterRef,
-          chapterRefIndex
+          chapterRefIndex,
+          source
         )
       );
     } else {

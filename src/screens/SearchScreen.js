@@ -69,7 +69,8 @@ const SearchScreen = ({
           }
           break;
         }
-        case sources.MANGANATO: {
+        case sources.MANGANATO:
+        default: {
           if (loadedPages < totalPages) {
             searchMangaPaginated(searchTerm);
           }
