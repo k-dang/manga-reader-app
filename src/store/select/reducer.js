@@ -24,9 +24,13 @@ import {
 //     chapterRef: '',
 //     name: ''
 //     date: ''
+//     next: ''
+//     number: ''
 //   }],
 //   latestChapterRead: '',
 //   latestChapterPage: '',
+//   didInvalidate: '',
+//   source: ''
 // }
 const initialState = {
   status: 'idle',

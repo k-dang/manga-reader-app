@@ -14,6 +14,7 @@ import {
 //   "id": "az918766",
 //   "imageUrl": "https://avt.mkklcdnv6.com/7/m/18-1583497374.jpg",
 //   "title": "Ice Guy and the Cool Female Colleague",
+//   "source": ""
 // }
 const initialState = {
   status: 'idle',

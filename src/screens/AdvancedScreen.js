@@ -35,8 +35,6 @@ const getKeysToClear = (storageKeys, mangasInLibrary) => {
   return result;
 };
 
-// TODO create button to help clear out chapterUpdatesByMangaId from async storage
-
 const AdvancedScreen = ({ userId, mangaList }) => {
   const { colors } = useTheme();
   const color = userProfiles.find((x) => x.id === userId).color;

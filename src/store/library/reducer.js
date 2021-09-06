@@ -16,7 +16,8 @@ import {
 // {
 //   id: {
 //     title,
-//     imageUrl
+//     imageUrl,
+//     source?
 //   }
 // }
 const initialState = {
@@ -25,7 +26,7 @@ const initialState = {
   loadError: null,
   removeFromError: null,
   mangaById: {},
-  sortType: sort.UNREAD_DESC, // TODO default sorting
+  sortType: sort.UNREAD_DESC, // default sorting
 };
 const library = (state = initialState, action) => {
   switch (action.type) {
