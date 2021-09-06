@@ -18,7 +18,7 @@ import {
   parseManganeloSelect,
   parseManganatoSelect,
 } from '../../services/parseSelect';
-import { getMangaDetail, getMangaFeed } from '../../services/mangadexService';
+import { getFullMangaDetail } from '../../services/mangadexService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getPageItemAsyncStorage } from '../../services/asyncStorageHelpers';
 import {
@@ -66,8 +66,7 @@ const selectMangaFetch = (mangaId, mangaTitle, source) => {
       let result = null;
       switch (source) {
         case sources.MANGADEX: {
-          result = await getMangaDetail(mangaId);
-          result.chapterRefs = await getMangaFeed(mangaId);
+          result = await getFullMangaDetail(mangaId);
           break;
         }
         case sources.MANGANATO:
@@ -159,17 +158,33 @@ export const selectMultipleMangaFetch = (manga) => {
   return async (dispatch) => {
     dispatch(selectMultipleMangaRequest());
     try {
-      const requests = [];
+      const manganatoRequests = [];
+      const manganatoMapping = [];
+      const mangadexRequests = [];
+      const mangadexMapping = [];
       for (const m of manga) {
-        requests.push(manganato.get(`/${m.id}`));
+        switch (m.source) {
+          case sources.MANGADEX: {
+            mangadexRequests.push(getFullMangaDetail(m.id));
+            mangadexMapping.push({ id: m.id, title: m.title });
+          }
+          case sources.MANGANATO:
+          default: {
+            manganatoRequests.push(manganato.get(`/${m.id}`));
+            manganatoMapping.push({ id: m.id, title: m.title });
+          }
+        }
       }
-      const results = await Promise.all(requests);
+      const results = await Promise.all(manganatoRequests);
 
       const parsedResults = [];
       for (const [index, result] of results.entries()) {
         const parsedResult = parseManganatoSelect(result.data);
         if (isMangaFetchResultValid(parsedResult)) {
-          const value = await AsyncStorage.getItem(manga[index].id);
+          const mangaId = manganatoMapping[index].id;
+          const mangaTitle = manganatoMapping[index].title;
+
+          const value = await AsyncStorage.getItem(mangaId);
           const jsonValue = JSON.parse(value);
           parsedResult.chapterRefs = parsedResult.chapterRefs.map(
             (chapterRefObj) => {
@@ -180,10 +195,34 @@ export const selectMultipleMangaFetch = (manga) => {
               return chapterRefObj;
             }
           );
-          parsedResult.mangaId = manga[index].id;
+          parsedResult.mangaId = mangaId;
+          parsedResult.mangaTitle = mangaTitle;
           parsedResults.push(parsedResult);
         }
       }
+
+      // TODO do MANGADEX ones
+      const mangadexresults = await Promise.all(mangadexRequests);
+      for (const [index, result] of mangadexresults.entries()) {
+        if (isMangaFetchResultValid(result)) {
+          const mangaId = mangadexMapping[index].id;
+          const mangaTitle = mangadexMapping[index].title;
+
+          const value = await AsyncStorage.getItem(mangaId);
+          const jsonValue = JSON.parse(value);
+          result.chapterRefs = result.chapterRefs.map((chapterRefObj) => {
+            const key = chapterRefObj.chapterRef;
+            if (jsonValue && jsonValue[key]) {
+              chapterRefObj = { ...chapterRefObj, ...jsonValue[key] };
+            }
+            return chapterRefObj;
+          });
+          result.mangaId = mangaId;
+          result.mangaTitle = mangaTitle;
+          parsedResults.push(result);
+        }
+      }
+
       dispatch(selectMultipleMangaSuccess(parsedResults));
       dispatch(syncAllChapterUpdates(parsedResults));
     } catch (err) {

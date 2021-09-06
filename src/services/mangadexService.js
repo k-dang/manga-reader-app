@@ -180,3 +180,13 @@ export const getChapterImages = async (chapterRef) => {
 
   return imageUrls;
 };
+
+export const getFullMangaDetail = async (mangaId) => {
+  const detailPromise = getMangaDetail(mangaId);
+  const feedPromise = getMangaFeed(mangaId);
+
+  const detail = await detailPromise;
+  detail.chapterRefs = await feedPromise;
+
+  return detail;
+};

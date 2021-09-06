@@ -174,6 +174,26 @@ const AdvancedScreen = ({ userId, mangaList }) => {
           }}
         />
       </Ripple>
+      <Ripple
+        onPress={async () => {
+          const values = await AsyncStorage.getItem('manga-ax951880');
+          console.log(values);
+        }}
+        rippleColor="rgb(211,211,211)"
+        rippleOpacity={1}
+      >
+        <ListItem
+          title="Get specific chapter updates"
+          containerStyle={{ backgroundColor: colors.background }}
+          titleStyle={{ color: colors.text }}
+          leftIcon={{
+            name: 'alert-circle',
+            type: 'feather',
+            size: 26,
+            color: color,
+          }}
+        />
+      </Ripple>
     </ThemedView>
   );
 };

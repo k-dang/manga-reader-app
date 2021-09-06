@@ -65,17 +65,21 @@ export const parseManganatoSelect = (html) => {
   const chaptersList = $('ul.row-content-chapter li.a-h');
   const chapterRegEx = /chapter-.+/;
   const chapterRefs = [];
+  const seen = new Set();
   chaptersList.each((i, el) => {
     const chapter = $(el).find('a.chapter-name');
     const found = chapterRegEx.exec($(chapter).attr('href'));
 
-    const prev = chapterRefs[chapterRefs.length - 1];
-    chapterRefs.push({
-      chapterRef: found[0],
-      name: $(chapter).text(),
-      date: $(el).find('.chapter-time').attr('title'),
-      next: prev ? prev.chapterRef : null,
-    });
+    if (!seen.has(found[0])) {
+      const prev = chapterRefs[chapterRefs.length - 1];
+      chapterRefs.push({
+        chapterRef: found[0],
+        name: $(chapter).text(),
+        date: $(el).find('.chapter-time').attr('title'),
+        next: prev ? prev.chapterRef : null,
+      });
+      seen.add(found[0]);
+    }
   });
 
   return {
@@ -85,6 +89,6 @@ export const parseManganatoSelect = (html) => {
     cleanedDescription,
     lastChapter,
     chapterRefs,
-    source: sources.MANGANATO
+    source: sources.MANGANATO,
   };
-}
+};

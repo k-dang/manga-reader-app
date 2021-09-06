@@ -5,6 +5,7 @@ import {
   getMangaFeed,
   getChapters,
   getChapterImages,
+  getFullMangaDetail,
 } from '../../src/services/mangadexService';
 import { sources } from '../../src/store/search/constants';
 
@@ -60,6 +61,24 @@ describe('getMangaFeed', () => {
     expect(result.length).toBeGreaterThan(1);
     expect(result[0].next).toBeNull(); // first one should have no next
     expect(result[1].next).toEqual(result[0].chapterRef);
+  });
+});
+
+describe('getFullMangaDetail', () => {
+  test('should return chapters with detail', async () => {
+    const result = await getFullMangaDetail(
+      'f7418c7b-14ee-4889-85ae-b31fcb8b0857'
+    );
+
+    expect(result.infoImageUrl).not.toBeNull();
+    expect(result.status).not.toBeNull();
+    expect(result.lastUpdated).not.toBeNull();
+    expect(result.cleanedDescription).not.toBeNull();
+    expect(result.hasOwnProperty('lastChapter')).toBeTruthy();
+    expect(result.source).toMatch(sources.MANGADEX);
+
+    expect(result.chapterRefs).not.toBeNull();
+    expect(result.chapterRefs.length).toBeGreaterThan(1);
   });
 });
 
