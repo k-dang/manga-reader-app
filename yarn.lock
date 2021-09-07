@@ -7977,9 +7977,9 @@ react-native-image-pan-zoom@^2.1.12:
   resolved "https://registry.yarnpkg.com/react-native-image-pan-zoom/-/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"
   integrity sha512-BF66XeP6dzuANsPmmFsJshM2Jyh/Mo1t8FsGc1L9Q9/sVP8MJULDabB1hms+eAoqgtyhMr5BuXV3E1hJ5U5H6Q==
 
-"react-native-image-zoom-viewer@https://github.com/k-dang/react-native-image-viewer/releases/download/v3.1.1/react-native-image-zoom-viewer-3.1.1.tgz":
-  version "3.1.1"
-  resolved "https://github.com/k-dang/react-native-image-viewer/releases/download/v3.1.1/react-native-image-zoom-viewer-3.1.1.tgz#7c0ff8d8e407939bddf90c2ebfb8d022c1aecfb8"
+"react-native-image-zoom-viewer@https://github.com/k-dang/react-native-image-viewer/releases/download/v3.1.2/react-native-image-zoom-viewer-3.1.2.tgz":
+  version "3.1.2"
+  resolved "https://github.com/k-dang/react-native-image-viewer/releases/download/v3.1.2/react-native-image-zoom-viewer-3.1.2.tgz#71bd2d01bb13d535138d108cd76e371d6733b789"
   dependencies:
     react-native-image-pan-zoom "^2.1.12"
 
