@@ -64,7 +64,7 @@ export const getMangaDetail = async (mangaId) => {
   if (coverArt === undefined) {
     coverUrl = 'https://imgur.com/N5nDw9J';
   } else {
-    coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${coverArt.attributes.fileName}`;
+    coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${coverArt.attributes.fileName}.256.jpg`;
   }
   const description = attributes.description.hasOwnProperty('en')
     ? attributes.description.en

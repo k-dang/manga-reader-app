@@ -6,12 +6,17 @@ import { Overlay, ListItem, Icon, CheckBox } from 'react-native-elements';
 // store
 import { connect } from 'react-redux';
 import { sources } from '../store/search/constants';
-import { setSearchSource } from '../store/search/actions';
-import { getSearchSource } from '../store/search/selectors';
+import { setSearchSource, searchManga } from '../store/search/actions';
+import { getSearchSource, getSearchTerm } from '../store/search/selectors';
 
 const windowWidth = Dimensions.get('window').width;
 
-const SourceSwitchButton = ({ source, setSearchSource }) => {
+const SourceSwitchButton = ({
+  source,
+  searchTerm,
+  setSearchSource,
+  searchManga,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const { colors } = useTheme();
@@ -45,7 +50,12 @@ const SourceSwitchButton = ({ source, setSearchSource }) => {
             checkedIcon="dot-circle-o"
             uncheckedIcon="circle-o"
             checked={source == sources.MANGANATO}
-            onPress={() => setSearchSource(sources.MANGANATO)}
+            onPress={() => {
+              setSearchSource(sources.MANGANATO);
+              if (searchTerm != '') {
+                searchManga(searchTerm);
+              }
+            }}
             textStyle={{ color: colors.text }}
             containerStyle={{
               backgroundColor: colors.background,
@@ -57,7 +67,12 @@ const SourceSwitchButton = ({ source, setSearchSource }) => {
             checkedIcon="dot-circle-o"
             uncheckedIcon="circle-o"
             checked={source == sources.MANGADEX}
-            onPress={() => setSearchSource(sources.MANGADEX)}
+            onPress={() => {
+              setSearchSource(sources.MANGADEX);
+              if (searchTerm != '') {
+                searchManga(searchTerm);
+              }
+            }}
             textStyle={{ color: colors.text }}
             containerStyle={{
               backgroundColor: colors.background,
@@ -91,9 +106,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     source: getSearchSource(state),
+    searchTerm: getSearchTerm(state),
   };
 };
 
-export default connect(mapStateToProps, { setSearchSource })(
+export default connect(mapStateToProps, { setSearchSource, searchManga })(
   SourceSwitchButton
 );
