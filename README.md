@@ -20,9 +20,8 @@ expo publish
 expo link:
 <https://expo.io/@kdang12/manga-reader-app>
 
-TODO
+Run Tests with jest
 
-previous/back chapter transition
-
-figure out why library screen is rendered twice
-history tab
+```bash
+npm run test
+```

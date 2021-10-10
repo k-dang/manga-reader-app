@@ -14,7 +14,7 @@ import {
 // chapterUpdatesByMangaId is dictionary of
 // mangaId: number
 const initialState = {
-  isFetching: false,
+  status: 'idle',
   error: null,
   currentChapterRef: '',
   currentChapterRefIndex: 0,
@@ -27,7 +27,7 @@ const chapters = (state = initialState, action) => {
       const { chapterRef, chapterRefIndex } = action.payload;
       return {
         ...state,
-        isFetching: true,
+        status: 'pending',
         error: null,
         currentChapterRef: chapterRef,
         currentChapterRefIndex: chapterRefIndex,
@@ -38,7 +38,7 @@ const chapters = (state = initialState, action) => {
       const mangaChapters = state.chaptersByMangaId[mangaId] ? state.chaptersByMangaId[mangaId] : {};
       return {
         ...state,
-        isFetching: false,
+        status: 'resolved',
         chaptersByMangaId: {
           ...state.chaptersByMangaId,
           [mangaId]: {
@@ -51,7 +51,7 @@ const chapters = (state = initialState, action) => {
     case FETCH_CHAPTER_FAILURE: {
       return {
         ...state,
-        isFetching: false,
+        status: 'rejected',
         error: 'Oh no, there was a problem finding this chapter',
       };
     }

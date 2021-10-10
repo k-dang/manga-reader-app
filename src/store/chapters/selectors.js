@@ -1,7 +1,7 @@
 export const getChaptersState = (store) => store.chapters;
 
-export const getChaptersFetchState = (store) =>
-  getChaptersState(store) ? getChaptersState(store).isFetching : false;
+export const getChaptersFetchStatus = (store) =>
+  getChaptersState(store) ? getChaptersState(store).status : 'idle';
 
 export const getChaptersError = (store) =>
   getChaptersState(store) ? getChaptersState(store).error : null;

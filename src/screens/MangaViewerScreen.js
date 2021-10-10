@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import {
   getCurrentChapterRef,
   getCurrentChapterRefIndex,
-  getChaptersFetchState,
+  getChaptersFetchStatus,
   getChaptersByMangaId,
 } from '../store/chapters/selectors';
 import { getMangaById } from '../store/select/selectors';
@@ -49,7 +49,7 @@ const renderPrevButton = () => {
 };
 
 const MangaViewerScreen = ({
-  isFetching,
+  status,
   currentChapterRef,
   currentChapterIndex,
   chapters,
@@ -59,7 +59,7 @@ const MangaViewerScreen = ({
   saveChapterPageRead,
   navigation,
 }) => {
-  if (isFetching) {
+  if (status === 'idle' || status === 'pending') {
     return (
       <View style={styles.darkContainer}>
         <ActivityIndicator
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isFetching: getChaptersFetchState(state),
+    status: getChaptersFetchStatus(state),
     currentChapterRef: getCurrentChapterRef(state),
     currentChapterIndex: getCurrentChapterRefIndex(state),
     chapters: getChaptersByMangaId(state, state.select.selectedMangaId),
