@@ -166,12 +166,12 @@ const parseChapters = (resultsList) => {
 };
 
 export const getChapterImages = async (chapterRef) => {
-  const response = await mangadex.get(`/chapter/${chapterRef}`);
-  const attributes = response.data.data.attributes;
+  const response = await mangadex.get(`/at-home/server/${chapterRef}`);
+  const chapter = response.data.chapter;
 
-  const chapterHash = attributes.hash;
+  const chapterHash = chapter.hash;
   const imageUrls = [];
-  attributes.data.forEach((fileName) => {
+  chapter.data.forEach((fileName) => {
     imageUrls.push({
       url: `https://uploads.mangadex.org/data/${chapterHash}/${fileName}`,
     });
