@@ -9,7 +9,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Overlay, ListItem } from 'react-native-elements';
-import Toast from 'react-native-root-toast';
+import Toast from 'react-native-root-toast'; // TODO deprecated soon
 
 // store
 import { connect } from 'react-redux';

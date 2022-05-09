@@ -11,7 +11,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import ErrorContainer from '../components/ErrorContainer';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Toast from 'react-native-root-toast';
+import Toast from 'react-native-root-toast'; // TODO deprecated soon
 
 // store
 import { connect } from 'react-redux';

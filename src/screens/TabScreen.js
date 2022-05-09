@@ -23,11 +23,9 @@ const TabScreen = () => {
   }, [dark]);
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        inactiveTintColor: '#7F7F80',
-        activeTintColor: colors.text,
-      }}
       screenOptions={({ route }) => ({
+        tabBarInactiveTintColor: '#7F7F80',
+        tabBarActiveTintColor: colors.text,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -53,10 +51,26 @@ const TabScreen = () => {
       })}
       initialRouteName="Library"
     >
-      <Tab.Screen name="Library" component={LibraryScreen} />
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen
+        name="Library"
+        component={LibraryScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Discover"
+        component={DiscoverScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 };
