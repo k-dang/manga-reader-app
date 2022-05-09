@@ -28,6 +28,7 @@ import {
   saveChapterReadIfNeeded,
   saveChapterPageRead,
 } from '../store/select/actions';
+import { sources } from '../store/search/constants';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -121,6 +122,10 @@ const MangaViewerScreen = ({
   };
 
   const imageUrls = () => {
+    const refer =
+      selectedMangaDetail.source === sources.MANGANATO
+        ? 'https://readmanganato.com'
+        : '';
     // TODO add a previous transition card
     const images = chapters[currentChapterRef].map((element) => {
       return {
@@ -130,7 +135,7 @@ const MangaViewerScreen = ({
         props: {
           source: {
             headers: {
-              Referer: `https://readmanganato.com`,
+              Referer: refer,
             },
           },
           style: {
