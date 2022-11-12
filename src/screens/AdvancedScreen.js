@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import Ripple from 'react-native-material-ripple';
-import { ListItem } from 'react-native-elements';
+import { Icon, ListItem } from 'react-native-elements';
 import ThemedView from '../components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userProfiles } from '../services/userProfiles';
@@ -67,17 +66,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Show Async Storage Chapter Keys"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'compass',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Show Async Storage Chapter Keys
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -86,17 +80,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Show Async Storage Chapter Values"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'compass',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Show Async Storage Chapter Values
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -105,17 +94,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Show Async Storage Pages"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'compass',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Show Async Storage Pages
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -124,17 +108,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Clear Async Storage Pages (Latest Read, Not in library)"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'compass',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Clear Async Storage Pages (Latest Read, Not in library)
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -143,17 +122,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Clear Async Storage Chapters (Not in library)"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'compass',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Clear Async Storage Chapters (Not in library)
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -162,17 +136,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Test chapter updates"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'alert-circle',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="compass" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Test chapter updates
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
       <Ripple
         onPress={async () => {
@@ -182,17 +151,12 @@ const AdvancedScreen = ({ userId, mangaList }) => {
         rippleColor="rgb(211,211,211)"
         rippleOpacity={1}
       >
-        <ListItem
-          title="Get specific chapter updates"
-          containerStyle={{ backgroundColor: colors.background }}
-          titleStyle={{ color: colors.text }}
-          leftIcon={{
-            name: 'alert-circle',
-            type: 'feather',
-            size: 26,
-            color: color,
-          }}
-        />
+        <ListItem containerStyle={{ backgroundColor: colors.background }}>
+          <Icon name="alert-circle" type="feather" size={26} color={color} />
+          <ListItem.Title style={{ color: colors.text }}>
+            Get specific chapter updates
+          </ListItem.Title>
+        </ListItem>
       </Ripple>
     </ThemedView>
   );

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Overlay, ListItem } from 'react-native-elements';
+import { Icon, Overlay, ListItem } from 'react-native-elements';
 import Toast from 'react-native-root-toast'; // TODO deprecated soon
 
 // store
@@ -77,23 +77,25 @@ const HeaderRight = ({
         overlayStyle={[styles.overlay, { backgroundColor: colors.background }]}
       >
         <View style={styles.overlayContainer}>
+          <ListItem containerStyle={{ backgroundColor: colors.background }}>
+            <ListItem.Title style={{ color: colors.text }}>
+              Sort by
+            </ListItem.Title>
+          </ListItem>
           <ListItem
-            title="Sort by"
-            titleStyle={{ color: colors.text }}
             containerStyle={{ backgroundColor: colors.background }}
-          />
-          <ListItem
-            title="Unread"
-            titleStyle={{ color: colors.text }}
-            containerStyle={{ backgroundColor: colors.background }}
-            leftIcon={{
-              name: unreadSortIcon,
-              type: 'feather',
-              size: 26,
-              color: colors.text,
-            }}
             onPress={toggleUnreadSort}
-          />
+          >
+            <Icon
+              name={unreadSortIcon}
+              type="feather"
+              size={26}
+              color={colors.text}
+            />
+            <ListItem.Title style={{ color: colors.text }}>
+              Unread
+            </ListItem.Title>
+          </ListItem>
           <ListItem containerStyle={{ backgroundColor: colors.background }} />
         </View>
       </Overlay>
