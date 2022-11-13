@@ -63,29 +63,24 @@ const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
           rippleColor="rgb(211,211,211)"
           rippleOpacity={1}
         >
-          <ListItem
-            containerStyle={{ backgroundColor: colors.background }}
-            titleStyle={{ color: colors.text }}
-            title="App theme"
-            leftIcon={{ name: 'moon', type: 'feather', size: 26, color: color }}
-          />
+          <ListItem containerStyle={{ backgroundColor: colors.background }}>
+            <Icon name="moon" type="feather" size={26} color={color} />
+            <ListItem.Title style={{ color: colors.text }}>
+              App Theme
+            </ListItem.Title>
+          </ListItem>
         </Ripple>
         <Ripple
           onPress={() => navigation.navigate('Advanced')}
           rippleColor="rgb(211,211,211)"
           rippleOpacity={1}
         >
-          <ListItem
-            containerStyle={{ backgroundColor: colors.background }}
-            titleStyle={{ color: colors.text }}
-            title="Advanced"
-            leftIcon={{
-              name: 'coffee',
-              type: 'feather',
-              size: 26,
-              color: color,
-            }}
-          />
+          <ListItem containerStyle={{ backgroundColor: colors.background }}>
+            <Icon name="coffee" type="feather" size={26} color={color} />
+            <ListItem.Title style={{ color: colors.text }}>
+              Advanced
+            </ListItem.Title>
+          </ListItem>
         </Ripple>
       </View>
     </View>

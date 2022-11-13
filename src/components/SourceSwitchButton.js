@@ -40,11 +40,11 @@ const SourceSwitchButton = ({
         overlayStyle={[styles.overlay, { backgroundColor: colors.background }]}
       >
         <View style={styles.overlayContainer}>
-          <ListItem
-            title="Select a source"
-            titleStyle={{ color: colors.text }}
-            containerStyle={{ backgroundColor: colors.background }}
-          />
+          <ListItem containerStyle={{ backgroundColor: colors.background }}>
+            <ListItem.Title style={{ color: colors.text }}>
+              Select a source
+            </ListItem.Title>
+          </ListItem>
           <CheckBox
             title="MangaNato (default)"
             checkedIcon="dot-circle-o"
