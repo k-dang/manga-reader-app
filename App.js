@@ -21,7 +21,7 @@ import store from './src/store';
 
 const Stack = createStackNavigator();
 
-const forFade = ({ current, closing }) => ({
+const forFade = ({ current }) => ({
   cardStyle: {
     opacity: current.progress,
   },
