@@ -9,7 +9,9 @@ export const updateTotalChaptersAsyncStorage = async (
     const jsonValue = value ? JSON.parse(value) : {};
     jsonValue.totalChapters = totalChapters;
     await AsyncStorage.setItem(mangaId, JSON.stringify(jsonValue));
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const removePageItemAsyncStorage = async (mangaId) => {

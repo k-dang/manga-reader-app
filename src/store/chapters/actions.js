@@ -138,7 +138,12 @@ export const loadChapterTotalsAsyncStorage = () => {
       const value = JSON.parse(await AsyncStorage.getItem(key));
       // account for "totalChapters" key
       const readTotal = Object.keys(value).length - 1;
-      chapterUpdatesByMangaId[key] = value.totalChapters - readTotal;
+      // edge case where chapters get removed and we get more reads than total chapters?
+      const totalRead =
+        value.totalChapters - readTotal < 0
+          ? 0
+          : value.totalChapters - readTotal;
+      chapterUpdatesByMangaId[key] = totalRead;
     }
 
     dispatch(loadChapterTotals(chapterUpdatesByMangaId));
