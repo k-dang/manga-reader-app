@@ -32,11 +32,14 @@ const App = () => {
     <RootSiblingParent>
       <Provider store={store}>
         <CustomNavigationContainer>
-          <Stack.Navigator initialRouteName="Tabs">
+          <Stack.Navigator
+            initialRouteName="Tabs"
+            screenOptions={{ headerBackTitle: 'Back' }}
+          >
             <Stack.Screen
               name="Tabs"
               component={TabScreen}
-              options={{  headerShown: false, cardStyleInterpolator: forFade }}
+              options={{ headerShown: false, cardStyleInterpolator: forFade }}
               // options={(props) => {
               //   const route = props.route;
               //   console.log(props);
@@ -79,7 +82,7 @@ const App = () => {
             <Stack.Screen
               name="Info"
               component={InfoScreen}
-              options={{ cardStyleInterpolator: forFade }}
+              options={{ cardStyleInterpolator: forFade, title: '' }}
             />
             <Stack.Screen
               name="Chapters"
