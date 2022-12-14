@@ -10,6 +10,10 @@ import SearchScreen from './SearchScreen';
 import SettingsScreen from './SettingsScreen';
 import DiscoverScreen from './DiscoverScreen';
 
+// headers
+import HeaderRight from '../components/HeaderRight';
+import HeaderSearchBar from '../components/HeaderSearchBar';
+
 const Tab = createBottomTabNavigator();
 
 const TabScreen = () => {
@@ -54,22 +58,22 @@ const TabScreen = () => {
       <Tab.Screen
         name="Library"
         component={LibraryScreen}
-        options={{ headerShown: false }}
+        options={{ tabBarLabel: 'Library', headerRight: () => <HeaderRight /> }}
       />
       <Tab.Screen
         name="Discover"
         component={DiscoverScreen}
-        options={{ headerShown: false }}
+        options={{ tabBarLabel: 'Discover' }}
       />
       <Tab.Screen
         name="Search"
         component={SearchScreen}
-        options={{ headerShown: false }}
+        options={{ headerTitle: () => <HeaderSearchBar />, }}
       />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{ headerShown: false }}
+        options={{ tabBarLabel: 'Settings' }}
       />
     </Tab.Navigator>
   );
