@@ -82,7 +82,7 @@ const App = () => {
             <Stack.Screen
               name="Info"
               component={InfoScreen}
-              options={{ cardStyleInterpolator: forFade, title: '' }}
+              options={{ cardStyleInterpolator: forFade }}
             />
             <Stack.Screen
               name="Chapters"
