@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   StyleSheet,
   Text,
@@ -14,7 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-root-toast'; // TODO deprecated soon
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   getMangaById,
   getSelectError,
@@ -29,24 +30,23 @@ import {
 } from '../store/select/actions';
 import { fetchChapterIfNeeded } from '../store/chapters/actions';
 
-const InfoScreen = ({
-  selectedMangaDetail,
-  error,
-  navigation,
-  saveToLibrary,
-  userId,
-  libraryManga,
-  removeFromLibrary,
-  saveChapterReadIfNeeded,
-  saveChapterPageRead,
-  fetchChapterIfNeeded,
-  status,
-}) => {
+const InfoScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const selectedMangaDetail = useSelector((state) =>
+    getMangaById(state, state.select.selectedMangaId)
+  );
+  const error = useSelector(getSelectError);
+  const userId = useSelector(getUserId);
+  const libraryManga = useSelector((state) =>
+    getLibraryMangaById(state, state.select.selectedMangaId)
+  );
+  const status = useSelector(getSelectFetchStatus);
+
   useEffect(() => {
     navigation.setOptions({
       title: selectedMangaDetail.mangaTitle,
     });
-  }, [selectedMangaDetail.mangaTitle]);
+  }, [navigation, selectedMangaDetail.mangaTitle]);
   const [favourite, setFavourite] = useState(libraryManga != undefined);
   const { colors } = useTheme();
 
@@ -55,12 +55,14 @@ const InfoScreen = ({
   const toggleFavourite = () => {
     setFavourite(!favourite);
     if (!favourite) {
-      saveToLibrary(
-        selectedMangaDetail.mangaId,
-        selectedMangaDetail.mangaTitle,
-        selectedMangaDetail.infoImageUrl,
-        userId,
-        selectedMangaDetail.source
+      dispatch(
+        saveToLibrary(
+          selectedMangaDetail.mangaId,
+          selectedMangaDetail.mangaTitle,
+          selectedMangaDetail.infoImageUrl,
+          userId,
+          selectedMangaDetail.source
+        )
       );
 
       Toast.show('Saved to Library', {
@@ -68,7 +70,7 @@ const InfoScreen = ({
         position: Toast.positions.BOTTOM,
       });
     } else {
-      removeFromLibrary(userId, selectedMangaDetail.mangaId);
+      dispatch(removeFromLibrary(userId, selectedMangaDetail.mangaId));
 
       Toast.show('Removed from Library', {
         duration: Toast.durations.SHORT,
@@ -105,22 +107,28 @@ const InfoScreen = ({
       }
       chapterRefToRead = firstUnRead;
     }
-    saveChapterReadIfNeeded(
-      selectedMangaDetail.mangaId,
-      chapterRefToRead.chapterRef,
-      chapterRefToRead.index
+    dispatch(
+      saveChapterReadIfNeeded(
+        selectedMangaDetail.mangaId,
+        chapterRefToRead.chapterRef,
+        chapterRefToRead.index
+      )
     );
-    fetchChapterIfNeeded(
-      chapterRefToRead.chapterRef,
-      chapterRefToRead.index,
-      selectedMangaDetail.source
+    dispatch(
+      fetchChapterIfNeeded(
+        chapterRefToRead.chapterRef,
+        chapterRefToRead.index,
+        selectedMangaDetail.source
+      )
     );
-    saveChapterPageRead(
-      selectedMangaDetail.mangaId,
-      chapterRefToRead.chapterRef,
-      selectedMangaDetail.latestChapterPage
-        ? selectedMangaDetail.latestChapterPage
-        : 0
+    dispatch(
+      saveChapterPageRead(
+        selectedMangaDetail.mangaId,
+        chapterRefToRead.chapterRef,
+        selectedMangaDetail.latestChapterPage
+          ? selectedMangaDetail.latestChapterPage
+          : 0
+      )
     );
     navigation.navigate('MangaViewer');
   };
@@ -234,20 +242,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
-    error: getSelectError(state),
-    userId: getUserId(state),
-    libraryManga: getLibraryMangaById(state, state.select.selectedMangaId),
-    status: getSelectFetchStatus(state),
-  };
+InfoScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
-export default connect(mapStateToProps, {
-  saveToLibrary,
-  removeFromLibrary,
-  saveChapterReadIfNeeded,
-  saveChapterPageRead,
-  fetchChapterIfNeeded,
-})(InfoScreen);
+export default InfoScreen;

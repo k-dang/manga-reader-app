@@ -12,9 +12,9 @@ import {
   showChapterAsyncStorage,
   getPagesAsyncStorage,
 } from '../services/asyncStorageHelpers';
+import { useSelector } from 'react-redux';
 
 // store
-import { connect } from 'react-redux';
 import { getUserId } from '../store/account/selectors';
 import { getMangaList } from '../store/library/selectors';
 
@@ -24,7 +24,9 @@ const testChapterUpdates = async () => {
       'az918766',
       JSON.stringify({ totalChapters: 20 })
     );
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const getKeysToClear = (storageKeys, mangasInLibrary) => {
@@ -34,8 +36,11 @@ const getKeysToClear = (storageKeys, mangasInLibrary) => {
   return result;
 };
 
-const AdvancedScreen = ({ userId, mangaList }) => {
+const AdvancedScreen = () => {
   const { colors } = useTheme();
+  const userId = useSelector(getUserId);
+  const mangaList = useSelector(getMangaList);
+
   const color = userProfiles.find((x) => x.id === userId).color;
 
   const clearChapterKeysNotInLibrary = async () => {
@@ -162,11 +167,4 @@ const AdvancedScreen = ({ userId, mangaList }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userId: getUserId(state),
-    mangaList: getMangaList(state),
-  };
-};
-
-export default connect(mapStateToProps)(AdvancedScreen);
+export default AdvancedScreen;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   Text,
@@ -17,7 +18,7 @@ import { Overlay } from 'react-native-elements';
 import ThemedView from '../components/ThemedView';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getMangaById } from '../store/select/selectors';
 import {
   reverseChapters,
@@ -30,15 +31,12 @@ import { sources } from '../store/search/constants';
 
 const windowWidth = Dimensions.get('window').width;
 
-const ChaptersScreen = ({
-  selectedMangaDetail,
-  reverseChapters,
-  fetchChapterIfNeeded,
-  saveChapterReadIfNeeded,
-  saveChaptersRead,
-  saveChapterPageRead,
-  navigation,
-}) => {
+const ChaptersScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const selectedMangaDetail = useSelector((state) =>
+    getMangaById(state, state.select.selectedMangaId)
+  );
+
   const [visible, setVisible] = useState(false);
   const [heldIndex, setHeldIndex] = useState(0);
   const { colors } = useTheme();
@@ -57,14 +55,18 @@ const ChaptersScreen = ({
   });
 
   const toggleSort = () => {
-    reverseChapters(selectedMangaDetail.mangaId);
+    dispatch(reverseChapters(selectedMangaDetail.mangaId));
   };
 
   const handleMangaViewerNavigation = debounce(
     (chapterRef, index) => {
-      saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index);
-      fetchChapterIfNeeded(chapterRef, index, selectedMangaDetail.source);
-      saveChapterPageRead(selectedMangaDetail.mangaId, chapterRef, 0);
+      dispatch(
+        saveChapterReadIfNeeded(selectedMangaDetail.mangaId, chapterRef, index)
+      );
+      dispatch(
+        fetchChapterIfNeeded(chapterRef, index, selectedMangaDetail.source)
+      );
+      dispatch(saveChapterPageRead(selectedMangaDetail.mangaId, chapterRef, 0));
       // too fast?
       navigation.navigate('MangaViewer');
     },
@@ -73,7 +75,7 @@ const ChaptersScreen = ({
   );
 
   const markReadBelow = () => {
-    saveChaptersRead(selectedMangaDetail.mangaId, heldIndex);
+    dispatch(saveChaptersRead(selectedMangaDetail.mangaId, heldIndex));
     setVisible(false);
   };
 
@@ -191,16 +193,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
-  };
+ChaptersScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
-export default connect(mapStateToProps, {
-  reverseChapters,
-  fetchChapterIfNeeded,
-  saveChapterReadIfNeeded,
-  saveChaptersRead,
-  saveChapterPageRead,
-})(ChaptersScreen);
+export default ChaptersScreen;

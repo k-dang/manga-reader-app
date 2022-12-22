@@ -167,6 +167,7 @@ export const selectMultipleMangaFetch = (manga) => {
           case sources.MANGADEX: {
             mangadexRequests.push(getFullMangaDetail(m.id));
             mangadexMapping.push({ id: m.id, title: m.title });
+            break;
           }
           case sources.MANGANATO:
           default: {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -25,6 +25,7 @@ const TabScreen = () => {
     }
     StatusBar.setBarStyle(dark ? 'light-content' : 'dark-content');
   }, [dark]);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -68,7 +69,7 @@ const TabScreen = () => {
       <Tab.Screen
         name="Search"
         component={SearchScreen}
-        options={{ headerTitle: () => <HeaderSearchBar />, }}
+        options={{ headerTitle: () => <HeaderSearchBar /> }}
       />
       <Tab.Screen
         name="Settings"

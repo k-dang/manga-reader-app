@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Icon, ListItem } from 'react-native-elements';
@@ -6,18 +7,21 @@ import Ripple from 'react-native-material-ripple';
 import { userProfiles } from '../services/userProfiles';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { saveAccount, toggleTheme } from '../store/account/actions';
 import { getUserId } from '../store/account/selectors';
 
-const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
+const SettingsScreen = ({ navigation }) => {
+  const userId = useSelector(getUserId);
   const [color, setColor] = useState(
     userProfiles.find((profile) => profile.id === userId).bgColor
   );
-  const { dark, colors } = useTheme();
+  const { colors } = useTheme();
+
+  const dispatch = useDispatch();
 
   const handleToggleTheme = () => {
-    toggleTheme();
+    dispatch(toggleTheme());
   };
 
   return (
@@ -47,7 +51,7 @@ const SettingsScreen = ({ saveAccount, userId, toggleTheme, navigation }) => {
                   size={28}
                   raised
                   onPress={() => {
-                    saveAccount(item.id);
+                    dispatch(saveAccount(item.id));
                     setColor(item.bgColor);
                   }}
                 />
@@ -101,12 +105,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    userId: getUserId(state),
-  };
+SettingsScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
-export default connect(mapStateToProps, { saveAccount, toggleTheme })(
-  SettingsScreen
-);
+export default SettingsScreen;

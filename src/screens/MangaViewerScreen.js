@@ -1,11 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
   Dimensions,
-  StatusBar,
   Easing,
 } from 'react-native';
 import TransitionCard from '../components/ImageViewer/TransitionCard';
@@ -15,7 +15,7 @@ import { removePageItemAsyncStorage } from '../services/asyncStorageHelpers';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   getCurrentChapterRef,
   getCurrentChapterRefIndex,
@@ -49,17 +49,18 @@ const renderPrevButton = () => {
   );
 };
 
-const MangaViewerScreen = ({
-  status,
-  currentChapterRef,
-  currentChapterIndex,
-  chapters,
-  selectedMangaDetail,
-  fetchChapterIfNeeded,
-  saveChapterReadIfNeeded,
-  saveChapterPageRead,
-  navigation,
-}) => {
+const MangaViewerScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const status = useSelector(getChaptersFetchStatus);
+  const currentChapterRef = useSelector(getCurrentChapterRef);
+  const currentChapterIndex = useSelector(getCurrentChapterRefIndex);
+  const chapters = useSelector((state) =>
+    getChaptersByMangaId(state, state.select.selectedMangaId)
+  );
+  const selectedMangaDetail = useSelector((state) =>
+    getMangaById(state, state.select.selectedMangaId)
+  );
+
   if (status === 'idle' || status === 'pending') {
     return (
       <View style={styles.darkContainer}>
@@ -88,7 +89,9 @@ const MangaViewerScreen = ({
   };
 
   const handleSwipeIndexChange = async (index) => {
-    saveChapterPageRead(selectedMangaDetail.mangaId, currentChapterRef, index);
+    dispatch(
+      saveChapterPageRead(selectedMangaDetail.mangaId, currentChapterRef, index)
+    );
   };
 
   const handleChapterTransition = async () => {
@@ -100,20 +103,26 @@ const MangaViewerScreen = ({
       const nextIndex = selectedMangaDetail.chapterRefs.findIndex(
         (element) => element.chapterRef === selectedChapterRefObject.next
       );
-      saveChapterReadIfNeeded(
-        selectedMangaDetail.mangaId,
-        selectedChapterRefObject.next,
-        nextIndex
+      dispatch(
+        saveChapterReadIfNeeded(
+          selectedMangaDetail.mangaId,
+          selectedChapterRefObject.next,
+          nextIndex
+        )
       );
-      fetchChapterIfNeeded(
-        selectedChapterRefObject.next,
-        nextIndex,
-        selectedMangaDetail.source
+      dispatch(
+        fetchChapterIfNeeded(
+          selectedChapterRefObject.next,
+          nextIndex,
+          selectedMangaDetail.source
+        )
       );
-      saveChapterPageRead(
-        selectedMangaDetail.mangaId,
-        selectedChapterRefObject.next,
-        0
+      dispatch(
+        saveChapterPageRead(
+          selectedMangaDetail.mangaId,
+          selectedChapterRefObject.next,
+          0
+        )
       );
     } else {
       // go back to chapter screen if no more chapters
@@ -128,7 +137,7 @@ const MangaViewerScreen = ({
             Referer: 'https://readmanganato.com',
           }
         : {};
-    console.log(headers);
+
     // TODO add a previous transition card
     const images = chapters[currentChapterRef].map((element) => {
       return {
@@ -198,18 +207,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    status: getChaptersFetchStatus(state),
-    currentChapterRef: getCurrentChapterRef(state),
-    currentChapterIndex: getCurrentChapterRefIndex(state),
-    chapters: getChaptersByMangaId(state, state.select.selectedMangaId),
-    selectedMangaDetail: getMangaById(state, state.select.selectedMangaId),
-  };
+MangaViewerScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
-export default connect(mapStateToProps, {
-  fetchChapterIfNeeded,
-  saveChapterReadIfNeeded,
-  saveChapterPageRead,
-})(MangaViewerScreen);
+export default MangaViewerScreen;
