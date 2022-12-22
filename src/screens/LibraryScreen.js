@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
+
 import MangaList from '../components/MangaList';
 import ErrorContainer from '../components/ErrorContainer';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   getMangaList,
   getLibraryLoadingStatus,
@@ -19,20 +20,20 @@ import { loadAllData } from '../store/account/actions';
 import { sort } from '../store/library/constants';
 import { getSelectFetchStatus } from '../store/select/selectors';
 
-const LibraryScreen = ({
-  mangaList,
-  status,
-  userId,
-  loadError,
-  chapterTotals,
-  loadAllData,
-  sortType,
-  multiFetchStatus,
-  loadLibraryAndSelect,
-}) => {
+const LibraryScreen = () => {
+  const dispatch = useDispatch();
+  const status = useSelector(getLibraryLoadingStatus);
+  const userId = useSelector(getUserId);
+  const loadError = useSelector(getLoadError);
+  const sortType = useSelector(getSortType);
+  const multiFetchStatus = useSelector(getSelectFetchStatus);
+  const chapterTotals = useSelector(getChapterTotals);
+  const mangaList = useSelector(getMangaList);
+
   useEffect(() => {
-    loadAllData(userId);
-  }, [userId]);
+    dispatch(loadAllData(userId));
+  }, [dispatch, userId]);
+
   const { colors } = useTheme();
 
   if (status === 'idle' || status === 'pending') {
@@ -84,9 +85,7 @@ const LibraryScreen = ({
       <MangaList
         results={mangaListWithUpdates()}
         refreshing={multiFetchStatus === 'pending'}
-        onRefresh={() => {
-          loadLibraryAndSelect(userId);
-        }}
+        onRefresh={() => dispatch(loadLibraryAndSelect(userId))}
       />
     </View>
   );
@@ -105,19 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    mangaList: getMangaList(state),
-    status: getLibraryLoadingStatus(state),
-    userId: getUserId(state),
-    loadError: getLoadError(state),
-    chapterTotals: getChapterTotals(state),
-    sortType: getSortType(state),
-    multiFetchStatus: getSelectFetchStatus(state),
-  };
-};
-
-export default connect(mapStateToProps, {
-  loadAllData,
-  loadLibraryAndSelect,
-})(LibraryScreen);
+export default LibraryScreen;

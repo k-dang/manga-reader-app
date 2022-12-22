@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import SourceSwitchButton from '../components/SourceSwitchButton';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   getSearchFetchStatus,
   getSearchResults,
@@ -22,23 +22,29 @@ import {
 import { searchManga, searchMangaPaginated } from '../store/search/actions';
 import { getLibraryMangasById } from '../store/library/selectors';
 import { sources } from '../store/search/constants';
+import { useCallback } from 'react';
 
-const SearchScreen = ({
-  status,
-  errorMessage,
-  searchResults,
-  searchTerm,
-  loadedPages,
-  totalPages,
-  searchMangaPaginated,
-  searchManga,
-  libraryMangaByIds,
-  source,
-  loadedResults,
-  totalResults,
-}) => {
+const SearchScreen = () => {
   const { colors } = useTheme();
   const container = [styles.container, { backgroundColor: colors.background }];
+
+  const dispatch = useDispatch();
+
+  const status = useSelector(getSearchFetchStatus);
+  const errorMessage = useSelector(getSearchError);
+  const searchTerm = useSelector(getSearchTerm);
+  const searchResults = useSelector(getSearchResults);
+  const totalPages = useSelector(getSearchTotalPages);
+  const loadedPages = useSelector(getSearchLoadedPages);
+  const libraryMangaByIds = useSelector(getLibraryMangasById);
+  const searchSource = useSelector(getSearchSource);
+  const loadedResults = useSelector(getSearchLoadedResults);
+  const totalResults = useSelector(getSearchTotalResults);
+
+  const refreshSearch = useCallback(
+    () => dispatch(searchManga(searchTerm)),
+    [dispatch, searchTerm]
+  );
 
   if (status === 'pending') {
     return (
@@ -62,17 +68,17 @@ const SearchScreen = ({
 
   const handleEndReached = debounce(
     () => {
-      switch (source) {
+      switch (searchSource) {
         case sources.MANGADEX: {
           if (loadedResults < totalResults) {
-            searchMangaPaginated(searchTerm);
+            dispatch(searchMangaPaginated(searchTerm));
           }
           break;
         }
         case sources.MANGANATO:
         default: {
           if (loadedPages < totalPages) {
-            searchMangaPaginated(searchTerm);
+            dispatch(searchMangaPaginated(searchTerm));
           }
         }
       }
@@ -101,9 +107,7 @@ const SearchScreen = ({
             results={searchResultsWithLibrary()}
             onEndReached={handleEndReached}
             refreshing={status === 'pending'}
-            onRefresh={() => {
-              searchManga(searchTerm);
-            }}
+            onRefresh={refreshSearch}
           />
         </View>
       )}
@@ -121,21 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    searchTerm: getSearchTerm(state),
-    status: getSearchFetchStatus(state),
-    searchResults: getSearchResults(state),
-    errorMessage: getSearchError(state),
-    totalPages: getSearchTotalPages(state),
-    loadedPages: getSearchLoadedPages(state),
-    libraryMangaByIds: getLibraryMangasById(state),
-    source: getSearchSource(state),
-    loadedResults: getSearchLoadedResults(state),
-    totalResults: getSearchTotalResults(state),
-  };
-};
-
-export default connect(mapStateToProps, { searchManga, searchMangaPaginated })(
-  SearchScreen
-);
+export default SearchScreen;

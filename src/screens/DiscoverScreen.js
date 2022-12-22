@@ -1,17 +1,11 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import MangaListHorizontal from '../components/MangaListHorizontal';
 import { debounce } from 'lodash';
 import ErrorContainer from '../components/ErrorContainer';
 
 // store
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   getDiscoverLoadingStatus,
   getDiscoverError,
@@ -23,22 +17,22 @@ import {
 } from '../store/discover/actions';
 import { getLibraryMangasById } from '../store/library/selectors';
 
-const DiscoverScreen = ({
-  status,
-  errorMessage,
-  discoverResults,
-  fetchDiscoverMangaGenres,
-  fetchGenrePaginated,
-  libraryMangaByIds,
-}) => {
-  const genres = ['Hot', 'Shoujo', 'Slice of life', 'Isekai', 'Romance'];
+const genres = ['Hot', 'Shoujo', 'Slice of life', 'Isekai', 'Romance'];
+
+const DiscoverScreen = () => {
+  const dispatch = useDispatch();
+  const status = useSelector(getDiscoverLoadingStatus);
+  const errorMessage = useSelector(getDiscoverError);
+  const discoverResults = useSelector(getDiscoverResults);
+  const libraryMangaByIds = useSelector(getLibraryMangasById);
+
   useEffect(() => {
-    fetchDiscoverMangaGenres(genres);
-  }, []);
+    dispatch(fetchDiscoverMangaGenres(genres));
+  }, [dispatch]);
 
   const handleEndReached = debounce(
     (genre) => {
-      fetchGenrePaginated(genre);
+      dispatch(fetchGenrePaginated(genre));
     },
     1000,
     { leading: true, trailing: false }
@@ -97,16 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    status: getDiscoverLoadingStatus(state),
-    errorMessage: getDiscoverError(state),
-    discoverResults: getDiscoverResults(state),
-    libraryMangaByIds: getLibraryMangasById(state),
-  };
-};
-
-export default connect(mapStateToProps, {
-  fetchGenrePaginated,
-  fetchDiscoverMangaGenres,
-})(DiscoverScreen);
+export default DiscoverScreen;
