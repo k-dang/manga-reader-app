@@ -122,10 +122,13 @@ const MangaViewerScreen = ({
   };
 
   const imageUrls = () => {
-    const refer =
+    const headers =
       selectedMangaDetail.source === sources.MANGANATO
-        ? 'https://readmanganato.com'
-        : '';
+        ? {
+            Referer: 'https://readmanganato.com',
+          }
+        : {};
+    console.log(headers);
     // TODO add a previous transition card
     const images = chapters[currentChapterRef].map((element) => {
       return {
@@ -134,9 +137,7 @@ const MangaViewerScreen = ({
         url: element.url,
         props: {
           source: {
-            headers: {
-              Referer: refer,
-            },
+            headers: headers,
           },
           style: {
             resizeMode: 'contain',
