@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   StyleSheet,
@@ -61,6 +61,57 @@ const MangaViewerScreen = ({ navigation }) => {
     getMangaById(state, state.select.selectedMangaId)
   );
 
+  const imageUrls = useMemo(() => {
+    if (chapters.length == 0 || !(currentChapterRef in chapters)) {
+      return [];
+    }
+
+    const headers =
+      selectedMangaDetail.source === sources.MANGANATO
+        ? {
+            Referer: 'https://readmanganato.com',
+          }
+        : {};
+
+    console.log('!@#$ Images', {
+      chapters,
+      currentChapterRef,
+    });
+
+    // TODO add a previous transition card
+    const images = chapters[currentChapterRef].map((element) => {
+      return {
+        width: windowWidth,
+        height: windowHeight,
+        url: element.url,
+        props: {
+          source: {
+            headers: headers,
+          },
+          style: {
+            resizeMode: 'contain',
+          },
+        },
+      };
+    });
+
+    if (images.length > 0) {
+      images.push({
+        isNextTransitionCard: true,
+      });
+    }
+
+    return images;
+  }, [chapters, currentChapterRef, selectedMangaDetail.source]);
+
+  console.log('!@#$', {
+    status,
+    currentChapterRef,
+    currentChapterIndex,
+    chapters,
+    selectedMangaDetail,
+  });
+
   if (status === 'idle' || status === 'pending') {
     return (
       <View style={styles.darkContainer}>
@@ -88,7 +139,7 @@ const MangaViewerScreen = ({ navigation }) => {
     );
   };
 
-  const handleSwipeIndexChange = async (index) => {
+  const handleSwipeIndexChange = (index) => {
     dispatch(
       saveChapterPageRead(selectedMangaDetail.mangaId, currentChapterRef, index)
     );
@@ -130,43 +181,11 @@ const MangaViewerScreen = ({ navigation }) => {
     }
   };
 
-  const imageUrls = () => {
-    const headers =
-      selectedMangaDetail.source === sources.MANGANATO
-        ? {
-            Referer: 'https://readmanganato.com',
-          }
-        : {};
-
-    // TODO add a previous transition card
-    const images = chapters[currentChapterRef].map((element) => {
-      return {
-        width: windowWidth,
-        height: windowHeight,
-        url: element.url,
-        props: {
-          source: {
-            headers: headers,
-          },
-          style: {
-            resizeMode: 'contain',
-          },
-        },
-      };
-    });
-
-    if (images.length > 0) {
-      images.push({
-        isNextTransitionCard: true,
-      });
-    }
-    return images;
-  };
-
   return (
     <View style={styles.container}>
       <ImageViewer
-        imageUrls={imageUrls()}
+        key={currentChapterIndex}
+        imageUrls={imageUrls}
         enablePreload={true}
         pageAnimateTime={400}
         easingFunction={Easing.out(Easing.cubic)}
