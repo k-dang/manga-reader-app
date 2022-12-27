@@ -62,7 +62,8 @@ const MangaViewerScreen = ({ navigation }) => {
   );
 
   const imageUrls = useMemo(() => {
-    if (chapters.length == 0 || !(currentChapterRef in chapters)) {
+    console.log(chapters);
+    if (typeof chapters === 'undefined' || !(currentChapterRef in chapters)) {
       return [];
     }
 
@@ -72,11 +73,6 @@ const MangaViewerScreen = ({ navigation }) => {
             Referer: 'https://readmanganato.com',
           }
         : {};
-
-    console.log('!@#$ Images', {
-      chapters,
-      currentChapterRef,
-    });
 
     // TODO add a previous transition card
     const images = chapters[currentChapterRef].map((element) => {
@@ -103,14 +99,6 @@ const MangaViewerScreen = ({ navigation }) => {
 
     return images;
   }, [chapters, currentChapterRef, selectedMangaDetail.source]);
-
-  console.log('!@#$', {
-    status,
-    currentChapterRef,
-    currentChapterIndex,
-    chapters,
-    selectedMangaDetail,
-  });
 
   if (status === 'idle' || status === 'pending') {
     return (
