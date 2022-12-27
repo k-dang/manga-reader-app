@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -54,6 +54,11 @@ const ChaptersScreen = ({ navigation }) => {
     });
   });
 
+  // TODO do the reverse here, don't reverse in the store
+  const sortedChapterRefs = useMemo(() => {
+    return selectedMangaDetail.chapterRefs;
+  }, [selectedMangaDetail.chapterRefs]);
+
   const toggleSort = () => {
     dispatch(reverseChapters(selectedMangaDetail.mangaId));
   };
@@ -97,7 +102,7 @@ const ChaptersScreen = ({ navigation }) => {
   return (
     <ThemedView style={styles.container}>
       <FlatList
-        data={selectedMangaDetail.chapterRefs}
+        data={sortedChapterRefs}
         keyExtractor={(chapter) => chapter.chapterRef}
         renderItem={({ item, index }) => {
           return (
