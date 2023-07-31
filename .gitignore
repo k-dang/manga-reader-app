@@ -16,3 +16,5 @@ web-report/
 .vscode/
 
 yarn-error.log
+
+dist

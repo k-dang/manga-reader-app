@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "1.1.2",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/scaredy_cat_192.png",
     "splash": {
@@ -16,13 +16,23 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/6fc1b1b3-33b6-4984-ad99-5e7b22730df0"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "bundleIdentifier": "com.kdang12.manga-reader-app"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6fc1b1b3-33b6-4984-ad99-5e7b22730df0"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "android": {}
   }
 }

@@ -16,7 +16,7 @@ yarn start
 Publish to Expo
 
 ```bash
-expo publish
+eas update --channel production --message "Fixes typo"
 ```
 
 expo link:
@@ -26,10 +26,4 @@ Run Tests with jest
 
 ```bash
 npm run test
-```
-
-## Upgrading expo version
-
-```bash
-expo-cli upgrade
 ```
